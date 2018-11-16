@@ -540,6 +540,7 @@ public class MainActivity extends Activity {
             String lab="";
             if(p.getLabel().contains("已过期")){
                 lab="已过期";
+
             }
             if(p.getLabel().contains("1天-7天")){
                 lab="1天-7天";

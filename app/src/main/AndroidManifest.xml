@@ -60,15 +60,16 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="统计"
             android:theme="@android:style/Theme.Dialog"
-            android:windowSoftInputMode="stateHidden|adjustUnspecified"></activity>
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <!-- 盘点结果确认 -->
-        <activity android:name="com.st.p2018.activity.OperationActivity"
+        <activity
+            android:name="com.st.p2018.activity.OperationActivity"
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="盘点结果确认"
             android:theme="@android:style/Theme.Dialog"
-            android:windowSoftInputMode="stateHidden|adjustUnspecified"> </activity>
+            android:windowSoftInputMode="stateHidden|adjustUnspecified"></activity>
+        <activity android:name="com.st.p2018.activity.TestActivity"></activity>
     </application>
 
 </manifest>
-
