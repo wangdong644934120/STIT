@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<updateAll>
+    <update_1>
+        <update>
+	        CREATE TABLE 'stit_t_person' ('id' varchar(36) NOT NULL DEFAULT '','code' varchar(36) DEFAULT NULL,
+			'name' varchar(36) DEFAULT NULL,'tzz' varchar(500) DEFAULT NULL,
+			PRIMARY KEY ('id')
+			) 	
+        </update>
+    </update_1>
+</updateAll>
