@@ -8,44 +8,74 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="441dp"
+        android:background="@color/colorWhite"
         android:orientation="vertical">
-        <Button
-            android:id="@+id/kd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="开灯" />
-        <Button
-            android:id="@+id/gd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="关灯" />
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:src="@drawable/men" />
+
+        <Button
+            android:id="@+id/kd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/blue"
+            android:text="开灯"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/gd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/blue"
+            android:text="关灯"
+            android:textColor="@color/colorWhite" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
+            android:layout_marginTop="20dp"
             android:background="#a7aba9" />
-        <Button
-            android:id="@+id/km"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="开门" />
-        <Button
-            android:id="@+id/gm"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="关门" />
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:src="@drawable/men" />
+
+        <Button
+            android:id="@+id/km"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/blue"
+            android:text="开门"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/gm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/blue"
+            android:text="关门"
+            android:textColor="@color/colorWhite" />
+
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

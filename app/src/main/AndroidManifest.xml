@@ -52,7 +52,7 @@
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="人员管理"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <!-- 统计 -->
         <activity
@@ -78,7 +78,7 @@
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="耗材管理"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <!-- 控制管理 -->
         <activity
@@ -86,14 +86,14 @@
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="控制管理"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
 
         <activity android:name="com.st.p2018.activity.PZActivity"
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="配置管理"
-            android:theme="@android:style/Theme.Dialog"
+            android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
     </application>
 

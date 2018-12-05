@@ -8,9 +8,9 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="670dp"
         android:background="@color/colorWhite"
+        android:orientation="vertical"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
 
@@ -25,19 +25,19 @@
                 android:orientation="vertical">
 
                 <ListView
-                android:id="@+id/listHeaders"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="20dp"/>
+                    android:id="@+id/listHeaders"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp" />
 
                 <ListView
-                android:id="@+id/listResults"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"/>
+                    android:id="@+id/listResults"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp" />
 
 
             </LinearLayout>
@@ -51,50 +51,50 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="234dp"
+            android:layout_height="290dp"
             android:orientation="vertical">
 
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="20dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginRight="150dp"
-                android:layout_weight="1" >
+                android:layout_marginTop="20dp"
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="20dp"
+                    android:text="工号:"
                     android:textColor="@color/black"
-                    android:text="工号:" />
+                    android:textSize="20dp" />
 
                 <EditText
                     android:id="@+id/code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
-                    android:ems="10"/>
+                    android:ems="10" />
             </TableRow>
 
 
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginRight="150dp"
-                android:layout_weight="1" >
+                android:layout_marginTop="10dp"
+                android:layout_weight="1">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="20dp"
+                    android:text="姓名:"
                     android:textColor="@color/black"
-                    android:text="姓名:" />
+                    android:textSize="20dp" />
 
                 <EditText
                     android:id="@+id/name"
@@ -105,21 +105,23 @@
             </TableRow>
 
 
-
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_marginLeft="100dp"
                 android:layout_marginRight="150dp"
-                android:layout_weight="1" >
+                android:layout_marginTop="10dp"
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/btntzz"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="录入指纹" />
+                    android:text="录入指纹"
+                    android:background="@color/blue"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/tzz"
@@ -133,17 +135,21 @@
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
                 android:layout_marginLeft="100dp"
                 android:layout_marginRight="150dp"
-                android:layout_weight="1" >
+                android:layout_marginTop="10dp"
+                android:layout_weight="1">
 
                 <Button
                     android:id="@+id/btnkh"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="读取卡号" />
+                    android:text="读取卡号"
+                    android:background="@color/blue"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/kh"
@@ -152,6 +158,7 @@
                     android:ems="10"
                     android:singleLine="true"
                     android:text="" />
+
             </TableRow>
         </LinearLayout>
 
@@ -162,7 +169,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="150dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical">
 
@@ -170,19 +177,31 @@
                 android:id="@+id/add"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="添加" />
+                android:layout_marginTop="10dp"
+                android:background="@color/blue"
+                android:text="添加"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite" />
 
             <Button
                 android:id="@+id/modify"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="修改" />
+                android:layout_marginTop="10dp"
+                android:background="@color/blue"
+                android:text="修改"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite" />
 
             <Button
                 android:id="@+id/delete"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="删除" />
+                android:layout_marginTop="10dp"
+                android:background="@color/blue"
+                android:text="删除"
+                android:layout_weight="1"
+                android:textColor="@color/colorWhite" />
         </LinearLayout>
 
     </LinearLayout>

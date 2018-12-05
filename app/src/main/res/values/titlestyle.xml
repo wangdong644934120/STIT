@@ -8,4 +8,14 @@
         <item name="android:windowTitleSize">50dip</item>
         <item name="android:windowTitleBackgroundStyle">@style/TitleBackgroundColor</item>
     </style>
+    <style name="otstyle" parent="android:Theme">
+        <item name="android:windowTitleSize">50dip</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:windowAnimationStyle">@android:style/Theme.Dialog</item>
+        <item name="android:windowCloseOnTouchOutside">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowTitleStyle">@style/TitleBackgroundColor</item>
+
+    </style>
 </resources>
