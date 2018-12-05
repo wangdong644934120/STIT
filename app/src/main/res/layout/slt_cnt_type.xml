@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.st.p2018.activity.SelectDialog">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:layout_width="115dp"
+        android:layout_height="wrap_content"
+        android:background="@color/black_overlay">
+        <Button android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:layout_width="fill_parent"
+            android:text="人员管理"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:gravity="left|center_vertical"
+            android:id="@+id/btnRY"></Button>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button android:layout_height="wrap_content"
+            android:background="#00000000"
+            android:text="耗材管理"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"
+            android:gravity="left|center_vertical"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="fill_parent"
+            android:id="@+id/btnHC"></Button>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button android:background="#00000000"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="控制管理"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"
+            android:gravity="left|center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/btnKZ"></Button>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button android:background="#00000000"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="配置管理"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"
+            android:gravity="left|center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/btnPZ"></Button>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button android:background="#00000000"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:text="盘点管理"
+            android:textSize="18dp"
+            android:textColor="@color/colorWhite"
+            android:gravity="left|center_vertical"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:id="@+id/btnPD"></Button>
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

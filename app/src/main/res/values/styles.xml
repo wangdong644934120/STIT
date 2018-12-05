@@ -20,4 +20,21 @@
         <item name="android:background">@color/black_overlay</item>
     </style>
 
+    <!--<style name="theme.common.dialog" parent="android:style/Theme.Dialog">-->
+        <!--<item name="android:windowNoTitle">true</item>-->
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>-->
+        <!--<item name="android:layout_x">150px</item>-->
+        <!--<item name="android:layout_y">150px</item>-->
+        <!--&lt;!&ndash;<item name="android:windowBackground">@drawable/transparent_background</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <style name="dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item><!--边框-->
+        <item name="android:windowIsFloating">true</item><!--是否浮现在activity之上-->
+        <item name="android:windowIsTranslucent">false</item><!--半透明-->
+        <item name="android:windowNoTitle">true</item><!--无标题-->
+        <item name="android:windowBackground">@color/gray</item><!--背景透明-->
+        <item name="android:backgroundDimEnabled">false</item><!--模糊-->
+    </style>
 </resources>

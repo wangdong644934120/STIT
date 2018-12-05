@@ -6,7 +6,13 @@ import android.os.Message;
 
 import com.st.p2018.util.Cache;
 
+import org.apache.log4j.Logger;
+
+import java.io.File;
 import java.util.HashMap;
+
+
+import android_serialport_api.SerialPort;
 
 /**
  * Created by Administrator on 2018/11/8.
@@ -14,9 +20,30 @@ import java.util.HashMap;
 
 public class DeviceCom extends Thread{
 
-
+    private Logger logger = Logger.getLogger(this.getClass());
+    SerialPort sp;
     public void run(){
         openCom();
+        while(true){
+            try{
+                byte[] bb= new byte[2];
+                bb[0]=0x00;
+                bb[1]=0x01;
+                //sp.testSendCOM(bb);
+//                byte[] g=sp.testGetCOM();
+//                for(int i=0;i<g.length;i++){
+//                    System.out.println(g[i]);
+//                }
+            }catch(Exception e){
+
+            }
+            try{
+                Thread.sleep(2000);
+            }catch(Exception e){
+
+            }
+
+        }
 //        int i=0;
 //        while(true){
 //            i=i+1;
@@ -42,18 +69,24 @@ public class DeviceCom extends Thread{
     private void openCom(){
         try{
             Thread.sleep(4000);
-            sendData("正在打开串口...");
-            Thread.sleep(2000);
-            sendData("串口打开成功...");
+            sp = new SerialPort(new File("/dev/ttyS1"), 9600, 0);
+            int a=0;
+            sendData("打开串口成功");
+//            Thread.sleep(4000);
+//            sendData("正在打开串口...");
+//            Thread.sleep(2000);
+//            sendData("串口打开成功...");
             Thread.sleep(2000);
             sendData("正在初始化设备...");
             Thread.sleep(2000);
             sendData("初始化设备失败...");
-            Thread.sleep(2000);
-            sendData("正在连接服务器...");
-            Thread.sleep(2000);
-            sendData("连接服务器失败...");
+//            Thread.sleep(2000);
+//            sendData("正在连接服务器...");
+//            Thread.sleep(2000);
+//            sendData("连接服务器失败...");
         }catch (Exception e){
+            sendData("打开串口失败");
+            logger.error("打开串口失败",e);
 
         }
     }

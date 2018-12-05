@@ -4,4 +4,13 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string-array name="gx">
+       <item>横型</item>
+       <item>竖型</item>
+     </string-array>
+    <string-array name="dk">
+        <item>灯自动</item>
+        <item>灯常开</item>
+        <item>灯常关</item>
+    </string-array>
 </resources>

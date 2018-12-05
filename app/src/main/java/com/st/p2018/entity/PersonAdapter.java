@@ -30,6 +30,7 @@ public class PersonAdapter extends BaseAdapter {
         TextView id;
         TextView code;
         TextView name;
+        TextView card;
         TextView tzz;
 
         HashMap<String, TextView> parView = new HashMap<String, TextView>();
@@ -78,6 +79,7 @@ public class PersonAdapter extends BaseAdapter {
             holder.id = (TextView) paramView.findViewById(R.id.item_id);
             holder.name = (TextView) paramView.findViewById(R.id.item_name);
             holder.code = (TextView) paramView.findViewById(R.id.item_code);
+            holder.card=(TextView) paramView.findViewById(R.id.item_card);
             holder.tzz = (TextView) paramView.findViewById(R.id.item_tzz);
             holder.layout = layout;
             paramView.setTag(holder);
@@ -88,6 +90,7 @@ public class PersonAdapter extends BaseAdapter {
         holder.id.setText(data.get("id") == null ?"": data.get("id"));
         holder.name.setText(data.get("name") == null ? "" : data.get("name"));
         holder.code.setText(data.get("code") == null ? "" : data.get("code"));
+        holder.card.setText(data.get("card") == null ? "" : data.get("card"));
         holder.tzz.setText(data.get("tzz") == null ? "" : data.get("tzz"));
         return paramView;
     }

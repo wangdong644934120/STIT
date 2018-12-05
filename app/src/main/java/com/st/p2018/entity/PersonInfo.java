@@ -8,6 +8,7 @@ public class PersonInfo {
     private String id;
     private String code;
     private String name;
+    private String card;
     private String tzz;
 
     public String getId() {
@@ -40,5 +41,13 @@ public class PersonInfo {
 
     public void setTzz(String tzz) {
         this.tzz = tzz;
+    }
+
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
     }
 }

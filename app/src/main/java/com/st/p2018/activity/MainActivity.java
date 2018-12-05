@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -24,11 +29,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AbsoluteLayout;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.BarLineChartBase;
@@ -89,13 +100,32 @@ public class MainActivity extends Activity {
     private Button btnPerson;
     private Button btnPD;
     private Button btnKM;
-    private TextView tvTS;
     private PieChart mChart;
-    private BarChart bChart;
+    private Button tvD;
+    private TextView tvTS;
+
+
     ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
     private List<String> listTS = new ArrayList<String>();
     HashMap<Float,String> fs=new HashMap<Float,String>();
     private String yxqjx;
+
+    private RelativeLayout rl;
+    private TextView d1;
+    private TextView d2;
+    private TextView d3;
+    private TextView d4;
+    private TextView d5;
+
+    private TextView h1;
+    private TextView h2;
+    private TextView h3;
+    private TextView h4;
+    private TextView h5;
+
+    private TextView men;
+
+
 
 
     @Override
@@ -114,24 +144,27 @@ public class MainActivity extends Activity {
         initDataBase();
         initSpeechPlug();
         Cache.myContext = this;
-        new DeviceCom().start();
+        //new DeviceCom().start();
 
 
     }
 
 
     private void initView() {
+        rl=(RelativeLayout)findViewById(R.id.mylayout);
+        initG();
 //        btnPerson = (Button) findViewById(R.id.person);// 查询按钮
 //        btnPD = (Button) findViewById(R.id.pd);
 //        btnKM=(Button) findViewById(R.id.km);
 //        btnPerson.setOnClickListener(new onClickListener());
 //        btnPD.setOnClickListener(new onClickListener());
-//        btnKM.setOnClickListener(new onClickListener());
+        //btnKM.setOnClickListener(new onClickListener());
+        tvD=(Button)findViewById(R.id.dian);
+        tvD.setOnClickListener(new onClickListener());
         mChart = (PieChart) findViewById(R.id.chart);
-        bChart = (BarChart) findViewById(R.id.bar);
-        tvTS = (TextView) findViewById(R.id.ts);
 
-        //tvTS=(TextView)findViewById(R.id.ts);
+
+        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
 
         //initBarChart(Cache.getProduct().get("乐普"));
@@ -159,9 +192,33 @@ public class MainActivity extends Activity {
                     }
                     tvTS.setText(Html.fromHtml(ts));
                 }
+                if(bundle.getString("ui")!=null){
+                    if(bundle.getString("ui").toString().equals("ry")){
+                        Intent intent = new Intent(MainActivity.this, PersonActivity.class);
+                        startActivity(intent);
+                    }
+                    if(bundle.getString("ui").toString().equals("hc")){
+                        Intent intent = new Intent(MainActivity.this, HCActivity.class);
+                        startActivity(intent);
+                    }
+                    if(bundle.getString("ui").toString().equals("kz")){
+                        Intent intent = new Intent(MainActivity.this, KZActivity.class);
+                        startActivity(intent);
+                    }
+                    if(bundle.getString("ui").toString().equals("pz")){
+                        Intent intent = new Intent(MainActivity.this, PZActivity.class);
+                        startActivity(intent);
+                    }
+                    if(bundle.getString("ui").toString().equals("pd")){
+                        Intent intent = new Intent(MainActivity.this, PersonActivity.class);
+                        startActivity(intent);
+                    }
+                }
                 //Html.fromHtml("<font color='#ff4461' size='5'>"+"哈哈测试:"+"</font>"+"<br>"+"<font color='#ff8833' size='20'>"+"效果怎么样呢"+"</font>")
             }
         };
+
+
     }
 
     //显示Toast函数
@@ -181,15 +238,16 @@ public class MainActivity extends Activity {
             if (v.isEnabled() == false)
                 return;
             switch (v.getId()) {
-//                case R.id.person:
-//                    Intent intent = new Intent(MainActivity.this, PersonActivity.class);
-//                    startActivity(intent);
-//                    break;
-//                case R.id.pd:
-//                    sound("开始盘点");
-//                    break;
-//                case R.id.km:
-
+                case R.id.dian:
+                    SelectDialog selectDialog = new SelectDialog(MainActivity.this,R.style.dialog);//创建Dialog并设置样式主题
+                    Window win = selectDialog.getWindow();
+                    WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                    params.x = 240;//设置x坐标
+                    params.y = -360;//设置y坐标
+                    win.setAttributes(params);
+                    selectDialog.setCanceledOnTouchOutside(true);//设置点击Dialog外部任意区域关闭Dialog
+                    selectDialog.show();
+                    break;
                 default:
                     break;
             }
@@ -346,6 +404,142 @@ public class MainActivity extends Activity {
         mChart.invalidate();
     }
 
+    private void initG(){
+        RelativeLayout.LayoutParams params ;
+        //背景图片
+        params = new RelativeLayout.LayoutParams(390, 390);
+        params.setMargins(20, 20, 20, 20);
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundColor(Color.BLUE);
+        iv.setImageResource(R.drawable.wsbj1);
+        iv.setLayoutParams(params);
+        rl.addView(iv);
+
+
+        d1=new TextView(this);
+        d1.setText("第一层");
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 100, 0, 0);
+        d1.setLayoutParams(params);
+        rl.addView(d1);
+        d2=new TextView(this);
+        d2.setText("第二层");
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 150, 0, 0);
+        d2.setLayoutParams(params);
+        rl.addView(d2);
+        d3=new TextView(this);
+        d3.setText("第三层");
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 200, 0, 0);
+        d3.setLayoutParams(params);
+        rl.addView(d3);
+        d4=new TextView(this);
+        d4.setText("第四层");
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 250, 0, 0);
+        d4.setLayoutParams(params);
+        rl.addView(d4);
+        d5=new TextView(this);
+        d5.setText("第五层");
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 300, 0, 0);
+        d5.setLayoutParams(params);
+        rl.addView(d5);
+        //灯带1
+        params = new RelativeLayout.LayoutParams(20, 280);
+        params.setMargins(80, 80, 0, 0);
+        ImageView ivd1 = new ImageView(this);
+        ivd1.setBackgroundColor(Color.GREEN);
+        ivd1.setLayoutParams(params);
+        rl.addView(ivd1);
+
+        //门
+        params = new RelativeLayout.LayoutParams(250, 40);
+        params.setMargins(100, 40, 0, 0);
+        ImageView ivmen = new ImageView(this);
+        ivmen.setBackgroundColor(Color.YELLOW);
+        ivmen.setLayoutParams(params);
+        rl.addView(ivmen);
+
+
+        //灯带2
+        params = new RelativeLayout.LayoutParams(20, 280);
+        params.setMargins(350, 80, 0, 0);
+        ImageView ivd2 = new ImageView(this);
+        ivd2.setBackgroundColor(Color.GREEN);
+        ivd2.setLayoutParams(params);
+        rl.addView(ivd2);
+
+        //红外
+//        ImageView ivh1=new ImageView(this);
+//        ivh1.setBackgroundColor(Color.RED);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 100, 0, 0);
+//        ivh1.setLayoutParams(params);
+//        rl.addView(ivh1);
+//
+//        ImageView ivh2=new ImageView(this);
+//        ivh2.setBackgroundColor(Color.RED);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 150, 0, 0);
+//        ivh2.setLayoutParams(params);
+//        rl.addView(ivh2);
+//
+//        ImageView ivh3=new ImageView(this);
+//        ivh3.setBackgroundColor(Color.RED);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 200, 0, 0);
+//        ivh3.setLayoutParams(params);
+//        rl.addView(ivh3);
+//
+//        ImageView ivh4=new ImageView(this);
+//        ivh4.setBackgroundColor(Color.RED);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 250, 0, 0);
+//        ivh4.setLayoutParams(params);
+//        rl.addView(ivh4);
+//
+//        ImageView ivh5=new ImageView(this);
+//        ivh5.setBackgroundColor(Color.RED);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 300, 0, 0);
+//        ivh5.setLayoutParams(params);
+//        rl.addView(ivh5);
+
+
+        //gif
+//        ImageView ivh5=new ImageView(this);
+//        params = new RelativeLayout.LayoutParams(200, 200);
+//        params.setMargins(110, 100, 0, 0);
+//        ivh5.setLayoutParams(params);
+//        rl.addView(ivh5);
+//        RequestOptions options = new RequestOptions()
+//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+//        Glide.with(this).load(R.drawable.timg).apply(options).into(ivh5);
+
+        //测试旋转
+        ImageView ivh1=new ImageView(this);
+        ivh1.setBackgroundColor(Color.BLUE);
+        ivh1.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 100, 0, 0);
+        ivh1.setLayoutParams(params);
+        ivh1.setRotation(-15);
+        rl.addView(ivh1);
+
+        ImageView ivh2=new ImageView(this);
+        ivh2.setBackgroundColor(Color.BLUE);
+        ivh2.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 130, 0, 0);
+        ivh2.setLayoutParams(params);
+        ivh2.setRotation(-15);
+        rl.addView(ivh2);
+
+
+    }
+
     private SpannableString generateCenterSpannableText() {
 
         SpannableString s = new SpannableString("近效期图示");
@@ -382,125 +576,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void initBarChart(HashMap<String,List<ProductBar> > map,String yxqjx,String yxq) {
-        bChart.notifyDataSetChanged(); // let the chart know it's data changed
-        bChart.invalidate();
-
-        this.yxqjx=yxqjx;
-
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-
-        int count=1;
-        Set<String> keys = map.keySet();
-        for(String key : keys){
-            yVals1.add(new BarEntry(count,map.get(key).size()));
-            float f=count;
-            fs.put(f,key);
-            count++;
-        }
-
-        bChart.setDrawBarShadow(false);
-        bChart.setDrawValueAboveBar(true);
-
-        bChart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-        bChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
-        bChart.setPinchZoom(false);
-
-        bChart.setDrawGridBackground(false);
-
-        bChart.setDragEnabled(false);// 是否可以拖拽
-        bChart.setScaleEnabled(false);// 是否可以缩
-        // mChart.setDrawYLabels(false);
-        bChart.setOnChartValueSelectedListener(new BarCharLinster());
-        IAxisValueFormatter xAxisFormatter = new Day1AxisValueFormatter(fs);
-
-        XAxis xAxis = bChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        // xAxis.setTypeface(mTfLight);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-        xAxis.setTextSize(15f);
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        IAxisValueFormatter custom = new MyAxisValueFormatter();
-
-        YAxis leftAxis = bChart.getAxisLeft();
-        //leftAxis.setTypeface(mTfLight);
-        leftAxis.setLabelCount(8, false);
-        leftAxis.setValueFormatter(custom);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        leftAxis.setTextSize(10f);
-
-        YAxis rightAxis = bChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-        //rightAxis.setTypeface(mTfLight);
-        rightAxis.setLabelCount(8, false);
-        rightAxis.setValueFormatter(custom);
-        rightAxis.setSpaceTop(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        rightAxis.setTextSize(10f);
-
-        Legend l = bChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(20f);
-        l.setXEntrySpace(4f);
-
-        setbData(yVals1,yxq);
-    }
-
-    private void setbData(ArrayList<BarEntry> yVals1,String pp) {
-
-        BarDataSet set1;
-
-        set1 = new BarDataSet(yVals1," 近效期统计 --- "+pp);
-
-        set1.setDrawIcons(false);
-
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-
-        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.JOYFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.COLORFUL_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.LIBERTY_COLORS)
-            colors.add(c);
-
-        for (int c : ColorTemplate.PASTEL_COLORS)
-            colors.add(c);
-
-        colors.add(ColorTemplate.getHoloBlue());
-        set1.setColors(colors);
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(set1);
-
-        BarData data = new BarData(dataSets);
-        data.setValueTextSize(20f);
-        data.setBarWidth(0.9f);
-        data.setValueFormatter(new MyBValueFormatter());
-
-        bChart.setData(data);
-        bChart.notifyDataSetChanged(); // let the chart know it's data changed
-        bChart.invalidate();
-    }
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
@@ -551,7 +626,7 @@ public class MainActivity extends Activity {
             if(p.getLabel().contains("15天以上")){
                 lab="15天以上";
             }
-            initBarChart(Cache.getProduct().get(lab),lab,p.getLabel());
+
         }
 
         @Override

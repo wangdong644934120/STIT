@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.st.p2018.activity.HCActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="下载耗材库" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="将耗材下载到Excel中,存放地址STIT->down.xls" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button
+            android:id="@+id/up"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="上传耗材到库" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="把Excel文件命名为1.xls，复制到STIT->1.xls。上传前会先将耗材库清空" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+        <Button
+            android:id="@+id/cs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="初始柜内耗材" />
+
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>

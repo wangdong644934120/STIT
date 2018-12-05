@@ -3,9 +3,19 @@
     <update_1>
         <update>
 	        CREATE TABLE 'stit_t_person' ('id' varchar(36) NOT NULL DEFAULT '','code' varchar(36) DEFAULT NULL,
-			'name' varchar(36) DEFAULT NULL,'tzz' varchar(500) DEFAULT NULL,
+			'name' varchar(36) DEFAULT NULL,'tzz' varchar(500) DEFAULT NULL,card varchar(36) DEFAULT NULL,
 			PRIMARY KEY ('id')
 			) 	
+        </update>
+        <update>
+            CREATE TABLE 'stit_t_product' ('id' varchar(36) NOT NULL DEFAULT '','pp' varchar(36) DEFAULT NULL,
+            'zl' varchar(36) DEFAULT NULL,'gg' varchar(36) DEFAULT NULL,'yxq' bigint(8) DEFAULT NULL,
+            card varchar(36) DEFAULT NULL,PRIMARY KEY ('id'))
+        </update>
+        <update>
+            CREATE TABLE 'stit_t_allproduct' ('id' varchar(36) NOT NULL DEFAULT '','pp' varchar(36) DEFAULT NULL,
+            'zl' varchar(36) DEFAULT NULL,'gg' varchar(36) DEFAULT NULL,'yxq' bigint(8) DEFAULT NULL,
+            card varchar(36) DEFAULT NULL,PRIMARY KEY ('id'))
         </update>
     </update_1>
 </updateAll>

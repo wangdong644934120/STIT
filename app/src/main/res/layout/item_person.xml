@@ -33,6 +33,15 @@
         android:singleLine="true"
         android:background="@drawable/border"/>
     <TextView
+        android:id="@+id/item_card"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#033364"
+        android:textSize="20sp"
+        android:singleLine="true"
+        android:background="@drawable/border"/>
+    <TextView
         android:id="@+id/item_tzz"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

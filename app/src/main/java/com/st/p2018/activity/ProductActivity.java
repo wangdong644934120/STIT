@@ -95,16 +95,16 @@ public class ProductActivity extends Activity {
      * @return
      */
     private void getdata() {
-        List<ProductBar> list=Cache.getProduct().get(time).get(type);
-        for(ProductBar pb : list){
-            HashMap<String ,String> map = new HashMap<>();
-            map.put("pp",pb.getPp());
-            map.put("gg",pb.getGg());
-            map.put("yxq",pb.getYxq());
-            map.put("yxts",pb.getYxts());
-            map.put("cfwz","第1层");
-            mQueryData.add(map);
-        }
+//        List<ProductBar> list=Cache.getProduct().get(time).get(type);
+//        for(ProductBar pb : list){
+//            HashMap<String ,String> map = new HashMap<>();
+//            map.put("pp",pb.getPp());
+//            map.put("gg",pb.getGg());
+//            map.put("yxq",pb.getYxq());
+//            map.put("yxts",pb.getYxts());
+//            map.put("cfwz","第1层");
+//            mQueryData.add(map);
+//        }
 
     }
 

@@ -43,7 +43,9 @@ public class PersonActivity extends Activity {
     private EditText code;
     private EditText name;
     private Button btntzz;
+    private Button btnkh;
     private EditText tzz;
+    private EditText kh;
     private Button add;
     private Button modify;
     private Button delete;
@@ -67,8 +69,10 @@ public class PersonActivity extends Activity {
         name=(EditText)findViewById(R.id.name);
         btntzz=(Button)findViewById(R.id.btntzz);
         btntzz.setOnClickListener(new onClickListener());
+        btnkh=(Button)findViewById(R.id.btnkh);
+        btnkh.setOnClickListener(new onClickListener());
         tzz=(EditText)findViewById(R.id.tzz);
-
+        kh=(EditText)findViewById(R.id.kh);
         listHeaders = (ListView) findViewById(R.id.listHeaders);
         listResults = (ListView) findViewById(R.id.listResults);
         listResults.setOnItemClickListener(new OnLvItemClickListener());
@@ -91,6 +95,7 @@ public class PersonActivity extends Activity {
         map.put("id", "id");
         map.put("name", "姓名");
         map.put("code", "工号");
+        map.put("card","卡号");
         map.put("tzz", "指纹特征值");
 
         data.add(map);
@@ -130,7 +135,8 @@ public class PersonActivity extends Activity {
             map.put("id",map.get("id").toString());
             map.put("code",map.get("code").toString());
             map.put("name",map.get("name").toString());
-            map.put("tzz",map.get("tzz").toString());
+            map.put("card",map.get("card")==null?"":map.get("card").toString());
+            map.put("tzz",map.get("tzz")==null?"":map.get("tzz").toString());
             mQueryData.add(map);
         }
 
@@ -174,6 +180,9 @@ public class PersonActivity extends Activity {
                 case R.id.btntzz:
                     getZW();
                     break;
+                case R.id.btnkh:
+                    getKH();
+                    break;
                 case R.id.add:
                    add();
                     break;
@@ -194,21 +203,23 @@ public class PersonActivity extends Activity {
         String codep = code.getText().toString();
         String namep=name.getText().toString();
         String tzzp=tzz.getText().toString();
+        String cardp=kh.getText().toString();
         if(check(codep,namep)){
-            Toast.makeText(this, "请注意：工号或姓名不能为空", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：工号或姓名不能为空");
+            Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
             return;
         }
         List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(codep);
         if(!listCF.isEmpty()){
-            Toast.makeText(this, "请注意：工号重复", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：工号重复");
+            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("工号重复");
             return;
         }
         PersonInfo pi = new PersonInfo();
         pi.setId(UUID.randomUUID().toString());
         pi.setCode(codep);
         pi.setName(namep);
+        pi.setCard(cardp);
         pi.setTzz(tzzp);
         if(pd.addPerson(pi)){
             initQueryGrid();
@@ -219,33 +230,35 @@ public class PersonActivity extends Activity {
     }
     private void modify(){
         if(selecItem<0){
-            Toast.makeText(this, "请注意：请选择一条记录", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：请选择一条记录");
+            Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("请选择一条记录");
             return;
         }
         String id=mQueryData.get(selecItem).get("id").toString();
         String codep = code.getText().toString();
         String namep=name.getText().toString();
+        String cardp=kh.getText().toString();
         String tzzp=tzz.getText().toString();
-        String iszwp="否";
-        if(!tzz.equals("")){
-            iszwp="是";
-        }
+//        String iszwp="否";
+//        if(!tzz.equals("")){
+//            iszwp="是";
+//        }
         if(check(codep,namep)){
-            Toast.makeText(this, "请注意：工号或姓名不能为空", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：工号或姓名不能为空");
+            Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
             return;
         }
         List<HashMap<String,String>> listCF = pd.getSameCodeForModify(id,codep);
         if(!listCF.isEmpty()){
-            Toast.makeText(this, "请注意：工号重复", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：工号重复");
+            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("工号重复");
             return;
         }
         PersonInfo pi = new PersonInfo();
         pi.setId(id);
         pi.setCode(codep);
         pi.setName(namep);
+        pi.setCard(cardp);
         pi.setTzz(tzzp);
         if(pd.modifyPerson(pi)){
             initQueryGrid();
@@ -256,8 +269,8 @@ public class PersonActivity extends Activity {
     }
     private void delete(){
         if(selecItem<0){
-            Toast.makeText(this, "请注意：请选择一条记录", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请注意：请选择一条记录");
+            Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("请选择一条记录");
             return;
         }
         String id=mQueryData.get(selecItem).get("id").toString();
@@ -272,11 +285,15 @@ public class PersonActivity extends Activity {
         HashMap<String,String> map = mQueryData.get(selecItem);
         code.setText(map.get("code").toString());
         name.setText(map.get("name").toString());
-        tzz.setText(map.get("tzz").toString());
+        tzz.setText(map.get("tzz")==null?"":map.get("tzz").toString());
+        kh.setText(map.get("card")==null?"":map.get("card").toString());
     }
 
     private void getZW(){
         tzz.setText("zw11111111111111111111111111111111111111111111111111111111111");
+    }
+    private void getKH(){
+        kh.setText("A1234321");
     }
     private boolean check(String code,String name){
         if(code.trim().equals("") || name.trim().equals("")){

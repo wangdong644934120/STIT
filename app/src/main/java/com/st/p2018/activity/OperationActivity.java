@@ -82,16 +82,16 @@ public class OperationActivity extends Activity {
      * @return
      */
     private void getdata() {
-        List<ProductBar> list= Cache.getProduct().get("1天-7天").get("导管");
-        for(ProductBar pb : list){
-            HashMap<String ,String> map = new HashMap<>();
-            map.put("pp",pb.getPp());
-            map.put("type",pb.getType());
-            map.put("gg",pb.getGg());
-            map.put("operation","存放");
-            map.put("cfwz","第1层");
-            mQueryData.add(map);
-        }
+//        List<ProductBar> list= Cache.getProduct().get("1天-7天").get("导管");
+//        for(ProductBar pb : list){
+//            HashMap<String ,String> map = new HashMap<>();
+//            map.put("pp",pb.getPp());
+//            map.put("type",pb.getType());
+//            map.put("gg",pb.getGg());
+//            map.put("operation","存放");
+//            map.put("cfwz","第1层");
+//            mQueryData.add(map);
+//        }
 
     }
 

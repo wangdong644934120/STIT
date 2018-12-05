@@ -19,6 +19,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <!-- android:theme="@android:style/Theme.Dialog" -->
     <application
@@ -68,8 +69,32 @@
             android:configChanges="keyboardHidden|orientation"
             android:label="盘点结果确认"
             android:theme="@android:style/Theme.Dialog"
-            android:windowSoftInputMode="stateHidden|adjustUnspecified"></activity>
-        <activity android:name="com.st.p2018.activity.TestActivity"></activity>
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+        <!-- 菜单 -->
+        <activity android:name="com.st.p2018.activity.SelectDialog" />
+        <!-- 耗材管理 -->
+        <activity
+            android:name="com.st.p2018.activity.HCActivity"
+            android:colorMode="default"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="耗材管理"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+        <!-- 控制管理 -->
+        <activity
+            android:name="com.st.p2018.activity.KZActivity"
+            android:colorMode="default"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="控制管理"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+
+        <activity android:name="com.st.p2018.activity.PZActivity"
+            android:colorMode="default"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="配置管理"
+            android:theme="@android:style/Theme.Dialog"
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
     </application>
 
 </manifest>

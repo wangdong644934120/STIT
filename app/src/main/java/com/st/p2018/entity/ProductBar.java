@@ -5,20 +5,13 @@ package com.st.p2018.entity;
  */
 
 public class ProductBar {
+    private String id;
     private String pp;  //品牌
     private String type;//种类
     private String gg;  //规格
-    private String yxq;   //近效期
-    private String yxts;    //有效天数
+    private long yxq;   //近效期
+    private String card;
 
-
-    public ProductBar(String pp,String type,String gg,String yxq,String yxts){
-        this.pp=pp;
-        this.gg=gg;
-        this.type=type;
-        this.yxq=yxq;
-        this.yxts=yxts;
-    }
 
     public String getPp() {
         return pp;
@@ -44,19 +37,27 @@ public class ProductBar {
         this.gg = gg;
     }
 
-    public String getYxq() {
+    public long getYxq() {
         return yxq;
     }
 
-    public void setYxq(String yxq) {
+    public void setYxq(long yxq) {
         this.yxq = yxq;
     }
 
-    public String getYxts() {
-        return yxts;
+    public String getId() {
+        return id;
     }
 
-    public void setYxts(String yxts) {
-        this.yxts = yxts;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCard() {
+        return card;
+    }
+
+    public void setCard(String card) {
+        this.card = card;
     }
 }

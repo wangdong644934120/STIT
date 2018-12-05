@@ -19,34 +19,34 @@ public class PersonDao {
      * @param pi
      */
     public boolean addPerson(PersonInfo pi) {
-        String sql = " insert into stit_t_person (id ,code,name,tzz) "
-                + "values (? ,? , ? , ?  ) ";
-        String[] args = new String[] { pi.getId(),pi.getCode(),pi.getName(),pi.getTzz()};
+        String sql = " insert into stit_t_person (id ,code,name,card,tzz) "
+                + "values (? ,? , ? , ? ,? ) ";
+        String[] args = new String[] { pi.getId(),pi.getCode(),pi.getName(),pi.getCard(),pi.getTzz()};
         return DataBaseExec.execOther(sql, args);
     }
 
     public List<HashMap<String,String>> getPerson(){
-        String sql = "select id,code,name,tzz from stit_t_person";
+        String sql = "select id,code,name,card,tzz from stit_t_person";
         List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,null);
         return list;
     }
 
     public List<HashMap<String,String>>  getSameCodeForAdd(String code){
-        String sql = "select id,code,name,tzz from stit_t_person where code=?";
+        String sql = "select id,code,name,card,tzz from stit_t_person where code=?";
         String[] args = new String[]{code};
         List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,args);
         return list;
     }
 
     public List<HashMap<String,String>>  getSameCodeForModify(String id,String code){
-        String sql = "select id,code,name,tzz from stit_t_person where id!=? and code=?";
+        String sql = "select id,code,name,card,tzz from stit_t_person where id!=? and code=?";
         String[] args = new String[]{id,code};
         List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,args);
         return list;
     }
     public boolean modifyPerson(PersonInfo pi){
-        String sql="update stit_t_person set code=?,name=?,tzz=? where id=?";
-        String[] args = new String[]{pi.getCode(),pi.getName(),pi.getTzz(),pi.getId()};
+        String sql="update stit_t_person set code=?,name=?,card=?,tzz=? where id=?";
+        String[] args = new String[]{pi.getCode(),pi.getName(),pi.getCard(),pi.getTzz(),pi.getId()};
         return DataBaseExec.execOther(sql,args);
     }
     public boolean deletePerson(String id){
