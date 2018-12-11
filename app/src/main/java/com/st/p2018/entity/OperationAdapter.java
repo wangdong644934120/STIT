@@ -27,9 +27,9 @@ public class OperationAdapter extends BaseAdapter{
         TextView pp;
         TextView type;
         TextView gg;
-        TextView operation;
-        TextView cfwz;
-
+        TextView yxq;
+        TextView syts;
+        TextView wz;
         HashMap<String, TextView> parView = new HashMap<String, TextView>();
     }
 
@@ -76,8 +76,9 @@ public class OperationAdapter extends BaseAdapter{
             holder.pp = (TextView) paramView.findViewById(R.id.item_pp);
             holder.gg = (TextView) paramView.findViewById(R.id.item_gg);
             holder.type = (TextView) paramView.findViewById(R.id.item_type);
-            holder.operation = (TextView) paramView.findViewById(R.id.item_operation);
-            holder.cfwz = (TextView) paramView.findViewById(R.id.item_cfwz);
+            holder.yxq = (TextView) paramView.findViewById(R.id.item_yxq);
+            holder.syts = (TextView) paramView.findViewById(R.id.item_syts);
+            holder.wz = (TextView) paramView.findViewById(R.id.item_wz);
             holder.layout = layout;
             paramView.setTag(holder);
         }
@@ -87,8 +88,9 @@ public class OperationAdapter extends BaseAdapter{
         holder.pp.setText(data.get("pp") == null ?"": data.get("pp"));
         holder.gg.setText(data.get("gg") == null ? "" : data.get("gg"));
         holder.type.setText(data.get("type") == null ? "" : data.get("type"));
-        holder.operation.setText(data.get("operation") == null ? "" : data.get("operation"));
-        holder.cfwz.setText(data.get("cfwz") == null ? "" : data.get("cfwz"));
+        holder.yxq.setText(data.get("yxq") == null ? "" : data.get("yxq"));
+        holder.syts.setText(data.get("syts") == null ? "" : data.get("syts"));
+        holder.wz.setText(data.get("wz") == null ? "" : data.get("wz"));
         return paramView;
     }
 
@@ -105,3 +107,4 @@ public class OperationAdapter extends BaseAdapter{
         return text;
     }
 }
+

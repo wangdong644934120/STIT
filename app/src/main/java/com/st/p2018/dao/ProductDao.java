@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 public class ProductDao {
-    public void addMutilProduct(List<ProductBar> list){
+    public void addMutil_AllProduct(List<ProductBar> list){
         if (!list.isEmpty()) {
             String sql = "insert into stit_t_allproduct (id , pp , zl , gg , yxq,card ) values (?,?,?,?,?,?) ";
             List<String[]> listHM = new ArrayList<String[]>();
@@ -30,13 +30,43 @@ public class ProductDao {
         }
     }
 
-    public List<HashMap<String, String>> getProduct() {
+    public List<HashMap<String, String>> getAll_AllProduct() {
         String sql="select * from stit_t_allproduct";
         return DataBaseExec.execQueryForMap(sql, null);
     }
 
-    public void clearAllProduct(){
+    public void clearAll_AllProduct(){
         String sql="delete from stit_t_allproduct";
         DataBaseExec.execOther(sql,null);
     }
+
+    public void addMutilAllProduct(){
+        String sql="insert into stit_t_product (id,pp,zl,gg,yxq,card) select id,pp,zl,gg,yxq,card from stit_t_allproduct";
+        DataBaseExec.execOther(sql,null);
+    }
+
+    public void clearAllProduct(){
+        String sql="delete from stit_t_product";
+        DataBaseExec.execOther(sql,null);
+    }
+    //已过期
+    public List<HashMap<String, String>> getYGQProduct(HashMap map) {
+        String sql="select * from stit_t_product where yxq<?";
+        String[] args = new String[]{map.get("yxq").toString()};
+        return DataBaseExec.execQueryForMap(sql, args);
+    }
+    //近效期
+    public List<HashMap<String, String>> getJXQProduct(HashMap map) {
+        String sql="select * from stit_t_product where yxq>=? and yxq<?";
+        String[] args = new String[]{map.get("yxq1").toString(),map.get("yxq2").toString()};
+        return DataBaseExec.execQueryForMap(sql, args);
+    }
+
+    //远效期
+    public List<HashMap<String, String>> getYXQProduct(HashMap map) {
+        String sql="select * from stit_t_product where yxq>=?";
+        String[] args = new String[]{map.get("yxq").toString()};
+        return DataBaseExec.execQueryForMap(sql, args);
+    }
+
 }

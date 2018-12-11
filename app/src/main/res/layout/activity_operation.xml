@@ -6,156 +6,101 @@
     android:layout_height="match_parent"
     tools:context="com.st.p2018.activity.OperationActivity">
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@color/colorWhite"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        android:layout_height="800dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:orientation="horizontal">
+            android:layout_width="wrap_content"
+            android:layout_height="800dp"
+            android:background="@color/colorWhite"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="457dp"
+            tools:layout_editor_absoluteY="16dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <ListView
-                    android:id="@+id/listHeaders"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="20dp"/>
-
-                <ListView
-                    android:id="@+id/listResults"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"/>
+                    android:orientation="vertical">
 
+                    <ListView
+                        android:id="@+id/listHeaders"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="20dp" />
+
+                    <ListView
+                        android:id="@+id/listResults"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="#a7aba9" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="#a7aba9" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/add"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="盘点正确" />
-
-            <Button
-                android:id="@+id/modify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="盘点错误" />
-
 
         </LinearLayout>
-    </LinearLayout>
+    </HorizontalScrollView>
+
+
+</android.support.constraint.ConstraintLayout>
+
+<!--<LinearLayout-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="800dp"-->
+<!--android:orientation="vertical"-->
+<!--android:background="@color/colorWhite"-->
+<!--tools:layout_editor_absoluteX="8dp"-->
+<!--tools:layout_editor_absoluteY="8dp">-->
+
+<!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="horizontal">-->
+
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent"-->
         <!--android:orientation="vertical">-->
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="2"-->
-            <!--android:orientation="vertical">-->
-            <!--<ListView-->
+        <!--<ListView-->
             <!--android:id="@+id/listHeaders"-->
             <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_height="30dp"-->
             <!--android:layout_marginLeft="10dp"-->
             <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginTop="20dp"-->
-            <!--android:layout_weight="10" />-->
+            <!--android:layout_marginTop="20dp"/>-->
 
-            <!--<ListView-->
+        <!--<ListView-->
             <!--android:id="@+id/listResults"-->
             <!--android:layout_width="match_parent"-->
             <!--android:layout_height="match_parent"-->
             <!--android:layout_marginLeft="10dp"-->
             <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_weight="1" />-->
+            <!--android:layout_marginBottom="10dp"/>-->
 
-        <!--</LinearLayout>-->
-
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="10"-->
-            <!--android:orientation="vertical">-->
-            <!--<Button-->
-            <!--android:id="@+id/button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="正确" />-->
-
-            <!--<Button-->
-            <!--android:id="@+id/button2"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="错误" />-->
-        <!--</LinearLayout>-->
 
     <!--</LinearLayout>-->
-</android.support.constraint.ConstraintLayout>
 
-    <!--<ListView-->
-    <!--android:id="@+id/listHeaders"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_marginRight="10dp"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:layout_weight="10" />-->
-
-    <!--<ListView-->
-    <!--android:id="@+id/listResults"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_marginLeft="10dp"-->
-    <!--android:layout_marginRight="10dp"-->
-    <!--android:layout_weight="1" />-->
+<!--</LinearLayout>-->
 
 
 
-    <!--<Button-->
-    <!--android:id="@+id/button"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="正确" />-->
 
-    <!--<Button-->
-    <!--android:id="@+id/button2"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_weight="1"-->
-    <!--android:text="错误" />-->
+<!--</LinearLayout>-->
+
+
+
+
+<!--</LinearLayout>-->

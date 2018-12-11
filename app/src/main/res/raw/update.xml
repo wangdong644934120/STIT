@@ -10,12 +10,22 @@
         <update>
             CREATE TABLE 'stit_t_product' ('id' varchar(36) NOT NULL DEFAULT '','pp' varchar(36) DEFAULT NULL,
             'zl' varchar(36) DEFAULT NULL,'gg' varchar(36) DEFAULT NULL,'yxq' bigint(8) DEFAULT NULL,
-            card varchar(36) DEFAULT NULL,PRIMARY KEY ('id'))
+            'card' varchar(36) DEFAULT NULL,'wz' varchar(36) DEFAULT NULL,  PRIMARY KEY ('id'))
         </update>
         <update>
             CREATE TABLE 'stit_t_allproduct' ('id' varchar(36) NOT NULL DEFAULT '','pp' varchar(36) DEFAULT NULL,
             'zl' varchar(36) DEFAULT NULL,'gg' varchar(36) DEFAULT NULL,'yxq' bigint(8) DEFAULT NULL,
             card varchar(36) DEFAULT NULL,PRIMARY KEY ('id'))
+        </update>
+        <update>
+            CREATE TABLE 'stit_t_pz' ('id' varchar(36) NOT NULL DEFAULT '','gx' varchar(36) DEFAULT '横型',
+            'dk' varchar(36) DEFAULT '灯自动','pl' varchar(36) DEFAULT '0','gc1' varchar(1) DEFAULT '1',
+            'gc2' varchar(1) DEFAULT '1','gc3' varchar(1) DEFAULT '1','gc4' varchar(1) DEFAULT '1',
+            'gc5' varchar(1) DEFAULT '1','gc6' varchar(1) DEFAULT '1',PRIMARY KEY ('id'))
+        </update>
+        <update>
+            insert into 'stit_t_pz' ('id','gx','dk','pl','gc1','gc2','gc3','gc4','gc5','gc6')
+            values('1','横型','灯自动','0','1','1','1','1','1','1');
         </update>
     </update_1>
 </updateAll>

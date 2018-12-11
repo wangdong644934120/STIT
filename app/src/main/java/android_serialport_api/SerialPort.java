@@ -1,5 +1,7 @@
 package android_serialport_api;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
@@ -11,13 +13,11 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.locks.ReentrantLock;
 
 
+
 public class SerialPort {
 
+	private Logger logger = Logger.getLogger(SerialPort.class);
 	private static final String TAG = "SerialPort";
-
-	/*
-	 * Do not remove or rename the field mFd: it is used by native method close();
-	 */
 	private FileDescriptor mFd;
 	private FileInputStream mFileInputStream;
 	private FileOutputStream mFileOutputStream;
@@ -86,6 +86,39 @@ public class SerialPort {
 		}
 		return chk;
 	}
+
+	public byte[] sendAndGet(byte[] cmd){
+		byte[] data;
+		try {
+			mylock.lock();
+			mFileOutputStream.write(cmd);
+			Thread.sleep(50);
+			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
+			long TickCount = System.currentTimeMillis();
+			int recvlen = 0;
+
+			while (mFileInputStream.available()>0){
+				byte[] buf=new byte[1024];
+				int size = mFileInputStream.read(buf);
+				if (size > 0) {
+					mRecvData.put(buf, recvlen, size);
+					recvlen+=size;
+				}
+				Thread.sleep(10);//必须要休眠一下，，，，，，，确保数据都返回了！！！！！！
+			}
+			data=new byte[recvlen];
+			if(recvlen>0){
+				System.arraycopy(mRecvData.array(), 0, data, 0, recvlen);
+			}
+			return data;
+		} catch (Exception ex) {
+			logger.error("串口读写出错",ex);
+			return null;
+		}finally{
+			mylock.unlock();
+		}
+	}
+
 	/**
 	 * 进行串口通信
 	 * @param cmd
@@ -114,7 +147,6 @@ public class SerialPort {
 			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
 			long TickCount = System.currentTimeMillis();
 			int recvlen = 0;
-
 			while (mFileInputStream.available()>0){
 				byte[] buf=new byte[1024];
 				int size = mFileInputStream.read(buf);
@@ -137,99 +169,7 @@ public class SerialPort {
 			mylock.unlock();
 		}
 	}
-//	public byte[] doBulkTransfer(byte[] cmd, long timeout) throws IOException {
-//		try {
-//			mylock.lock();
-//			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
-//			long TickCount = System.currentTimeMillis();
-//			int recvlen = 0;
-//			mFileOutputStream.write(cmd);
-//			while (mFileInputStream.available()<7 && (System.currentTimeMillis()-TickCount)<timeout){
-//				Thread.sleep(10);
-//			}
-//			while (mFileInputStream.available()>0){
-//				byte[] buf=new byte[1024];
-//				int size = mFileInputStream.read(buf);
-//				if (size > 0) {
-//					mRecvData.put(buf, recvlen, size);
-//					recvlen+=size;
-//				}
-//				Thread.sleep(10);//必须要休眠一下，，，，，，，确保数据都返回了！！！！！！
-//			}
-//			byte[] data=new byte[recvlen];
-//			if(recvlen>0){
-//				System.arraycopy(mRecvData.array(), 0, data, 0, recvlen);
-//			}
-//			return data;
-//		} catch (IOException ex) {
-//			throw ex;//抛出IO读取异常
-//		} catch (InterruptedException ex) {
-//			return null;
-//		}finally{
-//			mylock.unlock();
-//		}
-//	}
-		
-	/**
-	 * 读取二代证的通信方法
-	 * @param cmd
-	 * @param timeout
-	 * @return
-	 */
-	public byte[] readBaseMsg(byte[] cmd, long timeout) {
-		byte[] recv = new byte[7], recvl = null;
-		long TickCount;
-		int recvlen = 0;
-		try {
-			mylock.lock();
-			mFileOutputStream.write(cmd);
-			TickCount = System.currentTimeMillis();
-			while (mFileInputStream.available()<7){
-				if((System.currentTimeMillis()-TickCount)>timeout){
-					return null;
-				}
-				Thread.sleep(10);
-			}
-			if (mFileInputStream.read(recv) != recv.length 
-					|| recv[0] != (byte)0xAA 
-					|| recv[1] != (byte)0xAA
-					|| recv[2] != (byte)0xAA
-					|| recv[3] != (byte)0x96
-					|| recv[4] != (byte)0x69) {
-				while (mFileInputStream.available()>0){
-					mFileInputStream.read();
-				}
-				return null;
-			}
-			recvlen = recv[5] * 256 + recv[6];
-			//Log.d("串口调试", "接收长度:"+recvlen);
-			while (mFileInputStream.available()<recvlen && (System.currentTimeMillis()-TickCount)<timeout){
-				Thread.sleep(10);
-			}
-			if (mFileInputStream.available()<recvlen || recvlen < 4) {//超时
-				while (mFileInputStream.available()>0)
-					mFileInputStream.read();
-				return null;
-			}
-			recvl = new byte[recv.length+recvlen];
-			System.arraycopy(recv, 0, recvl, 0, recv.length);
-			if (mFileInputStream.read(recvl, recv.length, recvlen) != recvlen) {
-				while (mFileInputStream.available()>0)
-					mFileInputStream.read();
-				return null;
-			}
-			while (mFileInputStream.available()>0)
-				mFileInputStream.read();
-			if (xorchk(recvl, 5, recvl.length-5)!=0)
-				return null;			
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			recvl = null;
-		}finally{
-			mylock.unlock();
-		}
-		return recvl;
-	}
+
 	 
 	// JNI
 	private native static FileDescriptor open(String path, int baudrate, int flags);

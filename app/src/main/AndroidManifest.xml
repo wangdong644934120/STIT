@@ -67,8 +67,8 @@
             android:name="com.st.p2018.activity.OperationActivity"
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
-            android:label="盘点结果确认"
-            android:theme="@android:style/Theme.Dialog"
+            android:label="详情"
+            android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <!-- 菜单 -->
         <activity android:name="com.st.p2018.activity.SelectDialog" />

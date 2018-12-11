@@ -29,7 +29,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:text="下载耗材库"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:textColor="@color/colorWhite"/>
 
         <View
@@ -52,8 +52,8 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:text="上传耗材到库"
-            android:background="@color/blue"
+            android:text="上传耗材库"
+            android:background="@drawable/button_selector"
             android:textColor="@color/colorWhite"/>
 
         <View
@@ -70,7 +70,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:text="初始柜内耗材"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:textColor="@color/colorWhite"/>
 
     </LinearLayout>

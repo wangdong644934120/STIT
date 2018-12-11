@@ -36,7 +36,7 @@ public  class ExpportDataBeExcel {
     public static  boolean ImportExcelData(File file) {
         ProductDao pd = new ProductDao();
         //先将库中信息全部清空
-        pd.clearAllProduct();
+        pd.clearAll_AllProduct();;
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         FileInputStream inFile = null;
@@ -68,13 +68,13 @@ public  class ExpportDataBeExcel {
                 if(yxq.equals("")){
                     pb.setYxq(System.currentTimeMillis());
                 }else{
-                    pb.setYxq(sdf.parse(yxq).getTime());
+                    pb.setYxq(sdf.parse(yxq).getTime()+1000*60*60*24-1);
                 }
                 pb.setCard(oneRow.getCell((short)4)==null?"":oneRow.getCell((short)4).toString().trim());
                 list.add(pb);
             }
 
-            pd.addMutilProduct(list);
+            pd.addMutil_AllProduct(list);
             return true;
 
         } catch (Exception ex) {
@@ -100,7 +100,7 @@ public  class ExpportDataBeExcel {
                 file.createNewFile();
             }
             ProductDao pd = new ProductDao();
-            List<HashMap<String,String>> list=pd.getProduct();
+            List<HashMap<String,String>> list=pd.getAll_AllProduct();
 
 
             //-------------------

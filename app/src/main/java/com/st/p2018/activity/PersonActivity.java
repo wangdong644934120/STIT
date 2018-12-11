@@ -178,19 +178,29 @@ public class PersonActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.btntzz:
+                    btntzz.setPressed(true);
                     getZW();
+                    btntzz.setPressed(false);
                     break;
                 case R.id.btnkh:
+                    btnkh.setPressed(true);
                     getKH();
+                    btnkh.setPressed(false);
                     break;
                 case R.id.add:
+                    add.setPressed(true);
                    add();
+                   add.setPressed(false);
                     break;
                 case R.id.modify:
+                    modify.setPressed(true);
                     modify();
+                    modify.setPressed(false);
                     break;
                 case R.id.delete:
+                    delete.setPressed(true);
                     delete();
+                    delete.setPressed(false);
                     break;
                 default:
                     break;
@@ -200,6 +210,7 @@ public class PersonActivity extends Activity {
     }
 
     private void add(){
+
         String codep = code.getText().toString();
         String namep=name.getText().toString();
         String tzzp=tzz.getText().toString();

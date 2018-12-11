@@ -26,7 +26,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:text="开灯"
             android:textColor="@color/colorWhite" />
 
@@ -37,7 +37,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:text="关灯"
             android:textColor="@color/colorWhite" />
 
@@ -61,7 +61,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:text="开门"
             android:textColor="@color/colorWhite" />
 
@@ -72,7 +72,7 @@
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
-            android:background="@color/blue"
+            android:background="@drawable/button_selector"
             android:text="关门"
             android:textColor="@color/colorWhite" />
 

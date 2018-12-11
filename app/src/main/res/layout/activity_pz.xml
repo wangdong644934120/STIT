@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
         android:orientation="vertical">
 
         <LinearLayout
@@ -20,6 +21,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
                 android:text="柜型配置：" />
 
             <Spinner
@@ -27,7 +31,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/gx"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="150dp"
+                android:textColor="@color/black"
                 android:spinnerMode="dropdown"
+                android:popupBackground="@color/gray"
                 android:layout_weight="1" />
 
         </LinearLayout>
@@ -35,6 +43,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
+            android:layout_marginTop="20dp"
             android:background="#a7aba9" />
 
         <LinearLayout
@@ -46,14 +55,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
                 android:text="灯开控制：" />
 
             <Spinner
-                android:id="@+id/spd"
+                android:id="@+id/spdk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/dk"
                 android:spinnerMode="dropdown"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="150dp"
+                android:popupBackground="@color/gray"
                 android:layout_weight="1" />
 
         </LinearLayout>
@@ -61,6 +76,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
+            android:layout_marginTop="20dp"
             android:background="#a7aba9" />
 
         <LinearLayout
@@ -71,11 +87,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
                 android:text="屏幕亮度：" />
             <SeekBar
                 android:id="@+id/sb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="70dp"
                 android:max="255"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -83,6 +104,7 @@
         <View
                 android:layout_width="match_parent"
                 android:layout_height="2px"
+                android:layout_marginTop="20dp"
                 android:background="#a7aba9" />
 
         <LinearLayout
@@ -93,41 +115,73 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
                 android:text="柜层启用：" />
 
             <CheckBox
                 android:id="@+id/cb1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/black"
                 android:text="1" />
                 <CheckBox
                     android:id="@+id/cb2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/black"
                     android:text="2" />
                 <CheckBox
                     android:id="@+id/cb3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/black"
                     android:text="3" />
                 <CheckBox
                     android:id="@+id/cb4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/black"
                     android:text="4" />
                 <CheckBox
                     android:id="@+id/cb5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/black"
                     android:text="5" />
                 <CheckBox
                     android:id="@+id/cb6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textColor="@color/black"
                     android:text="6" />
 
             </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginTop="20dp"
+            android:background="#a7aba9" />
+
+        <Button
+            android:id="@+id/btnok"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/button_selector"
+            android:text="保存并下传配置"
+            android:textColor="@color/colorWhite" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -118,8 +118,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="录入指纹"
-                    android:background="@color/blue"
+                    android:text="点此录入指纹"
+                    android:background="@drawable/button_selector"
                     android:textColor="@color/colorWhite"
                     android:textSize="15dp" />
 
@@ -146,8 +146,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="读取卡号"
-                    android:background="@color/blue"
+                    android:text="点此读取卡号"
+                    android:background="@drawable/button_selector"
                     android:textColor="@color/colorWhite"
                     android:textSize="15dp" />
 
@@ -178,7 +178,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@color/blue"
+                android:background="@drawable/button_selector"
                 android:text="添加"
                 android:layout_weight="1"
                 android:textColor="@color/colorWhite" />
@@ -188,7 +188,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@color/blue"
+                android:background="@drawable/button_selector"
                 android:text="修改"
                 android:layout_weight="1"
                 android:textColor="@color/colorWhite" />
@@ -198,7 +198,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@color/blue"
+                android:background="@drawable/button_selector"
                 android:text="删除"
                 android:layout_weight="1"
                 android:textColor="@color/colorWhite" />

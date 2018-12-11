@@ -21,24 +21,28 @@ import android_serialport_api.SerialPort;
 public class DeviceCom extends Thread{
 
     private Logger logger = Logger.getLogger(this.getClass());
-    SerialPort sp;
+//    SerialPort sp;
+    private String value="1";
     public void run(){
         openCom();
         while(true){
             try{
-                byte[] bb= new byte[2];
-                bb[0]=0x00;
-                bb[1]=0x01;
+//                byte[] bb= new byte[2];
+//                bb[0]=0x00;
+//                bb[1]=0x01;
                 //sp.testSendCOM(bb);
 //                byte[] g=sp.testGetCOM();
 //                for(int i=0;i<g.length;i++){
 //                    System.out.println(g[i]);
 //                }
+                boolean bl=HCProtocol.SetTime();
+                System.out.println(bl);
+                sendDataHW();
             }catch(Exception e){
 
             }
             try{
-                Thread.sleep(2000);
+                Thread.sleep(500);
             }catch(Exception e){
 
             }
@@ -69,7 +73,9 @@ public class DeviceCom extends Thread{
     private void openCom(){
         try{
             Thread.sleep(4000);
-            sp = new SerialPort(new File("/dev/ttyS1"), 9600, 0);
+            HCProtocol.ST_OpenCom();
+            //HCProtocol.sendHeart();
+            //sp = new SerialPort(new File("/dev/ttyS1"), 9600, 0);
             int a=0;
             sendData("打开串口成功");
 //            Thread.sleep(4000);
@@ -98,4 +104,18 @@ public class DeviceCom extends Thread{
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
+
+    private  void sendDataHW(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        if(value.equals("1")){
+            value="0";
+        }else if(value.equals("0")){
+            value="1";
+        }
+        data.putString("hw",value);
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
+
 }

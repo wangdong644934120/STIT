@@ -5,6 +5,8 @@
     android:layout_height="30dp"
     android:orientation="horizontal" >
 
+
+
     <TextView
         android:id="@+id/item_pp"
         android:layout_width="100dp"
@@ -34,7 +36,7 @@
         android:singleLine="true"
         android:background="@drawable/border"/>
     <TextView
-        android:id="@+id/item_operation"
+        android:id="@+id/item_yxq"
         android:layout_width="100dp"
         android:layout_height="match_parent"
         android:gravity="center"
@@ -43,8 +45,17 @@
         android:singleLine="true"
         android:background="@drawable/border"/>
     <TextView
-        android:id="@+id/item_cfwz"
-        android:layout_width="150dp"
+        android:id="@+id/item_syts"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="#033364"
+        android:textSize="20sp"
+        android:singleLine="true"
+        android:background="@drawable/border"/>
+    <TextView
+        android:id="@+id/item_wz"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
         android:gravity="center"
         android:textColor="#033364"

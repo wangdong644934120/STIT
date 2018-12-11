@@ -62,6 +62,7 @@ public class HCActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.up:
+                    btnUP.setPressed(true);
                     File file = new File(Environment.getExternalStorageDirectory()+File.separator+"STIT"+File.separator+"1.xls");
                     if(!file.exists()){
                         Toast.makeText(HCActivity.this, "未找到1.xls", Toast.LENGTH_SHORT).show();
@@ -69,22 +70,32 @@ public class HCActivity extends Activity {
                     }else{
                         boolean bl=ExpportDataBeExcel.ImportExcelData(file);
                         if(bl){
-                            Toast.makeText(HCActivity.this, "导入成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HCActivity.this, "上传耗材库成功", Toast.LENGTH_SHORT).show();
                         }else{
-                            Toast.makeText(HCActivity.this, "导入失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HCActivity.this, "上传耗材库失败", Toast.LENGTH_SHORT).show();
                         }
                     }
+                    btnUP.setPressed(false);
                     break;
-                case R.id.cs:
-                    break;
+
                 case R.id.down:
+                    btnDown.setPressed(true);
                     File fileout = new File(Environment.getExternalStorageDirectory()+File.separator+"STIT"+File.separator+"down.xls");
                     boolean bl=ExpportDataBeExcel.saveExcel(fileout);
                     if(bl){
-                        Toast.makeText(HCActivity.this, "导入成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HCActivity.this, "下载耗材库成功", Toast.LENGTH_SHORT).show();
                     }else{
-                        Toast.makeText(HCActivity.this, "导入失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HCActivity.this, "下载耗材库失败", Toast.LENGTH_SHORT).show();
                     }
+                    btnDown.setPressed(false);
+                    break;
+                case R.id.cs:
+                    btnCS.setPressed(true);
+                    ProductDao productDao = new ProductDao();
+                    productDao.clearAllProduct();
+                    productDao.addMutilAllProduct();
+                    Toast.makeText(HCActivity.this, "初始柜内耗材完成", Toast.LENGTH_SHORT).show();
+                    btnCS.setPressed(false);
                     break;
                 default:
                     break;

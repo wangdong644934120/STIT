@@ -67,6 +67,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
@@ -93,6 +94,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 public class MainActivity extends Activity {
 
@@ -125,7 +127,9 @@ public class MainActivity extends Activity {
 
     private TextView men;
 
-
+    private ImageView ivh1;
+    private ImageView ivh2;
+    private int bf=0;
 
 
     @Override
@@ -144,7 +148,8 @@ public class MainActivity extends Activity {
         initDataBase();
         initSpeechPlug();
         Cache.myContext = this;
-        //new DeviceCom().start();
+        initJXQData();
+        new DeviceCom().start();
 
 
     }
@@ -153,22 +158,12 @@ public class MainActivity extends Activity {
     private void initView() {
         rl=(RelativeLayout)findViewById(R.id.mylayout);
         initG();
-//        btnPerson = (Button) findViewById(R.id.person);// 查询按钮
-//        btnPD = (Button) findViewById(R.id.pd);
-//        btnKM=(Button) findViewById(R.id.km);
-//        btnPerson.setOnClickListener(new onClickListener());
-//        btnPD.setOnClickListener(new onClickListener());
-        //btnKM.setOnClickListener(new onClickListener());
+
         tvD=(Button)findViewById(R.id.dian);
         tvD.setOnClickListener(new onClickListener());
         mChart = (PieChart) findViewById(R.id.chart);
-
-
         tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
-
-        //initBarChart(Cache.getProduct().get("乐普"));
-
 
         Cache.myHandle = new Handler() {
             @Override
@@ -212,6 +207,33 @@ public class MainActivity extends Activity {
                     if(bundle.getString("ui").toString().equals("pd")){
                         Intent intent = new Intent(MainActivity.this, PersonActivity.class);
                         startActivity(intent);
+                    }
+                }
+                if(bundle.getString("hw")!=null){
+                    if(bundle.get("hw").toString().equals("1")){
+                        ivh1.setImageResource(R.drawable.wshw);
+                        ivh2.setImageResource(R.drawable.wshw);
+                        //mChart.animateX(500);
+                        //mChart.animateXY(500,500);
+                        //mChart.animateY(1000);
+//                        mChart.animateX(1000);
+                        mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+//                        Easing.EasingOption.EaseOutBounce
+
+                        bf=bf+10;
+                        if(bf>100){
+                            bf=0;
+                        }
+                        mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bf+"%"));
+                        HashMap map = new HashMap();
+                        map.put("ygq","已过期(0个)");
+                        map.put("jxq","近效期(0个)");
+                        map.put("yxq","远效期(0个)");
+                        setData(map);
+                    }else{
+                        ivh1.setImageResource(R.drawable.wshw1);
+                        ivh2.setImageResource(R.drawable.wshw1);
+
                     }
                 }
                 //Html.fromHtml("<font color='#ff4461' size='5'>"+"哈哈测试:"+"</font>"+"<br>"+"<font color='#ff8833' size='20'>"+"效果怎么样呢"+"</font>")
@@ -305,7 +327,7 @@ public class MainActivity extends Activity {
 
         mChart.setDragDecelerationFrictionCoef(0.95f);
 
-        mChart.setCenterText(generateCenterSpannableText());
+        mChart.setCenterText(generateCenterSpannableText("效期图示"));
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColor(Color.WHITE);
@@ -323,8 +345,11 @@ public class MainActivity extends Activity {
         mChart.setHighlightPerTapEnabled(true);
 
 
-
-        setData();
+        HashMap map = new HashMap();
+        map.put("ygq","已过期(0个)");
+        map.put("jxq","近效期(0个)");
+        map.put("yxq","远效期(0个)");
+        setData(map);
         mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
         // mChart.spin(2000, 0, 360);
         mChart.setOnChartValueSelectedListener(new PieCharLinster());
@@ -344,14 +369,16 @@ public class MainActivity extends Activity {
         //mChart.setEntryLabelTypeface(mTfRegular);
         mChart.setEntryLabelTextSize(20f);
 
+
     }
 
+    private void setData(HashMap<String,String> map) {
 
-    private void setData() {
-        entries.add(new PieEntry(1, "已过期(0个)"));
-        entries.add(new PieEntry(1, "1天-7天(20个)"));
-        entries.add(new PieEntry(1, "7天-15天(30个)"));
-        entries.add(new PieEntry(1, "15天以上(500个)"));
+        entries.clear();
+        entries.add(new PieEntry(1, map.get("ygq").toString()));
+        entries.add(new PieEntry(1,  map.get("jxq").toString()));
+        entries.add(new PieEntry(1,  map.get("yxq").toString()));
+
 
         PieDataSet dataSet = new PieDataSet(entries, "");
 
@@ -519,7 +546,7 @@ public class MainActivity extends Activity {
 //        Glide.with(this).load(R.drawable.timg).apply(options).into(ivh5);
 
         //测试旋转
-        ImageView ivh1=new ImageView(this);
+         ivh1=new ImageView(this);
         ivh1.setBackgroundColor(Color.BLUE);
         ivh1.setImageResource(R.drawable.wshw);
         params = new RelativeLayout.LayoutParams(220, 20);
@@ -528,7 +555,7 @@ public class MainActivity extends Activity {
         ivh1.setRotation(-15);
         rl.addView(ivh1);
 
-        ImageView ivh2=new ImageView(this);
+        ivh2=new ImageView(this);
         ivh2.setBackgroundColor(Color.BLUE);
         ivh2.setImageResource(R.drawable.wshw);
         params = new RelativeLayout.LayoutParams(220, 20);
@@ -540,12 +567,12 @@ public class MainActivity extends Activity {
 
     }
 
-    private SpannableString generateCenterSpannableText() {
+    private SpannableString generateCenterSpannableText(String value) {
 
-        SpannableString s = new SpannableString("近效期图示");
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, 5, 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 0, 5, 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 0, 5, 0);
+        SpannableString s = new SpannableString(value);
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, value.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 0, value.length(), 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), 0, value.length(), 0);
 //        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
 //        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
 //        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
@@ -564,6 +591,7 @@ public class MainActivity extends Activity {
 
         }
     }
+
     public class MyBValueFormatter implements IValueFormatter {
 
         public MyBValueFormatter() {
@@ -617,16 +645,16 @@ public class MainActivity extends Activity {
                 lab="已过期";
 
             }
-            if(p.getLabel().contains("1天-7天")){
-                lab="1天-7天";
+            if(p.getLabel().contains("近效期")){
+                lab="近效期";
             }
-            if(p.getLabel().contains("7天-15天")){
-                lab="7天-15天";
+            if(p.getLabel().contains("远效期")){
+                lab="远效期";
             }
-            if(p.getLabel().contains("15天以上")){
-                lab="15天以上";
-            }
-
+            Intent  intent = new Intent(MainActivity.this,OperationActivity.class);
+            intent.putExtra("yxq",lab);
+            intent.putExtra("title",p.getLabel());
+            startActivity(intent);
         }
 
         @Override
@@ -658,4 +686,32 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void initJXQData(){
+        ProductDao productDao= new ProductDao();
+        List<HashMap<String,String>> list = productDao.getAll_AllProduct();
+        int ygq=0;
+        int jxq=0;
+        int yxq=0;
+        long current = System.currentTimeMillis();
+        long dt = current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
+        long t7=dt+1000*3600*24*7;
+        for(HashMap map : list){
+            //已过期  小于当前时间
+            //近效期  当天0点到7天后24点
+            //远效期  8天后0点后
+            if(Long.valueOf(map.get("yxq").toString())<dt){
+                ygq=ygq+1;
+            }else if(Long.valueOf(map.get("yxq").toString())>=dt && Long.valueOf(map.get("yxq").toString())<t7){
+                jxq=jxq+1;
+            }else if(Long.valueOf(map.get("yxq").toString())>=t7){
+                yxq=yxq+1;
+            }
+        }
+        HashMap map = new HashMap();
+        map.put("ygq","已过期("+ygq+"个)");
+        map.put("jxq","近效期("+jxq+"个)");
+        map.put("yxq","远效期("+yxq+"个)");
+        setData(map);
+
+    }
 }
