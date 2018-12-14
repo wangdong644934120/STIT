@@ -26,7 +26,8 @@ public class TimeThread extends Thread {
                 logger.error("时间同步出错",e);
             }
             try{
-                Thread.sleep(60000*15);
+                //Thread.sleep(60000*15);
+                Thread.sleep(10000);
             }catch (Exception e){
                 logger.error("线程等待出错",e);
             }

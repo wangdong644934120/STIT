@@ -61,10 +61,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="15dp"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="15dp"
                 android:textSize="20dp"
                 android:layout_weight="2"
-                android:lines="6"
+                android:lines="15"
                 android:text="提示信息" />
         </LinearLayout>
 

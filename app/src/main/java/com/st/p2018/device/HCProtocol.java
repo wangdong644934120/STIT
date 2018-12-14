@@ -233,50 +233,35 @@ public class HCProtocol {
             //发送数据
             byte[] data=sp.sendAndGet(send);
 
-            if (data!=null && data.length>=16 && data[0] == (byte) 0x3A && data[1] == (byte) 0x0D
+            if (data!=null && data.length>=16 && data[0] == (byte) 0x3A && data[1] == (byte) 0x0E
                     && data[3] == (byte) 0x07 ) {
                 //刷卡器
-                if(data[4]==0x00){
-                    map.put("skq","0");
-                }else{
-                    map.put("skq","1");
-                }
+                String skq=DataTypeChange.bytes2HexString(data[4]);
+                map.put("skq",skq);
+
                 //指纹传感器
-                if(data[5]==0x00){
-                    map.put("zwcgq","0");
-                }else{
-                    map.put("zwcgq","1");
-                }
+                String zwcgq=DataTypeChange.bytes2HexString(data[5]);
+                map.put("zwcgq",zwcgq);
+
                 //门状态传感器
-                if(data[6]==0x00){
-                    map.put("mztcgq","0");
-                }else{
-                    map.put("mztcgq","1");
-                }
+                String mztcgq=DataTypeChange.bytes2HexString(data[6]);
+                map.put("mztcgq",mztcgq);
+
                 //电控锁
-                if(data[7]==0x00){
-                    map.put("dks","0");
-                }else{
-                    map.put("dks","1");
-                }
+                String dks=DataTypeChange.bytes2HexString(data[7]);
+                map.put("dks",dks);
+
                 //红外/行程开关
-                if(data[8]==0x00){
-                    map.put("hwxckg","0");
-                }else{
-                    map.put("hwxckg","1");
-                }
+                String hwxckg=DataTypeChange.bytes2HexString(data[8]);
+                map.put("hwxckg",hwxckg);
+
                 //照明灯
-                if(data[9]==0x00){
-                    map.put("zmd","0");
-                }else{
-                    map.put("zmd","1");
-                }
+                String zmd=DataTypeChange.bytes2HexString(data[9]);
+                map.put("zmd",zmd);
+
                 //RFID读写器
-                if(data[10]==0x00){
-                    map.put("rfid","0");
-                }else{
-                    map.put("rfid","1");
-                }
+                String rfid=DataTypeChange.bytes2HexString(data[10]);
+                map.put("rfid",rfid);
             }
             return map;
         }catch (Exception e){
@@ -445,6 +430,10 @@ public class HCProtocol {
             myLock.unlock();
         }
 
+    }
+
+    public static boolean STIT_OpenDoor(){
+        return true;
     }
 
     public static byte getJYData(byte[] datas){

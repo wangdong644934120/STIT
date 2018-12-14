@@ -68,7 +68,7 @@ public class PZActivity extends Activity {
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int arg2, long arg3) {
-                if(spGX.getSelectedItem().toString().equals("横型")){
+                if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
                     gc6.setVisibility(View.VISIBLE);
                 }else{
                     gc6.setVisibility(View.INVISIBLE);
@@ -91,7 +91,7 @@ public class PZActivity extends Activity {
         gc4=(CheckBox)findViewById(R.id.cb4);
         gc5=(CheckBox)findViewById(R.id.cb5);
         gc6=(CheckBox)findViewById(R.id.cb6);
-        if(spGX.getSelectedItem().toString().equals("横型")){
+        if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
             gc6.setVisibility(View.VISIBLE);
         }else{
             gc6.setVisibility(View.INVISIBLE);
@@ -101,7 +101,7 @@ public class PZActivity extends Activity {
     private void initData(){
         PZDao pzDao = new PZDao();
         List<HashMap<String,String>> list = pzDao.getPZ();
-        spGX.setSelection(list.get(0).get("gx").toString().equals("横型")?0:1);
+        spGX.setSelection(list.get(0).get("gx").toString().equals("Ⅰ型")?0:1);
         int dk;
         if(list.get(0).get("dk").toString().equals("灯自动")){
             dk=0;

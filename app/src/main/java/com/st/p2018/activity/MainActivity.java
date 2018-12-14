@@ -129,8 +129,7 @@ public class MainActivity extends Activity {
 
     private ImageView ivh1;
     private ImageView ivh2;
-    private int bf=0;
-
+    private String bfb="1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,23 +169,31 @@ public class MainActivity extends Activity {
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                //提示信息
                 if (bundle.getString("ts") != null) {
                     //显示提示信息
                     listTS.add(bundle.getString("ts"));
-                    if (listTS.size() > 6) {
+                    if (listTS.size() > 15) {
                         listTS.remove(0);
                     }
                     String ts = "";
                     for (String s : listTS) {
-                        if (s.contains("失败")) {
-                            ts = ts + "<font color='#FF0000' size='25'>" + s + "</font><br>";
-                        } else {
-                            ts = ts + "<font color='#008000' size='25'>" + s + "</font><br>";
+                        if(s.contains("时间:")){
+                            ts = ts + "<font color='#4A4A4A' size='25'>" + s.substring(3,s.length()) + "</font><br>";
                         }
-                        //ts=ts+s+"\n";
+                        if (s.contains("报警:")) {
+                            ts = ts + "<font color='#FF0000' size='25'>" + s.substring(3,s.length())  + "</font><br>";
+                        }
+                        if(s.contains("状态:")) {
+                            ts = ts + "<font color='#4A4A4A' size='25'>" +  s.substring(3,s.length()) + "</font><br>";
+                        }
+                        if(s.contains("操作:")) {
+                            ts = ts + "<font color='#40E0D0' size='25'>" +  s.substring(3,s.length()) + "</font><br>";
+                        }
                     }
                     tvTS.setText(Html.fromHtml(ts));
                 }
+                //菜单栏
                 if(bundle.getString("ui")!=null){
                     if(bundle.getString("ui").toString().equals("ry")){
                         Intent intent = new Intent(MainActivity.this, PersonActivity.class);
@@ -209,34 +216,71 @@ public class MainActivity extends Activity {
                         startActivity(intent);
                     }
                 }
-                if(bundle.getString("hw")!=null){
-                    if(bundle.get("hw").toString().equals("1")){
-                        ivh1.setImageResource(R.drawable.wshw);
-                        ivh2.setImageResource(R.drawable.wshw);
-                        //mChart.animateX(500);
-                        //mChart.animateXY(500,500);
-                        //mChart.animateY(1000);
-//                        mChart.animateX(1000);
-                        mChart.animateY(500, Easing.EasingOption.EaseInCirc);
-//                        Easing.EasingOption.EaseOutBounce
-
-                        bf=bf+10;
-                        if(bf>100){
-                            bf=0;
+                //缩略图更新
+                if(bundle.getString("type")!=null){
+                    if(bundle.get("type").toString().equals("men")){
+                        if(bundle.get("zt").toString().equals("1")){
+                            //替换开门图片
+                        }else{
+                            //替换关门图片
                         }
-                        mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bf+"%"));
+                    }
+                    if(bundle.get("type").toString().equals("deng")){
+                        if(bundle.get("zt").toString().equals("1")){
+                            //替换开灯图片
+                        }else{
+                            //替换关灯图片
+                        }
+                    }
+                    if(bundle.get("type").toString().equals("hwxc")){
+                       if(bundle.get("wz").toString().equals("1")){
+                           //替换红外行程1触发图片
+                       }else{
+                           //替换红外行程1不触发图片
+                       }
+                        if(bundle.get("wz").toString().equals("2")){
+                            //替换红外行程2触发图片
+                        }else{
+                            //替换红外行程2不触发图片
+                        }
+                        if(bundle.get("wz").toString().equals("3")){
+                            //替换红外行程3触发图片
+                        }else{
+                            //替换红外行程3不触发图片
+                        }
+                        if(bundle.get("wz").toString().equals("4")){
+                            //替换红外行程4触发图片
+                        }else{
+                            //替换红外行程4不触发图片
+                        }
+                        if(bundle.get("wz").toString().equals("5")){
+                            //替换红外行程5触发图片
+                        }else{
+                            //替换红外行程5不触发图片
+                        }
+                        if(bundle.get("wz").toString().equals("6")){
+                            //替换红外行程6触发图片
+                        }else{
+                            //替换红外行程6不触发图片
+                        }
+                    }
+                }
+                if(bundle.getString("pd")!=null){
+                    String bfb=bundle.get("pd").toString();
+                    mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+                    mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bfb+"0%"));
+                    if(bfb.equals("10")){
+                        initJXQData();
+                    }else{
                         HashMap map = new HashMap();
                         map.put("ygq","已过期(0个)");
                         map.put("jxq","近效期(0个)");
                         map.put("yxq","远效期(0个)");
                         setData(map);
-                    }else{
-                        ivh1.setImageResource(R.drawable.wshw1);
-                        ivh2.setImageResource(R.drawable.wshw1);
-
                     }
+
+
                 }
-                //Html.fromHtml("<font color='#ff4461' size='5'>"+"哈哈测试:"+"</font>"+"<br>"+"<font color='#ff8833' size='20'>"+"效果怎么样呢"+"</font>")
             }
         };
 
@@ -687,6 +731,7 @@ public class MainActivity extends Activity {
     }
 
     private void initJXQData(){
+        mChart.setCenterText(generateCenterSpannableText("效期图示"));
         ProductDao productDao= new ProductDao();
         List<HashMap<String,String>> list = productDao.getAll_AllProduct();
         int ygq=0;
@@ -714,4 +759,6 @@ public class MainActivity extends Activity {
         setData(map);
 
     }
+
+
 }

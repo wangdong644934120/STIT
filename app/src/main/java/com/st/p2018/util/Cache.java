@@ -4,6 +4,7 @@ import android.content.Context;
 
 import android.os.Handler;
 
+import com.st.p2018.entity.Event;
 import com.st.p2018.entity.ProductBar;
 
 import java.util.ArrayList;
@@ -17,6 +18,15 @@ import java.util.List;
 public class Cache {
     public static Context myContext;
     public static Handler myHandle;
+    public static String code;
+    public static boolean mztcgq=false;//门状态传感器  true--开，false--关
+    public static boolean hwxc1=false;
+    public static boolean hwxc2=false;
+    public static boolean hwxc3=false;
+    public static boolean hwxc4=false;
+    public static boolean hwxc5=false;
+    public static boolean hwxc6=false;
+    public static boolean zmdzt=false;
 
 //    public static HashMap<String,HashMap<String,List<ProductBar>>>  getProduct(){
 //        //key 近效期  key--种类
