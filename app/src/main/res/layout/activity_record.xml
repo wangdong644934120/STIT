@@ -42,6 +42,7 @@
                         android:layout_height="580dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp" />
+
                     <Button
                         android:id="@+id/close"
                         android:layout_width="match_parent"
@@ -53,63 +54,13 @@
                         android:background="@drawable/button_selector"
                         android:textColor="@color/colorWhite"
                         android:text="关闭"/>
-
                 </LinearLayout>
 
             </LinearLayout>
 
 
+
         </LinearLayout>
     </HorizontalScrollView>
 
-
 </android.support.constraint.ConstraintLayout>
-
-<!--<LinearLayout-->
-<!--android:layout_width="wrap_content"-->
-<!--android:layout_height="800dp"-->
-<!--android:orientation="vertical"-->
-<!--android:background="@color/colorWhite"-->
-<!--tools:layout_editor_absoluteX="8dp"-->
-<!--tools:layout_editor_absoluteY="8dp">-->
-
-<!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical">-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/listHeaders"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginTop="20dp"/>-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/listResults"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_marginLeft="10dp"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:layout_marginBottom="10dp"/>-->
-
-
-    <!--</LinearLayout>-->
-
-<!--</LinearLayout>-->
-
-
-
-
-<!--</LinearLayout>-->
-
-
-
-
-<!--</LinearLayout>-->

@@ -13,6 +13,7 @@ import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -131,6 +132,10 @@ public class MainActivity extends Activity {
     private ImageView ivh2;
     private String bfb="1";
 
+    final static int COUNTS = 5;// 点击次数
+    final static long DURATION = 3000;// 规定有效时间
+    long[] mHits = new long[COUNTS];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -211,8 +216,8 @@ public class MainActivity extends Activity {
                         Intent intent = new Intent(MainActivity.this, PZActivity.class);
                         startActivity(intent);
                     }
-                    if(bundle.getString("ui").toString().equals("pd")){
-                        Intent intent = new Intent(MainActivity.this, PersonActivity.class);
+                    if(bundle.getString("ui").toString().equals("sbxx")){
+                        Intent intent = new Intent(MainActivity.this, DeviceActivity.class);
                         startActivity(intent);
                     }
                 }
@@ -278,8 +283,10 @@ public class MainActivity extends Activity {
                         map.put("yxq","远效期(0个)");
                         setData(map);
                     }
-
-
+                }
+                if(bundle.getString("record")!=null){
+                    Intent intent = new Intent(MainActivity.this, RecordActivity.class);
+                    startActivity(intent);
                 }
             }
         };
@@ -291,6 +298,7 @@ public class MainActivity extends Activity {
     private void displayToast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
+
 
     /**
      * 单击事件监听
@@ -760,5 +768,17 @@ public class MainActivity extends Activity {
 
     }
 
+    private void continuousClick(int count, long time) {
+        //每次点击时，数组向前移动一位
+        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
+        //为数组最后一位赋值
+        mHits[mHits.length - 1] = SystemClock.uptimeMillis();
+        if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
+            mHits = new long[COUNTS];//重新初始化数组
+            Toast.makeText(this, "连续点击了5次,程序退出", Toast.LENGTH_LONG).show();
+            android.os.Process.killProcess(android.os.Process.myPid());
+
+        }
+    }
 
 }

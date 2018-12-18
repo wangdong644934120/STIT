@@ -20,7 +20,7 @@ public class SelectDialog extends AlertDialog {
     private Button btnHC;
     private Button btnKZ;
     private Button btnPZ;
-    private Button btnPD;
+    private Button btnSBXX;
 
     public SelectDialog(Context context, int theme) {
         super(context, theme);
@@ -46,8 +46,8 @@ public class SelectDialog extends AlertDialog {
         btnKZ.setOnClickListener(new onClickListener());
         btnPZ=(Button)findViewById(R.id.btnPZ);
         btnPZ.setOnClickListener(new onClickListener());
-        btnPD=(Button)findViewById(R.id.btnPD);
-        btnPD.setOnClickListener(new onClickListener());
+        btnSBXX=(Button)findViewById(R.id.btnSBXX);
+        btnSBXX.setOnClickListener(new onClickListener());
     }
 
     /**
@@ -74,8 +74,8 @@ public class SelectDialog extends AlertDialog {
                 case R.id.btnPZ:
                     openui("pz");
                     break;
-                case R.id.btnPD:
-                    openui("pd");
+                case R.id.btnSBXX:
+                    openui("sbxx");
                     break;
                 default:
                     break;

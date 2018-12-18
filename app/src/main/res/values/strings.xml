@@ -5,9 +5,9 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string-array name="gx">
-       <item>Ⅰ型</item>
-       <item>Ⅱ型</item>
-     </string-array>
+        <item>Ⅰ型</item>
+        <item>Ⅱ型</item>
+    </string-array>
     <string-array name="dk">
         <item>灯自动</item>
         <item>灯常开</item>

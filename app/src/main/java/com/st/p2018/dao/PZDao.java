@@ -21,6 +21,14 @@ public class PZDao {
         DataBaseExec.execOther(sql,args);
     }
 
+    public void updatePZByDevice(HashMap map){
+        String sql="update stit_t_pz set gx=?,gc1=?,gc2=?,gc3=?,gc4=?,gc5=?,gc6=? where id='1'";
+        String[] args = new String[]{map.get("gx").toString(),
+                map.get("gc1").toString(),map.get("gc2").toString(),map.get("gc3").toString(),map.get("gc4").toString(),
+                map.get("gc5").toString(),map.get("gc6").toString()};
+        DataBaseExec.execOther(sql,args);
+    }
+
     public List<HashMap<String,String>> getPZ(){
         String sql="select gx,dk,pl,gc1,gc2,gc3,gc4,gc5,gc6 from stit_t_pz where id='1'";
         return DataBaseExec.execQueryForMap(sql,null);

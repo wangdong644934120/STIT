@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <!-- android:theme="@android:style/Theme.Dialog" -->
     <application
@@ -62,13 +62,21 @@
             android:label="统计"
             android:theme="@android:style/Theme.Dialog"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
-        <!-- 盘点结果确认 -->
+        <!-- 操作界面 -->
         <activity
             android:name="com.st.p2018.activity.OperationActivity"
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="详情"
             android:theme="@style/otstyle"
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+        <!-- 盘点结果 -->
+        <activity
+            android:name="com.st.p2018.activity.RecordActivity"
+            android:colorMode="default"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="存取记录"
+            android:theme="@style/restyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <!-- 菜单 -->
         <activity android:name="com.st.p2018.activity.SelectDialog" />
@@ -88,11 +96,18 @@
             android:label="控制管理"
             android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
-
-        <activity android:name="com.st.p2018.activity.PZActivity"
+        <activity
+            android:name="com.st.p2018.activity.PZActivity"
             android:colorMode="default"
             android:configChanges="keyboardHidden|orientation"
             android:label="配置管理"
+            android:theme="@style/otstyle"
+            android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+        <activity
+            android:name="com.st.p2018.activity.DeviceActivity"
+            android:colorMode="default"
+            android:configChanges="keyboardHidden|orientation"
+            android:label="设备信息"
             android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
     </application>

@@ -1,5 +1,7 @@
 package com.st.p2018.device;
 
+import com.st.p2018.dao.PZDao;
+
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -166,22 +168,48 @@ public class HCProtocol {
 
     }
 
+    public static byte[]  ST_GetDeviceInfo(){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x08 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x05};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+            return data;
+        }catch (Exception e){
+            logger.error("获取设备信息出错",e);
+            return null;
+        }finally {
+            myLock.unlock();
+        }
+    }
     /**
      * 设置工作模式
      * @param lightModel 灯模式
      * @param cardModel 标签模式
      * @return
      */
-    public static boolean ST_SetWorkModel(int lightModel,int cardModel){
+    public static boolean ST_SetWorkModel(int lightModel,int cardModel,int cardTime){
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
             byte[] length = new byte[] { 0x08 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x06};
-            byte[] bydata=new byte[5];
+            byte[] bydata=new byte[6];
             bydata[0]=(byte)lightModel;
             bydata[1]=(byte)cardModel;
+            bydata[2]=(byte)cardTime;
 
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
@@ -252,7 +280,8 @@ public class HCProtocol {
                 map.put("dks",dks);
 
                 //红外/行程开关
-                String hwxckg=DataTypeChange.bytes2HexString(data[8]);
+                String hwxckg=DataTypeChange.getBit(data[8]);
+                //String hwxckg=DataTypeChange.bytes2HexString(data[8]);
                 map.put("hwxckg",hwxckg);
 
                 //照明灯
@@ -260,7 +289,8 @@ public class HCProtocol {
                 map.put("zmd",zmd);
 
                 //RFID读写器
-                String rfid=DataTypeChange.bytes2HexString(data[10]);
+                String rfid=DataTypeChange.getBit(data[10]);
+//                String rfid=DataTypeChange.bytes2HexString(data[10]);
                 map.put("rfid",rfid);
             }
             return map;
@@ -328,7 +358,41 @@ public class HCProtocol {
     /**
      * 获取盘存数据
      */
-    public static void ST_GetCard(){
+    public static String ST_GetCard(){
+        String card="";
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x23 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x09};
+            byte[] bydata=new byte[32];
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x23
+                    && data[3] == (byte) 0x09 ) {
+                byte[] cardby = new byte[32];
+                System.arraycopy(data, 4, cardby, 0, 32);
+                //todo判断cardby内容是否为0
+
+                card = DataTypeChange.byteArrayToHexString(cardby);
+            }
+            return card;
+        }catch (Exception e){
+            logger.error("读取标签盘存数据出错",e);
+            return card;
+        }finally {
+            myLock.unlock();
+        }
 
     }
 
@@ -432,10 +496,12 @@ public class HCProtocol {
 
     }
 
+    //开门指令
     public static boolean STIT_OpenDoor(){
         return true;
     }
 
+    //校验数据
     public static byte getJYData(byte[] datas){
 
         byte temp=datas[0];

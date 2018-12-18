@@ -16,6 +16,8 @@ public class Event {
     private String wz;
     private long time;
 
+
+
     public String getId() {
         return id;
     }

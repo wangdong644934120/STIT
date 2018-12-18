@@ -5,7 +5,9 @@ import android.os.Message;
 
 import com.st.p2018.dao.EventDao;
 import com.st.p2018.dao.PersonDao;
+import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.Event;
+import com.st.p2018.entity.ProductRecord;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
 
@@ -13,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -21,9 +24,13 @@ import java.util.UUID;
 
 public class DataThread extends Thread {
     private Logger logger = Logger.getLogger(this.getClass());
-    PersonDao personDao=null;
+    private PersonDao personDao=null;
+    private ProductDao productDao=null;
+    private HashMap<String,String> map=new HashMap<String,String>();
+    int a=0;
     public void run(){
         personDao= new PersonDao();
+        productDao=new ProductDao();
         while(true){
             try {
                     HashMap<String, String> map = HCProtocol.ST_GetWorkModel();
@@ -262,7 +269,46 @@ public class DataThread extends Thread {
 
     }
     private void alaRFID(String rfid){
+        //----------模拟
+//        if(rfid.equals("00000000")){
+//            if(a==0){
+//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+//                new DataDeal(mapBQ).start();
+//                a=1;
+//            }
+//
+//        }
+//        if(rfid.equals("11111111")){
+//            a=0;
+//        }
+        //--------------------
         //RFID读写器
+        String zt = rfid.substring(6,7);
+        String data=rfid.substring(4,5);
+
+        if(zt.equals("00")){
+            //读写器休眠中
+        }else if(zt.equals("01")){
+            //正在盘存标签
+            if(data.equals("01")){
+                getCard();
+            }else if(data.equals("10")){
+                //告警
+            }
+        }else if(zt.equals("10")){
+            //标签盘存结束
+            if(data.equals("01")){
+                //有标签数据
+               getCard();
+               //对标签数据进行处理
+                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                new DataDeal(mapBQ).start();
+            }else if(data.equals("10")){
+                //告警
+            }
+        }
+
+
 
         //检测正在盘点
 //                    for(int i=1;i<=10;i++){
@@ -276,6 +322,34 @@ public class DataThread extends Thread {
 //                    }
 
     }
+
+    private void getCard(){
+        //有标签数据
+        while(true){
+            String card=HCProtocol.ST_GetCard();
+            //todo解析标签ID及位置，添加到map中
+
+            //盘点进度显示
+            if(map.containsValue("6")){
+                sendPD("95");
+            }else if(map.containsValue("5")){
+                sendPD("90");
+            }else if(map.containsValue("4")){
+                sendPD("80");
+            }else if(map.containsValue("3")){
+                sendPD("50");
+            }else if(map.containsValue("2")){
+                sendPD("30");
+            }else if(map.containsValue("1")){
+                sendPD("10");
+            }
+
+            if(card.equals("")){
+                break;
+            }
+        }
+    }
+
     private  void sendTS(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -334,6 +408,67 @@ public class DataThread extends Thread {
         data.putString("type",type);
         data.putString("wz",wz);
         data.putString("zt",zt);
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
+
+    class DataDeal extends Thread{
+        HashMap<String,String> mapDeal=null;
+        public DataDeal(HashMap<String,String> mapDeal){
+            this.mapDeal=mapDeal;
+        }
+        public void run(){
+            Cache.listPR.clear();
+            mapDeal.put("A12245678","1");
+            mapDeal.put("A12345678","1");
+            mapDeal.put("B12345678","1");
+            mapDeal.put("C12345679","1");
+            mapDeal.put("D12345679","1");
+            mapDeal.put("E12345680","1");
+            mapDeal.put("F12345681","2");
+//            mapDeal.put("F12345680","2");
+           List<HashMap<String,String>> list = productDao.getAllProduct();
+           Set<String> dealKeys=mapDeal.keySet();
+           HashMap<String,String> mapSave=new HashMap<String,String>();
+           for(HashMap map : list){
+               //取出标签
+               if(!map.get("wz").toString().equals("0") && !dealKeys.contains(map.get("card").toString())){
+                   //标签被取出
+                   mapSave.put(map.get("card").toString(),"0");
+                   Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
+               }
+               //存放标签
+               if(map.get("wz").toString().equals("0") && dealKeys.contains(map.get("card").toString())){
+                   //标签被存放
+                   mapSave.put(map.get("card").toString(),"1");
+                   Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
+               }
+               //标签未动
+               if(dealKeys.contains(map.get("card").toString())){
+                   if(!map.get("wz").toString().equals("0") && !mapDeal.get(map.get("card").toString()).equals(map.get("wz").toString())){
+                       //标签位置更换
+                       mapSave.put(map.get("card").toString(),mapDeal.get(map.get("card").toString()));
+                       Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
+                       Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
+                   }
+               }
+           }
+           //界面显示内容
+            startRecord();
+            //数据库更新内容
+            Set<String> updatesKey=mapSave.keySet();
+            for(String key : updatesKey){
+                productDao.updateProductWZ(mapSave.get(key).toString(),key);
+            }
+
+
+        }
+    }
+
+    private  void startRecord(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        data.putString("record","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }

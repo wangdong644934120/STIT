@@ -3,6 +3,8 @@ package com.st.p2018.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.st.p2018.dao.ProductDao;
@@ -26,6 +28,7 @@ public class OperationActivity extends Activity {
     private List<HashMap<String, String>> mQueryData = new ArrayList<HashMap<String, String>>() ;
     private String type;
     private String  time;
+    private Button btnClose;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +50,8 @@ public class OperationActivity extends Activity {
     public void initView() {
         listHeaders = (ListView) findViewById(R.id.listHeaders);
         listResults = (ListView) findViewById(R.id.listResults);
+        btnClose=(Button)findViewById(R.id.close);
+        btnClose.setOnClickListener(new onClickListener());
     }
 
     /**
@@ -76,6 +81,22 @@ public class OperationActivity extends Activity {
 
     }
 
+    public class onClickListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            if (v.isEnabled() == false)
+                return;
+            switch (v.getId()) {
+                case R.id.close:
+                    OperationActivity.this.finish();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
     /**
      * 从数据库查询数据
      *

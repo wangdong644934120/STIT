@@ -6,6 +6,7 @@ import android.os.Handler;
 
 import com.st.p2018.entity.Event;
 import com.st.p2018.entity.ProductBar;
+import com.st.p2018.entity.ProductRecord;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,16 @@ public class Cache {
     public static boolean hwxc4=false;
     public static boolean hwxc5=false;
     public static boolean hwxc6=false;
+
+    public static boolean gcqy1=true;
+    public static boolean gcqy2=true;
+    public static boolean gcqy3=true;
+    public static boolean gcqy4=true;
+    public static boolean gcqy5=true;
+    public static boolean gcqy6=true;
     public static boolean zmdzt=false;
+    public static List<ProductRecord> listPR = new ArrayList<ProductRecord>();
+    public static String gx="Ⅰ型";
 
 //    public static HashMap<String,HashMap<String,List<ProductBar>>>  getProduct(){
 //        //key 近效期  key--种类

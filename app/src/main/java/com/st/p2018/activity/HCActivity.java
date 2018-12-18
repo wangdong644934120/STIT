@@ -94,6 +94,8 @@ public class HCActivity extends Activity {
                     ProductDao productDao = new ProductDao();
                     productDao.clearAllProduct();
                     productDao.addMutilAllProduct();
+                    //todo替换该方法
+                    productDao.updateAllProductWZ();
                     Toast.makeText(HCActivity.this, "初始柜内耗材完成", Toast.LENGTH_SHORT).show();
                     btnCS.setPressed(false);
                     break;
