@@ -13,4 +13,8 @@
         <item>灯常开</item>
         <item>灯常关</item>
     </string-array>
+    <string-array name="pd">
+        <item>全部盘存</item>
+        <item>触发盘存</item>
+    </string-array>
 </resources>

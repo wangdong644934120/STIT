@@ -171,6 +171,67 @@
             android:layout_marginTop="20dp"
             android:background="#a7aba9" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
+                android:text="盘存配置：" />
+
+            <Spinner
+                android:id="@+id/sppd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/pd"
+                android:spinnerMode="dropdown"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="150dp"
+                android:popupBackground="@color/gray"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginTop="20dp"
+            android:background="#a7aba9" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="170dp"
+                android:textColor="@color/black"
+                android:text="盘存次数：" />
+
+           <EditText
+               android:id="@+id/pdcs"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:layout_marginTop="20dp"
+               android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginTop="20dp"
+            android:background="#a7aba9" />
         <Button
             android:id="@+id/btnok"
             android:layout_width="match_parent"

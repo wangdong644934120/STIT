@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="441dp"
+        android:layout_height="750dp"
         android:background="@color/colorWhite"
         android:orientation="vertical">
 
@@ -74,6 +74,69 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/button_selector"
             android:text="关门"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/kyh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="获取卡用户"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/zwyh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="获取指纹用户"
+            android:textColor="@color/colorWhite" />
+
+        <Button
+            android:id="@+id/pcsj"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="获取盘存数据"
+            android:textColor="@color/colorWhite" />
+        <Button
+            android:id="@+id/tjzw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="添加指纹0102"
+            android:textColor="@color/colorWhite" />
+        <Button
+            android:id="@+id/sczw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="删除指纹0102"
+            android:textColor="@color/colorWhite" />
+        <Button
+            android:id="@+id/scsyzw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_selector"
+            android:text="删除所有指纹"
             android:textColor="@color/colorWhite" />
 
 

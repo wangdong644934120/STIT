@@ -61,7 +61,7 @@ public class DataThread extends Thread {
                 }
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(10000);
                 } catch (Exception e) {
                     logger.error("获取数据线程等待出错", e);
                 }
@@ -78,7 +78,7 @@ public class DataThread extends Thread {
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
-                HCProtocol.STIT_OpenDoor();
+                HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
                 addZWSKEvent(Cache.code,Event.EVENTTYPE_SKOPENDOOR);
 
@@ -114,7 +114,7 @@ public class DataThread extends Thread {
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
-                HCProtocol.STIT_OpenDoor();
+                HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
                 addZWSKEvent(Cache.code,Event.EVENTTYPE_ZWOPENDOOR);
                 sendTS("操作:"+list.get(0).get("name")+"指纹开门成功");

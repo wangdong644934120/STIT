@@ -28,11 +28,11 @@ public class DeviceCom extends Thread{
     private String value="1";
     public void run(){
         openCom();
-        byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
+        //byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
         //JXDevice(byDevice);
         //new HeartThread().start();
         //new TimeThread().start();
-       new DataThread().start();
+       //new DataThread().start();
     }
 
     private void JXDevice(byte[] data){

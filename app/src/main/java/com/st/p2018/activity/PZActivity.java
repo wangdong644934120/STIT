@@ -11,10 +11,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
 import com.st.p2018.dao.PZDao;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public class PZActivity extends Activity {
     private CheckBox gc4;
     private CheckBox gc5;
     private CheckBox gc6;
+    private Spinner spPD;
+    private EditText edpdcs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +100,8 @@ public class PZActivity extends Activity {
         }else{
             gc6.setVisibility(View.INVISIBLE);
         }
+        spPD=(Spinner)findViewById(R.id.sppd);
+        edpdcs=(EditText)findViewById(R.id.pdcs);
     }
 
     private void initData(){
@@ -159,19 +165,43 @@ public class PZActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btnok:
                     btnOK.setPressed(true);
-                    HashMap<String,String> mapSave = new HashMap<String,String>();
-                    mapSave.put("gx",spGX.getSelectedItem().toString());
-                    mapSave.put("dk",spDK.getSelectedItem().toString());
-                    mapSave.put("pl",String.valueOf(dl));
-                    mapSave.put("gc1",gc1.isChecked()?"1":"0");
-                    mapSave.put("gc2",gc2.isChecked()?"1":"0");
-                    mapSave.put("gc3",gc3.isChecked()?"1":"0");
-                    mapSave.put("gc4",gc4.isChecked()?"1":"0");
-                    mapSave.put("gc5",gc5.isChecked()?"1":"0");
-                    mapSave.put("gc6",gc6.isChecked()?"1":"0");
-                    PZDao pzDao= new PZDao();
-                    pzDao.updatePZ(mapSave);
+//                    HashMap<String,String> mapSave = new HashMap<String,String>();
+//                    mapSave.put("gx",spGX.getSelectedItem().toString());
+//                    mapSave.put("dk",spDK.getSelectedItem().toString());
+//                    mapSave.put("pl",String.valueOf(dl));
+//                    mapSave.put("gc1",gc1.isChecked()?"1":"0");
+//                    mapSave.put("gc2",gc2.isChecked()?"1":"0");
+//                    mapSave.put("gc3",gc3.isChecked()?"1":"0");
+//                    mapSave.put("gc4",gc4.isChecked()?"1":"0");
+//                    mapSave.put("gc5",gc5.isChecked()?"1":"0");
+//                    mapSave.put("gc6",gc6.isChecked()?"1":"0");
+//                    PZDao pzDao= new PZDao();
+//                    pzDao.updatePZ(mapSave);
+                    int lightModel=0;
+                    if(spDK.getSelectedItem().toString().equals("灯自动")){
+                        lightModel=0;
+                    }else if(spDK.getSelectedItem().toString().equals("灯常开")){
+                        lightModel=1;
+                    }else if(spDK.getSelectedItem().toString().equals("灯常关")){
+                        lightModel=2;
+                    }
+                    int pc=0;
+                    if(spPD.getSelectedItem().toString().equals("全部盘存")){
+                        pc=0;
+                    }else if(spPD.getSelectedItem().toString().equals("触发盘存")){
+                        pc=1;
+                    }
+                    int pccs=1;
+                    try{
+                        pccs=Integer.valueOf(edpdcs.getText().toString());
+                    }catch (Exception e){
+
+                    }
+
+                    HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
                     btnOK.setPressed(false);
+
+//                    HCProtocol.ST_SetWorkModel()
                     break;
                 default:
                     break;
