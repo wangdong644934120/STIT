@@ -17,6 +17,7 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowTitleStyle">@style/TitleBackgroundColor</item>
     </style>
+    <!--操作记录-->
     <style name="restyle" parent="android:Theme">
         <item name="android:windowTitleSize">50dip</item>
         <item name="android:textSize">20sp</item>
@@ -25,5 +26,19 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowTitleStyle">@style/TitleBackgroundColor</item>
+    </style>
+    <!--进度条-->
+    <style name="prostyle" parent="android:Theme">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:windowAnimationStyle">@android:style/Theme.Dialog</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowTitleStyle">@style/TitleBackgroundColor</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--设置窗口的背景是否为半透明，设置透明背景必须要设置此项-->
+        <item name="android:windowIsTranslucent">true</item>
+
     </style>
 </resources>

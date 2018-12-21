@@ -21,6 +21,8 @@ public class KZActivity extends Activity {
     private Button btnSCZW;
     private Button btnSCSYZW;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,8 @@ public class KZActivity extends Activity {
         btnSCZW.setOnClickListener(new onClickListener());
         btnSCSYZW=(Button)findViewById(R.id.scsyzw);
         btnSCSYZW.setOnClickListener(new onClickListener());
+
+
     }
 
     /**

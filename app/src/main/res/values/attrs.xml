@@ -9,4 +9,53 @@
         <attr name="metaButtonBarButtonStyle" format="reference" />
     </declare-styleable>
 
+    <declare-styleable name="PercentageRing">
+        <attr name="radius" format="integer"/>
+        <attr name="circleBackground" format="color"/>
+        <attr name="ringColor" format="color"/>
+        <attr name="textColor" format = "color"/>
+
+    </declare-styleable>
+
+    <declare-styleable name="myMagicProgress">
+        <attr name="circleProgressRadus" format="dimension"/>
+        <attr name="horizonalProgressHeight" format="dimension"/>
+        <attr name="textProgressSize" format="dimension"/>
+        <attr name="colorProgress" format="reference|color"/>
+        <attr name="colorSecondProgress" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="CircleImageView">
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="SwipeMenuView">
+        <attr name="swipeEnable" format="boolean"/>
+        <attr name="ios" format="boolean"/>
+        <attr name="leftSwipe" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="CirclePercentView">
+        <attr name="radiuss" format="integer"/><!--半径-->
+        <attr name="stripeWidth" format="integer"/><!--色带宽度-->
+        <attr name="percent" format="integer"/><!--百分比 最大值为100-->
+        <attr name="smallColor" format="color"/><!--小圆颜色-->
+        <attr name="bigColor" format="color"/> <!--外圈颜色-->
+        <attr name="centerTextSize" format="dimension"/><!--中间字体颜色-->
+    </declare-styleable>
+
+    <declare-styleable name="ProgressWheel">
+        <attr name="matProg_progressIndeterminate" format="boolean" />
+        <attr name="matProg_barColor" format="color" />
+        <attr name="matProg_rimColor" format="color" />
+        <attr name="matProg_rimWidth" format="dimension" />
+        <attr name="matProg_spinSpeed" format="float" />
+        <attr name="matProg_barSpinCycleTime" format="integer" />
+        <attr name="matProg_circleRadius" format="dimension" />
+        <attr name="matProg_fillRadius" format="boolean" />
+        <attr name="matProg_barWidth" format="dimension" />
+        <attr name="matProg_linearProgress" format="boolean" />
+    </declare-styleable>
 </resources>

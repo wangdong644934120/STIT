@@ -1,78 +1,47 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AbsoluteLayout;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.animation.Easing;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.BarLineChartBase;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
-import com.st.p2018.entity.ProductBar;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.LogUtil;
@@ -81,20 +50,10 @@ import com.st.p2018.util.MySpeechUtil;
 import com.st.p2018.util.MyTextToSpeech;
 
 
-import org.apache.log4j.Logger;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.security.spec.ECField;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 
 public class MainActivity extends Activity {
@@ -220,6 +179,11 @@ public class MainActivity extends Activity {
                         Intent intent = new Intent(MainActivity.this, DeviceActivity.class);
                         startActivity(intent);
                     }
+                    if(bundle.getString("ui").toString().equals("ta")){
+                        Intent intent = new Intent(MainActivity.this, ProgressDialog.class);
+                        startActivity(intent);
+                    }
+
                 }
                 //缩略图更新
                 if(bundle.getString("type")!=null){
