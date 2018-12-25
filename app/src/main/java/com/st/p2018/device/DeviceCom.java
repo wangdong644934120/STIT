@@ -28,15 +28,15 @@ public class DeviceCom extends Thread{
     private String value="1";
     public void run(){
         openCom();
-        //byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
-        //JXDevice(byDevice);
+//        byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
+//        JXDevice(byDevice);
         //new HeartThread().start();
         //new TimeThread().start();
-       //new DataThread().start();
+       new DataThread().start();
     }
 
     private void JXDevice(byte[] data){
-        if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
+        if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
                 && data[3] == (byte) 0x05 && data[4] == (byte) 0x0E ) {
             HashMap<String,String> map=new HashMap<String,String>();
             String gx="Ⅰ型";

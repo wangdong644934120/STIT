@@ -197,4 +197,8 @@ public class PercentCircle extends View {
     public void setTargetPercent(int targetPercent){
         mTargetPercent = targetPercent;
     }
+
+    public void update(){
+        postInvalidateDelayed(10);
+    }
 }

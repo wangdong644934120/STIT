@@ -89,7 +89,14 @@ public class MainActivity extends Activity {
 
     private ImageView ivh1;
     private ImageView ivh2;
+    private ImageView ivh3;
+    private ImageView ivh4;
+    private ImageView ivh5;
+    private ImageView ivh6;
     private String bfb="1";
+    private ImageView ivmen;
+    private ImageView ivd1;
+    private ImageView ivd2;
 
     final static int COUNTS = 5;// 点击次数
     final static long DURATION = 3000;// 规定有效时间
@@ -190,64 +197,167 @@ public class MainActivity extends Activity {
                     if(bundle.get("type").toString().equals("men")){
                         if(bundle.get("zt").toString().equals("1")){
                             //替换开门图片
+                            ivmen.setImageResource(R.drawable.wsm1);
+
                         }else{
                             //替换关门图片
+                            ivmen.setImageResource(R.drawable.wsm);
                         }
                     }
                     if(bundle.get("type").toString().equals("deng")){
                         if(bundle.get("zt").toString().equals("1")){
                             //替换开灯图片
+                            ivd1.setImageResource(R.drawable.wsd);
+                            ivd2.setImageResource(R.drawable.wsd);
                         }else{
                             //替换关灯图片
+                            ivd1.setImageResource(R.drawable.wsd1);
+                            ivd2.setImageResource(R.drawable.wsd1);
                         }
                     }
                     if(bundle.get("type").toString().equals("hwxc")){
                        if(bundle.get("wz").toString().equals("1")){
-                           //替换红外行程1触发图片
-                       }else{
-                           //替换红外行程1不触发图片
+                           if(bundle.get("zt").toString().equals("1")){
+                               //替换红外行程1触发图片
+                               ivh1.setImageResource(R.drawable.wshw1);
+                           }else{
+                               //替换红外行程1不触发图片
+                               ivh1.setImageResource(R.drawable.wshw);
+                           }
+
                        }
                         if(bundle.get("wz").toString().equals("2")){
-                            //替换红外行程2触发图片
-                        }else{
-                            //替换红外行程2不触发图片
+                            if(bundle.get("zt").toString().equals("1")){
+                                //替换红外行程1触发图片
+                                ivh2.setImageResource(R.drawable.wshw1);
+                            }else{
+                                //替换红外行程1不触发图片
+                                ivh2.setImageResource(R.drawable.wshw);
+                            }
+
                         }
                         if(bundle.get("wz").toString().equals("3")){
-                            //替换红外行程3触发图片
-                        }else{
-                            //替换红外行程3不触发图片
+                            if(bundle.get("zt").toString().equals("1")){
+                                //替换红外行程1触发图片
+                                ivh3.setImageResource(R.drawable.wshw1);
+                            }else{
+                                //替换红外行程1不触发图片
+                                ivh3.setImageResource(R.drawable.wshw);
+                            }
+
                         }
                         if(bundle.get("wz").toString().equals("4")){
-                            //替换红外行程4触发图片
-                        }else{
-                            //替换红外行程4不触发图片
+                            if(bundle.get("zt").toString().equals("1")){
+                                //替换红外行程1触发图片
+                                ivh4.setImageResource(R.drawable.wshw1);
+                            }else{
+                                //替换红外行程1不触发图片
+                                ivh4.setImageResource(R.drawable.wshw);
+                            }
+
                         }
                         if(bundle.get("wz").toString().equals("5")){
-                            //替换红外行程5触发图片
-                        }else{
-                            //替换红外行程5不触发图片
+                            if(bundle.get("zt").toString().equals("1")){
+                                //替换红外行程1触发图片
+                                ivh5.setImageResource(R.drawable.wshw1);
+                            }else{
+                                //替换红外行程1不触发图片
+                                ivh5.setImageResource(R.drawable.wshw);
+                            }
+
                         }
                         if(bundle.get("wz").toString().equals("6")){
-                            //替换红外行程6触发图片
-                        }else{
-                            //替换红外行程6不触发图片
+                            if(!Cache.gx.equals("Ⅰ型")){
+                                if(bundle.get("zt").toString().equals("1")){
+                                    //替换红外行程1触发图片
+                                    ivh6.setImageResource(R.drawable.wshw1);
+                                }else{
+                                    //替换红外行程1不触发图片
+                                    ivh6.setImageResource(R.drawable.wshw);
+                                }
+                            }
+
+
                         }
+//                        if(bundle.get("wz").toString().equals("2")){
+//                            //替换红外行程2触发图片
+//                            ivh2.setImageResource(R.drawable.wshw1);
+//                        }else{
+//                            //替换红外行程2不触发图片
+//                            ivh2.setImageResource(R.drawable.wshw);
+//                        }
+//                        if(bundle.get("wz").toString().equals("3")){
+//                            //替换红外行程3触发图片
+//                            ivh3.setImageResource(R.drawable.wshw1);
+//                        }else{
+//                            //替换红外行程3不触发图片
+//                            ivh3.setImageResource(R.drawable.wshw);
+//                        }
+//                        if(bundle.get("wz").toString().equals("4")){
+//                            //替换红外行程4触发图片
+//                            ivh4.setImageResource(R.drawable.wshw1);
+//                        }else{
+//                            //替换红外行程4不触发图片
+//                            ivh4.setImageResource(R.drawable.wshw);
+//                        }
+//                        if(bundle.get("wz").toString().equals("5")){
+//                            //替换红外行程5触发图片
+//                            ivh5.setImageResource(R.drawable.wshw1);
+//                        }else{
+//                            //替换红外行程5不触发图片
+//                            ivh5.setImageResource(R.drawable.wshw);
+//                        }
+//                        if(Cache.gx.equals("Ⅰ型")){
+//
+//                        }else{
+//                            if(bundle.get("wz").toString().equals("6")){
+////                            //替换红外行程6触发图片
+//                            ivh6.setImageResource(R.drawable.wshw1);
+//                        }else{
+//                            //替换红外行程6不触发图片
+//                            ivh6.setImageResource(R.drawable.wshw);
+//                        }
+//                        }
+
                     }
                 }
                 if(bundle.getString("pd")!=null){
-                    String bfb=bundle.get("pd").toString();
-                    mChart.animateY(500, Easing.EasingOption.EaseInCirc);
-                    mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bfb+"0%"));
-                    if(bfb.equals("10")){
-                        initJXQData();
+                    String value=bundle.getString("pd");
+                    if(value.equals("openpd")){
+                        Intent intent = new Intent(MainActivity.this, ProgressDialog.class);
+                        startActivity(intent);
                     }else{
-                        HashMap map = new HashMap();
-                        map.put("ygq","已过期(0个)");
-                        map.put("jxq","近效期(0个)");
-                        map.put("yxq","远效期(0个)");
-                        setData(map);
+                        Intent intent = new Intent("jason.broadcast.action");
+                        intent.putExtra("data", value);
+                        sendBroadcast(intent);
                     }
+
+//                    String bfb=bundle.get("pd").toString();
+//                    mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+//                    mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bfb+"0%"));
+//                    if(bfb.equals("10")){
+//                        initJXQData();
+//                    }else{
+//                        HashMap map = new HashMap();
+//                        map.put("ygq","已过期(0个)");
+//                        map.put("jxq","近效期(0个)");
+//                        map.put("yxq","远效期(0个)");
+//                        setData(map);
+//                    }
                 }
+                if(bundle.getString("pd")!=null){
+                    Intent intent = new Intent("jason.broadcast.action");
+                    intent.putExtra("data", bundle.getString("pd"));
+                    sendBroadcast(intent);
+                }
+
+                if(bundle.getString("closepd")!=null){
+                    Intent intent = new Intent("jason.broadcast.action");
+                    intent.putExtra("data", bundle.getString("pd"));
+                    sendBroadcast(intent);
+                }
+
+
                 if(bundle.getString("record")!=null){
                     Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                     startActivity(intent);
@@ -492,16 +602,18 @@ public class MainActivity extends Activity {
         //灯带1
         params = new RelativeLayout.LayoutParams(20, 280);
         params.setMargins(80, 80, 0, 0);
-        ImageView ivd1 = new ImageView(this);
+        ivd1 = new ImageView(this);
         ivd1.setBackgroundColor(Color.GREEN);
+        ivd1.setImageResource(R.drawable.wsd1);
         ivd1.setLayoutParams(params);
         rl.addView(ivd1);
 
         //门
         params = new RelativeLayout.LayoutParams(250, 40);
         params.setMargins(100, 40, 0, 0);
-        ImageView ivmen = new ImageView(this);
+        ivmen = new ImageView(this);
         ivmen.setBackgroundColor(Color.YELLOW);
+        ivmen.setImageResource(R.drawable.wsm);
         ivmen.setLayoutParams(params);
         rl.addView(ivmen);
 
@@ -509,10 +621,57 @@ public class MainActivity extends Activity {
         //灯带2
         params = new RelativeLayout.LayoutParams(20, 280);
         params.setMargins(350, 80, 0, 0);
-        ImageView ivd2 = new ImageView(this);
+        ivd2 = new ImageView(this);
         ivd2.setBackgroundColor(Color.GREEN);
+        ivd2.setImageResource(R.drawable.wsd1);
         ivd2.setLayoutParams(params);
         rl.addView(ivd2);
+
+        ivh1=new ImageView(this);
+        ivh1.setBackgroundColor(Color.BLUE);
+        ivh1.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 100, 0, 0);
+        ivh1.setLayoutParams(params);
+//        ivh1.setRotation(-15);
+        rl.addView(ivh1);
+
+        ivh2=new ImageView(this);
+        ivh2.setBackgroundColor(Color.BLUE);
+        ivh2.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 150, 0, 0);
+        ivh2.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+        rl.addView(ivh2);
+
+        ivh3=new ImageView(this);
+        ivh3.setBackgroundColor(Color.BLUE);
+        ivh3.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 200, 0, 0);
+        ivh3.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+        rl.addView(ivh3);
+
+
+        ivh4=new ImageView(this);
+        ivh4.setBackgroundColor(Color.BLUE);
+        ivh4.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 250, 0, 0);
+        ivh4.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+        rl.addView(ivh4);
+
+        ivh5=new ImageView(this);
+        ivh5.setBackgroundColor(Color.BLUE);
+        ivh5.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 300, 0, 0);
+        ivh5.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+        rl.addView(ivh5);
 
         //红外
 //        ImageView ivh1=new ImageView(this);
@@ -562,23 +721,23 @@ public class MainActivity extends Activity {
 //        Glide.with(this).load(R.drawable.timg).apply(options).into(ivh5);
 
         //测试旋转
-         ivh1=new ImageView(this);
-        ivh1.setBackgroundColor(Color.BLUE);
-        ivh1.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 100, 0, 0);
-        ivh1.setLayoutParams(params);
-        ivh1.setRotation(-15);
-        rl.addView(ivh1);
-
-        ivh2=new ImageView(this);
-        ivh2.setBackgroundColor(Color.BLUE);
-        ivh2.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 130, 0, 0);
-        ivh2.setLayoutParams(params);
-        ivh2.setRotation(-15);
-        rl.addView(ivh2);
+//         ivh1=new ImageView(this);
+//        ivh1.setBackgroundColor(Color.BLUE);
+//        ivh1.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 100, 0, 0);
+//        ivh1.setLayoutParams(params);
+//        ivh1.setRotation(-15);
+//        rl.addView(ivh1);
+//
+//        ivh2=new ImageView(this);
+//        ivh2.setBackgroundColor(Color.BLUE);
+//        ivh2.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 130, 0, 0);
+//        ivh2.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+//        rl.addView(ivh2);
 
 
     }

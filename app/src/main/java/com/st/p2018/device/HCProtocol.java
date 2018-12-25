@@ -69,27 +69,13 @@ public class HCProtocol {
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:心跳发送");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="心跳返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x01 && data[4] == (byte) 0x00 ) {
+                return true;
             }else{
-                sendData("状态:心跳发送无数据返回");
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x01 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
             logger.error("发送心跳出错",e);
             return false;
@@ -120,7 +106,7 @@ public class HCProtocol {
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
             byte[] data=sp.sendAndGet(send);
-            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
                     && data[3] == (byte) 0x03 && data[4] == (byte) 0x00 ) {
                 return true;
             }else{
@@ -170,29 +156,13 @@ public class HCProtocol {
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:发送时间同步");
             byte[] data=sp.sendAndGet(send);
-
-            //--
-            String fh="发送时间同步返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x04 && data[4] == (byte) 0x00 ) {
+                return true;
             }else{
-                sendData("状态:获取设备信息发送无数据返回");
+                return false;
             }
-            return true;
-            //--
-            //---
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x04 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
             logger.error("时间同步出错",e);
             return false;
@@ -219,25 +189,10 @@ public class HCProtocol {
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
             byte jyData=getJYData(before);
-
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:获取设备信息发送");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="获取设备信息返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
-            }else{
-                sendData("状态:获取设备信息发送无数据返回");
-            }
-            return null;
-            //--
-//            return data;
+            return data;
         }catch (Exception e){
             logger.error("获取设备信息出错",e);
             return null;
@@ -271,31 +226,16 @@ public class HCProtocol {
             before=DataTypeChange.byteAddToByte(before,order);
             before=DataTypeChange.byteAddToByte(before,bydata);
             byte jyData=getJYData(before);
-            sendData("状态:设置工作模式信息发送");
+
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
             byte[] data=sp.sendAndGet(send);
-
-            //--
-            String fh="设置工作模式返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x06 && data[4] == (byte) 0x00 ) {
+                return true;
             }else{
-                sendData("状态:设置工作模式无数据返回");
+                return false;
             }
-            return true;
-            //--
-
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x06 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
             logger.error("设置工作模式出错",e);
             return false;
@@ -326,57 +266,42 @@ public class HCProtocol {
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
-            sendData("状态:获取工作状态");
             //发送数据
             byte[] data=sp.sendAndGet(send);
 
-            //--
-            String fh="获取工作状态返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
-            }else{
-                sendData("状态:获取工作状态无数据返回");
-            }
-            return null;
-            //--
+            if (data!=null && data.length>=16 && data[0] == (byte) 0x3A && data[1] == (byte) 0x0E
+                    && data[3] == (byte) 0x07 ) {
+                //刷卡器
+                String skq=DataTypeChange.getBit(data[4]);
+                map.put("skq",skq);
 
-//            if (data!=null && data.length>=16 && data[0] == (byte) 0x3A && data[1] == (byte) 0x0E
-//                    && data[3] == (byte) 0x07 ) {
-//                //刷卡器
-//                String skq=DataTypeChange.bytes2HexString(data[4]);
-//                map.put("skq",skq);
-//
-//                //指纹传感器
-//                String zwcgq=DataTypeChange.bytes2HexString(data[5]);
-//                map.put("zwcgq",zwcgq);
-//
-//                //门状态传感器
-//                String mztcgq=DataTypeChange.bytes2HexString(data[6]);
-//                map.put("mztcgq",mztcgq);
-//
-//                //电控锁
-//                String dks=DataTypeChange.bytes2HexString(data[7]);
-//                map.put("dks",dks);
-//
-//                //红外/行程开关
-//                String hwxckg=DataTypeChange.getBit(data[8]);
-//                //String hwxckg=DataTypeChange.bytes2HexString(data[8]);
-//                map.put("hwxckg",hwxckg);
-//
-//                //照明灯
-//                String zmd=DataTypeChange.bytes2HexString(data[9]);
-//                map.put("zmd",zmd);
-//
-//                //RFID读写器
-//                String rfid=DataTypeChange.getBit(data[10]);
-////                String rfid=DataTypeChange.bytes2HexString(data[10]);
-//                map.put("rfid",rfid);
-//            }
-//            return map;
+                //指纹传感器
+                String zwcgq=DataTypeChange.getBit(data[5]);
+                map.put("zwcgq",zwcgq);
+
+                //门状态传感器
+                String mztcgq=DataTypeChange.getBit(data[6]);
+                map.put("mztcgq",mztcgq);
+
+                //电控锁
+                String dks=DataTypeChange.getBit(data[7]);
+                map.put("dks",dks);
+
+                //红外/行程开关
+                String hwxckg=DataTypeChange.getBit(data[8]);
+                //String hwxckg=DataTypeChange.bytes2HexString(data[8]);
+                map.put("hwxckg",hwxckg);
+
+                //照明灯
+                String zmd=DataTypeChange.getBit(data[9]);
+                map.put("zmd",zmd);
+
+                //RFID读写器
+                String rfid=DataTypeChange.getBit(data[10]);
+//                String rfid=DataTypeChange.bytes2HexString(data[10]);
+                map.put("rfid",rfid);
+            }
+            return map;
         }catch (Exception e){
             logger.error("获取工作状态出错",e);
             return null;
@@ -412,37 +337,36 @@ public class HCProtocol {
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
-            sendData("状态:获取卡或指纹权限");
             //发送数据
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="获取卡或指纹权限返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
+            if(power==0){
+                if (data!=null && data.length>=4 && data[0] == (byte) 0x3A && data[1] == (byte) 0x07
+                        && data[3] == (byte) 0x08 ) {
+                    //卡权限
+                        byte[] cardby = new byte[4];
+                        System.arraycopy(data, 4, cardby, 0, 4);
+                        card = DataTypeChange.byteArrayToHexString(cardby);
                 }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
-            }else{
-                sendData("状态:获取卡或指纹权限无数据返回");
+            }else if(power==1){
+                byte[] cardby = new byte[2];
+                System.arraycopy(data, 4, cardby, 0, 2);
+                card = DataTypeChange.byteArrayToHexString(cardby);
             }
-            return null;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+//            if (data!=null && data.length>=4 && data[0] == (byte) 0x3A && data[1] == (byte) 0x07
 //                    && data[3] == (byte) 0x08 ) {
 //                //卡权限
 //                if(power==0){
-//                    byte[] cardby = new byte[10];
-//                    System.arraycopy(data, 8, cardby, 0, 10);
+//                    byte[] cardby = new byte[4];
+//                    System.arraycopy(data, 4, cardby, 0, 4);
 //                    card = DataTypeChange.byteArrayToHexString(cardby);
 //                }else if(power==1){
-//                    byte[] cardby = new byte[10];
-//                    System.arraycopy(data, 8, cardby, 0, 10);
+//                    byte[] cardby = new byte[4];
+//                    System.arraycopy(data, 4, cardby, 0, 4);
 //                    card = DataTypeChange.byteArrayToHexString(cardby);
 //                }
 //
 //            }
-//            return card;
+            return card;
         }catch (Exception e){
             logger.error("获取用户权限出错",e);
             return "";
@@ -455,52 +379,41 @@ public class HCProtocol {
     /**
      * 获取盘存数据
      */
-    public static String ST_GetCard(){
-        String card="";
+    public static HashMap<String,String> ST_GetCard(){
+        HashMap<String,String> map = new HashMap<String,String>();
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x23 };
+            byte[] length = new byte[] { 0x03 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x09};
-            byte[] bydata=new byte[32];
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
             before=DataTypeChange.byteAddToByte(before,length);
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
-            before=DataTypeChange.byteAddToByte(before,bydata);
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:获取盘存数据发送");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="获取盘存数据返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
+            if (data!=null && data.length>=4 && data[0] == (byte) 0x3A && data[3] == (byte) 0x09 ) {
+                byte[] cardby = new byte[data.length-5];
+                System.arraycopy(data, 4, cardby, 0, data.length-5);
+                //todo判断cardby内容是否为0
+                for(int i=0;i<cardby.length/9;i++){
+                    byte wz=cardby[i*9];
+                    byte[] card=new byte[8];
+                    System.arraycopy(cardby,i*9+1,card,0,8);
+                    String cardS = DataTypeChange.byteArrayToHexString(card);
+                    map.put(cardS,String.valueOf(wz));
                 }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
-            }else{
-                sendData("状态:获取盘存无数据返回");
+
             }
-            return null;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x23
-//                    && data[3] == (byte) 0x09 ) {
-//                byte[] cardby = new byte[32];
-//                System.arraycopy(data, 4, cardby, 0, 32);
-//                //todo判断cardby内容是否为0
-//
-//                card = DataTypeChange.byteArrayToHexString(cardby);
-//            }
-//            return card;
+            return map;
         }catch (Exception e){
             logger.error("读取标签盘存数据出错",e);
-            return card;
+            return map;
         }finally {
             myLock.unlock();
         }
@@ -548,36 +461,20 @@ public class HCProtocol {
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:删除指纹");
             byte[] data=sp.sendAndGet(send);
 
-            //--
-            String fh="删除指纹返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x21 && data[4] == (byte) 0x00) {
+                return true;
             }else{
-                sendData("状态:删除指纹无数据返回");
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x21 && data[4] == (byte) 0x00) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
             logger.error("删除指纹出错",e);
             return false;
         }finally {
             myLock.unlock();
         }
-
-
     }
 
     public static boolean ST_AddSaveZW(int code){
@@ -603,27 +500,14 @@ public class HCProtocol {
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:添加指纹0102");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="添加指纹返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x28 && data[4] == (byte) 0x00) {
+                return true;
             }else{
-                sendData("状态:添加指纹无数据返回");
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x28 && data[4] == (byte) 0x00) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
             logger.error("添加指纹出错",e);
             return  false;
@@ -662,7 +546,7 @@ public class HCProtocol {
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
             byte[] data=sp.sendAndGet(send);
-            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
                     && data[3] == (byte) 0x28 && data[4] == (byte) 0x00) {
                 return true;
             }else{
@@ -683,42 +567,30 @@ public class HCProtocol {
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x03 };
+            byte[] length = new byte[] { 0x04 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x50};
-
+            byte[] bydata=new byte[]{0x03};
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
             before=DataTypeChange.byteAddToByte(before,length);
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:开门发送");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="开门返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x50 && data[4] == (byte) 0x00 ) {
+                return true;
             }else{
-                sendData("状态:开门发送无数据返回");
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x01 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
-            logger.error("发送心跳出错",e);
+            logger.error("发送开门指令出错",e);
             return false;
         }finally {
             myLock.unlock();
@@ -730,42 +602,30 @@ public class HCProtocol {
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x03 };
+            byte[] length = new byte[] { 0x04 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x51};
-
+            byte[] bydata=new byte[]{0x03};
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
             before=DataTypeChange.byteAddToByte(before,length);
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:开灯发送");
             byte[] data=sp.sendAndGet(send);
-            //--
-            String fh="开灯返回";
-            if(data!=null){
-                for(int i=0;i<data.length;i++){
-                    fh=fh+String.valueOf(data[i])+",";
-                }
-                fh=fh.substring(0,fh.length()-1);
-                sendData("状态:"+fh);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x51 && data[4] == (byte) 0x00 ) {
+                return true;
             }else{
-                sendData("状态:开灯发送无数据返回");
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x01 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
-            logger.error("发送心跳出错",e);
+            logger.error("发送开灯指令出错",e);
             return false;
         }finally {
             myLock.unlock();
@@ -778,40 +638,28 @@ public class HCProtocol {
             byte[] head = new byte[]{0x3A};
             byte[] length = new byte[]{0x03};
             byte[] deviceID = new byte[]{0x00};
-            byte[] order = new byte[]{0x52};
-
+            byte[] order = new byte[]{0x51};
+            byte[] bydata=new byte[]{0x00};
             byte[] before = new byte[]{};
             before = DataTypeChange.byteAddToByte(before, head);
             before = DataTypeChange.byteAddToByte(before, length);
             before = DataTypeChange.byteAddToByte(before, deviceID);
             before = DataTypeChange.byteAddToByte(before, order);
+            before = DataTypeChange.byteAddToByte(before, bydata);
             byte jyData = getJYData(before);
 
             byte[] send = DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            sendData("状态:关灯发送");
             byte[] data = sp.sendAndGet(send);
-            //--
-            String fh = "关灯返回";
-            if (data != null) {
-                for (int i = 0; i < data.length; i++) {
-                    fh = fh + String.valueOf(data[i]) + ",";
-                }
-                fh = fh.substring(0, fh.length() - 1);
-                sendData("状态:" + fh);
-            } else {
-                sendData("状态:开灯发送无数据返回");
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x51 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
             }
-            return true;
-            //--
-//            if (data!=null && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x01 && data[4] == (byte) 0x00 ) {
-//                return true;
-//            }else{
-//                return false;
-//            }
         }catch (Exception e){
-            logger.error("发送心跳出错",e);
+            logger.error("发送关灯指令出错",e);
             return false;
         }finally {
             myLock.unlock();

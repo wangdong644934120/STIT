@@ -61,7 +61,7 @@ public class DataThread extends Thread {
                 }
 
                 try {
-                    Thread.sleep(10000);
+                    Thread.sleep(100);
                 } catch (Exception e) {
                     logger.error("获取数据线程等待出错", e);
                 }
@@ -71,16 +71,18 @@ public class DataThread extends Thread {
     }
     //刷卡器
     private void alaSKQ(String skq){
-        skq = skq.substring(0, 1);
+        skq = skq.substring(7, 8);
         if (skq.equals("1")) {
+            System.out.println("刷卡器有动作："+skq);
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(0);
+            logger.info("获取到卡号:"+card);
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                addZWSKEvent(Cache.code,Event.EVENTTYPE_SKOPENDOOR);
+                //addZWSKEvent(Cache.code,Event.EVENTTYPE_SKOPENDOOR);
 
                 sendTS("操作:"+list.get(0).get("name")+"刷卡开门成功");
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"刷卡开门成功");
@@ -88,13 +90,13 @@ public class DataThread extends Thread {
             }else{
                 sendTS("报警:此卡无开门权限");
                 MyTextToSpeech.getInstance().speak("此卡无开门权限");
-                addZWSKEvent("",Event.EVENTTYPE_SKOPENDOOR);
+                //addZWSKEvent("",Event.EVENTTYPE_SKOPENDOOR);
             }
         }
     }
     //指纹传感器
     private void alaZWCGQ(String zwcgq){
-        zwcgq = zwcgq.substring(0, 2);
+        zwcgq = zwcgq.substring(6, 8);
 
         if (zwcgq.equals("00")) {
             //未检测到指纹
@@ -107,22 +109,25 @@ public class DataThread extends Thread {
             sendTS("报警:此指纹无开门权限");
             MyTextToSpeech.getInstance().speak("此指纹无开门权限");
         }
-        if (zwcgq.equals("11")) {
+        //应该为11
+        if (zwcgq.equals("01")) {
+            System.out.println("指纹模块有动作："+zwcgq);
             //指纹匹配成功，下发获取指纹编号
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(1);
+            logger.info("获取到指纹编号："+card);
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                addZWSKEvent(Cache.code,Event.EVENTTYPE_ZWOPENDOOR);
+                //addZWSKEvent(Cache.code,Event.EVENTTYPE_ZWOPENDOOR);
                 sendTS("操作:"+list.get(0).get("name")+"指纹开门成功");
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"指纹开门成功");
             }else{
                 sendTS("报警:此指纹无开门权限");
                 MyTextToSpeech.getInstance().speak("此指纹无开门权限");
-                addZWSKEvent("",Event.EVENTTYPE_ZWOPENDOOR);
+                //addZWSKEvent("",Event.EVENTTYPE_ZWOPENDOOR);
             }
         }
 
@@ -134,17 +139,19 @@ public class DataThread extends Thread {
     }
     //门状态传感器
     private void alaMZTCGQ(String mztcgq){
-        mztcgq=mztcgq.substring(0,2);
-        if(mztcgq.contains("0")){
+        mztcgq=mztcgq.substring(5,7);
+        if(mztcgq.contains("1")){
             //门开
             if(!Cache.mztcgq){
+                System.out.println("设置门开");
                 //设置门开
                 updateUI("men","","1");
                 Cache.mztcgq=true;
             }
-        }else if(mztcgq.equals("11")){
+        }else if(mztcgq.equals("00")){
             //门关
             if(Cache.mztcgq){
+                System.out.println("设置门关");
                 //设置门关
                 updateUI("men","","0");
                 Cache.mztcgq=false;
@@ -155,96 +162,121 @@ public class DataThread extends Thread {
     //电控锁
     private void alaDKS(String dks){
         //电控锁,下发获取电控锁状态
-        dks=dks.substring(0,2);
-        if(dks.contains("0")){
-            //电控锁开
-        }else if(dks.equals("11")){
-            //电控锁关
-        }
-    }
 
+//        dks=dks.substring(5,7);
+//        if(dks.contains("1")){
+//            //门开
+//            if(!Cache.mztcgq){
+//                System.out.println("设置门开");
+//                //设置门开
+//                updateUI("men","","1");
+//                Cache.mztcgq=true;
+//            }
+//        }else if(dks.equals("00")){
+//            //门关
+//            if(Cache.mztcgq){
+//                System.out.println("设置门关");
+//                //设置门关
+//                updateUI("men","","0");
+//                Cache.mztcgq=false;
+//            }
+//        }
+    }
     //红外行程开关
     private void alaHWXCKG(String hwxckg){
-        String hwxc1=hwxckg.substring(0,1);
-        String hwxc2=hwxckg.substring(1,2);
-        String hwxc3=hwxckg.substring(2,3);
-        String hwxc4=hwxckg.substring(3,4);
-        String hwxc5=hwxckg.substring(4,5);
-        String hwxc6=hwxckg.substring(5,6);
+//        System.out.println(hwxckg);
+        String hwxc6=hwxckg.substring(2,3);
+        String hwxc5=hwxckg.substring(3,4);
+        String hwxc4=hwxckg.substring(4,5);
+        String hwxc3=hwxckg.substring(5,6);
+        String hwxc2=hwxckg.substring(6,7);
+        String hwxc1=hwxckg.substring(7,8);
         if(Cache.hwxc1){
             //原红外触发状态，现红外关闭状态
-            if(hwxc1.equals("1")){
+            if(hwxc1.equals("0")){
+                System.out.println("设置红外1未触发");
                 updateUI("hwxc","1","0");
                 Cache.hwxc1=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc1.equals("0")){
+            if(hwxc1.equals("1")){
+                System.out.println("设置红外1触发");
                 updateUI("hwxc","1","1");
                 Cache.hwxc1=true;
             }
         }
         if(Cache.hwxc2){
             //原红外触发状态，现红外关闭状态
-            if(hwxc2.equals("1")){
+            if(hwxc2.equals("0")){
+                System.out.println("设置红外2未触发");
                 updateUI("hwxc","2","0");
                 Cache.hwxc2=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc2.equals("0")){
+            if(hwxc2.equals("1")){
+                System.out.println("设置红外2触发");
                 updateUI("hwxc","2","1");
                 Cache.hwxc2=true;
             }
         }
         if(Cache.hwxc3){
             //原红外触发状态，现红外关闭状态
-            if(hwxc3.equals("1")){
+            if(hwxc3.equals("0")){
+                System.out.println("设置红外3未触发");
                 updateUI("hwxc","3","0");
                 Cache.hwxc3=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc3.equals("0")){
+            if(hwxc3.equals("1")){
+                System.out.println("设置红外3触发");
                 updateUI("hwxc","3","1");
                 Cache.hwxc3=true;
             }
         }
         if(Cache.hwxc4){
             //原红外触发状态，现红外关闭状态
-            if(hwxc4.equals("1")){
+            if(hwxc4.equals("0")){
+                System.out.println("设置红外4未触发");
                 updateUI("hwxc","4","0");
                 Cache.hwxc4=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc4.equals("0")){
+            if(hwxc4.equals("1")){
+                System.out.println("设置红外4触发");
                 updateUI("hwxc","4","1");
                 Cache.hwxc4=true;
             }
         }
         if(Cache.hwxc5){
             //原红外触发状态，现红外关闭状态
-            if(hwxc5.equals("1")){
+            if(hwxc5.equals("0")){
+                System.out.println("设置红外5未触发");
                 updateUI("hwxc","5","0");
                 Cache.hwxc5=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc5.equals("0")){
+            if(hwxc5.equals("1")){
+                System.out.println("设置红外5触发");
                 updateUI("hwxc","5","1");
                 Cache.hwxc5=true;
             }
         }
         if(Cache.hwxc6){
             //原红外触发状态，现红外关闭状态
-            if(hwxc6.equals("1")){
+            if(hwxc6.equals("0")){
+                System.out.println("设置红外6未触发");
                 updateUI("hwxc","6","0");
                 Cache.hwxc6=false;
             }
         }else{
             //元红外关闭状态，现红外触发状态
-            if(hwxc6.equals("0")){
+            if(hwxc6.equals("1")){
+                System.out.println("设置红外6触发");
                 updateUI("hwxc","6","1");
                 Cache.hwxc6=true;
             }
@@ -252,22 +284,25 @@ public class DataThread extends Thread {
     }
     //照明灯
     private void alaZMD(String zmd){
-        zmd=zmd.substring(0,2);
-        if(zmd.contains("0")){
+        zmd=zmd.substring(5,7);
+        if(zmd.contains("1")){
             //设置灯开
             if(!Cache.zmdzt){
+                System.out.println("设置灯开");
                 updateUI("deng","","1");
                 Cache.zmdzt=true;
             }
-        }else if(zmd.equals("11")){
+        }else if(zmd.equals("00")){
             //设置灯关
             if(Cache.zmdzt){
+                System.out.println("设置灯关");
                 updateUI("deng","","0");
                 Cache.zmdzt=false;
             }
         }
 
     }
+    //RFID
     private void alaRFID(String rfid){
         //----------模拟
 //        if(rfid.equals("00000000")){
@@ -283,14 +318,15 @@ public class DataThread extends Thread {
 //        }
         //--------------------
         //RFID读写器
-        String zt = rfid.substring(6,7);
-        String data=rfid.substring(4,5);
+        String zt = rfid.substring(0,2);
+        String data=rfid.substring(2,4);
 
         if(zt.equals("00")){
             //读写器休眠中
         }else if(zt.equals("01")){
             //正在盘存标签
             if(data.equals("01")){
+                sendPD("openpd");
                 getCard();
             }else if(data.equals("10")){
                 //告警
@@ -303,6 +339,7 @@ public class DataThread extends Thread {
                //对标签数据进行处理
                 HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                 new DataDeal(mapBQ).start();
+                sendPD("closepd");
             }else if(data.equals("10")){
                 //告警
             }
@@ -322,29 +359,39 @@ public class DataThread extends Thread {
 //                    }
 
     }
-
+    //获取标签数据
     private void getCard(){
         //有标签数据
         while(true){
-            String card=HCProtocol.ST_GetCard();
+            HashMap<String,String> mapSingle=HCProtocol.ST_GetCard();
             //todo解析标签ID及位置，添加到map中
-
+            map.putAll(mapSingle);
             //盘点进度显示
-            if(map.containsValue("6")){
-                sendPD("95");
-            }else if(map.containsValue("5")){
-                sendPD("90");
-            }else if(map.containsValue("4")){
-                sendPD("80");
-            }else if(map.containsValue("3")){
-                sendPD("50");
-            }else if(map.containsValue("2")){
-                sendPD("30");
-            }else if(map.containsValue("1")){
-                sendPD("10");
+            if(Cache.pc==0){
+                if(mapSingle.containsValue("6")){
+                    sendPD("95");
+                    //Cache.percentCircle.setTargetPercent(95);
+                }else if(mapSingle.containsValue("5")){
+                    sendPD("90");
+                    //Cache.percentCircle.setTargetPercent(90);
+                }else if(mapSingle.containsValue("4")){
+                    sendPD("80");
+                    //Cache.percentCircle.setTargetPercent(80);
+                }else if(mapSingle.containsValue("3")){
+                    sendPD("50");
+                    //Cache.percentCircle.setTargetPercent(50);
+                }else if(mapSingle.containsValue("2")){
+                    sendPD("30");
+                    //Cache.percentCircle.setTargetPercent(30);
+                }else if(mapSingle.containsValue("1")){
+                    sendPD("10");
+                    //Cache.percentCircle.setTargetPercent(10);
+                }
+            }else{
+
             }
 
-            if(card.equals("")){
+            if(mapSingle.isEmpty()){
                 break;
             }
         }
@@ -380,21 +427,6 @@ public class DataThread extends Thread {
         Cache.myHandle.sendMessage(message);
     }
 
-    /**
-     * 添加指纹、刷卡事件记录
-     * @param code
-     * @param type
-     */
-    private void addZWSKEvent(String code,String type){
-        Event event = new Event();
-        event.setId(UUID.randomUUID().toString());
-        event.setCode(code);
-        event.setEventType(type);
-        event.setContent(code.equals("")?"失败":"成功");
-        event.setTime(System.currentTimeMillis());
-        EventDao eventDao=new EventDao();
-        eventDao.addEvent(event);
-    }
 
     /**
      * 更新界面控件
@@ -465,6 +497,23 @@ public class DataThread extends Thread {
         }
     }
 
+    /**
+     * 添加指纹、刷卡事件记录
+     * @param code
+     * @param type
+     */
+    private void addZWSKEvent(String code,String type){
+        Event event = new Event();
+        event.setId(UUID.randomUUID().toString());
+        event.setCode(code);
+        event.setEventType(type);
+        event.setContent(code.equals("")?"失败":"成功");
+        event.setTime(System.currentTimeMillis());
+        EventDao eventDao=new EventDao();
+        eventDao.addEvent(event);
+    }
+
+
     private  void startRecord(){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -472,4 +521,6 @@ public class DataThread extends Thread {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
+
+
 }

@@ -7,6 +7,7 @@ import android.os.Handler;
 import com.st.p2018.entity.Event;
 import com.st.p2018.entity.ProductBar;
 import com.st.p2018.entity.ProductRecord;
+import com.st.p2018.view.PercentCircle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +38,9 @@ public class Cache {
     public static boolean zmdzt=false;
     public static List<ProductRecord> listPR = new ArrayList<ProductRecord>();
     public static String gx="Ⅰ型";
+    public static int pc=0; //盘存方式  0-全盘，1-触发
+    public static int pccs=1;   //盘存次数
+
 
 //    public static HashMap<String,HashMap<String,List<ProductBar>>>  getProduct(){
 //        //key 近效期  key--种类
