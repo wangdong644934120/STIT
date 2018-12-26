@@ -188,7 +188,7 @@ public class PercentCircle extends View {
             //当前角度+360
             mCurrentAngle+=3.6;
             //每10ms重画一次
-            postInvalidateDelayed(10);
+            postInvalidateDelayed(5);
         }
 
         //canvas.drawRect(mArcRectF, mRingPaint);
@@ -199,6 +199,6 @@ public class PercentCircle extends View {
     }
 
     public void update(){
-        postInvalidateDelayed(10);
+        postInvalidateDelayed(5);
     }
 }

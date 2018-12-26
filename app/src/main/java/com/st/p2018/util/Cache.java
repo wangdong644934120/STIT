@@ -20,6 +20,9 @@ import java.util.List;
 public class Cache {
     public static Context myContext;
     public static Handler myHandle;
+    public static Handler myHandleProgress;
+    public static Handler myHandleKH;
+    public static boolean getPersonCard;
     public static String code;
     public static boolean mztcgq=false;//门状态传感器  true--开，false--关
     public static boolean hwxc1=false;

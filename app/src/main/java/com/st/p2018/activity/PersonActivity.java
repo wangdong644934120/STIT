@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,9 +24,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.st.p2018.dao.PersonDao;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.entity.PersonAdapter;
 import com.st.p2018.entity.PersonInfo;
 import com.st.p2018.stit.R;
+import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
 
 import java.util.ArrayList;
@@ -56,9 +60,14 @@ public class PersonActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
         initView();
-
         initGridHeader();// 初始表头
         initQueryGrid();// 初始查询结果表格
+    }
+
+    @Override
+    protected void onDestroy(){
+        Cache.getPersonCard=false;
+        super.onDestroy();
     }
 
     /**
@@ -84,6 +93,19 @@ public class PersonActivity extends Activity {
         modify.setOnClickListener(new onClickListener());
         delete.setOnClickListener(new onClickListener());
 
+        Cache.myHandleKH = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                //提示信息
+                if (bundle.getString("kh") != null) {
+                    kh.setText(bundle.getString("kh"));
+                    Cache.getPersonCard=false;
+                }
+
+            }
+        };
     }
 
     /**
@@ -301,10 +323,34 @@ public class PersonActivity extends Activity {
     }
 
     private void getZW(){
-        tzz.setText("zw11111111111111111111111111111111111111111111111111111111111");
+        if(code.getText().toString().trim().equals("")){
+            MyTextToSpeech.getInstance().speak("请先输入工号");
+            Toast.makeText(this, "请先输入工号", Toast.LENGTH_SHORT).show();
+            return;
+        }else if(Integer.valueOf(code.getText().toString())>700){
+            MyTextToSpeech.getInstance().speak("工号不能超过700");
+            Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        MyTextToSpeech.getInstance().speak("请录入指纹");
+        Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
+        boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
+        if(bl){
+            tzz.setText("录入成功");
+            MyTextToSpeech.getInstance().speak("指纹录入成功");
+            Toast.makeText(this, "指纹录入成功", Toast.LENGTH_SHORT).show();
+
+        }else{
+            MyTextToSpeech.getInstance().speak("指纹录入失败");
+            Toast.makeText(this, "指纹录入失败", Toast.LENGTH_SHORT).show();
+        }
+
     }
     private void getKH(){
-        kh.setText("A1234321");
+        Cache.getPersonCard=true;
+        MyTextToSpeech.getInstance().speak("请刷卡");
+        Toast.makeText(this, "请刷卡", Toast.LENGTH_SHORT).show();
+
     }
     private boolean check(String code,String name){
         if(code.trim().equals("") || name.trim().equals("")){

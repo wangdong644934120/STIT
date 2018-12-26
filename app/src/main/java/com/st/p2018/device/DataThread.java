@@ -27,7 +27,7 @@ public class DataThread extends Thread {
     private PersonDao personDao=null;
     private ProductDao productDao=null;
     private HashMap<String,String> map=new HashMap<String,String>();
-    int a=0;
+    private int openPDFlag=0;
     public void run(){
         personDao= new PersonDao();
         productDao=new ProductDao();
@@ -77,6 +77,11 @@ public class DataThread extends Thread {
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(0);
             logger.info("获取到卡号:"+card);
+            if(Cache.getPersonCard){
+                logger.info("人员管理界面，要卡号，不进行权限判断");
+                sendKH(card);
+                return;
+            }
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
@@ -304,19 +309,6 @@ public class DataThread extends Thread {
     }
     //RFID
     private void alaRFID(String rfid){
-        //----------模拟
-//        if(rfid.equals("00000000")){
-//            if(a==0){
-//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-//                new DataDeal(mapBQ).start();
-//                a=1;
-//            }
-//
-//        }
-//        if(rfid.equals("11111111")){
-//            a=0;
-//        }
-        //--------------------
         //RFID读写器
         String zt = rfid.substring(0,2);
         String data=rfid.substring(2,4);
@@ -326,8 +318,27 @@ public class DataThread extends Thread {
         }else if(zt.equals("01")){
             //正在盘存标签
             if(data.equals("01")){
-                sendPD("openpd");
+                if(openPDFlag==0){
+                    sendOpenPD("openpd");
+                    openPDFlag=1;
+                }
+
                 getCard();
+                sendPD("100");
+                //对标签数据进行处理
+                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                map.clear();
+                new DataDeal(mapBQ).start();
+                try{
+                    Thread.sleep(1000);
+                }catch (Exception e){
+
+                }
+                if(openPDFlag==1){
+                    sendPD("closedpd");
+                    openPDFlag=0;
+                }
+
             }else if(data.equals("10")){
                 //告警
             }
@@ -335,28 +346,29 @@ public class DataThread extends Thread {
             //标签盘存结束
             if(data.equals("01")){
                 //有标签数据
+                if(openPDFlag==0){
+                    sendOpenPD("openpd");
+                    openPDFlag=1;
+                }
                getCard();
                //对标签数据进行处理
                 HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                map.clear();
                 new DataDeal(mapBQ).start();
-                sendPD("closepd");
+                try{
+                    Thread.sleep(1000);
+                }catch (Exception e){
+
+                }
+                if(openPDFlag==1){
+                    sendPD("closedpd");
+                    openPDFlag=0;
+                }
             }else if(data.equals("10")){
                 //告警
             }
         }
 
-
-
-        //检测正在盘点
-//                    for(int i=1;i<=10;i++){
-//                        sendPD(String.valueOf(i));
-//                        sendTS("状态:盘点完成"+String.valueOf(i)+"0%");
-//                        try{
-//                            Thread.sleep(1000);
-//                        }catch (Exception e){
-//
-//                        }
-//                    }
 
     }
     //获取标签数据
@@ -370,22 +382,16 @@ public class DataThread extends Thread {
             if(Cache.pc==0){
                 if(mapSingle.containsValue("6")){
                     sendPD("95");
-                    //Cache.percentCircle.setTargetPercent(95);
                 }else if(mapSingle.containsValue("5")){
                     sendPD("90");
-                    //Cache.percentCircle.setTargetPercent(90);
                 }else if(mapSingle.containsValue("4")){
                     sendPD("80");
-                    //Cache.percentCircle.setTargetPercent(80);
                 }else if(mapSingle.containsValue("3")){
-                    sendPD("50");
-                    //Cache.percentCircle.setTargetPercent(50);
+                    sendPD("70");
                 }else if(mapSingle.containsValue("2")){
-                    sendPD("30");
-                    //Cache.percentCircle.setTargetPercent(30);
+                    sendPD("50");
                 }else if(mapSingle.containsValue("1")){
-                    sendPD("10");
-                    //Cache.percentCircle.setTargetPercent(10);
+                    sendPD("30");
                 }
             }else{
 
@@ -418,13 +424,34 @@ public class DataThread extends Thread {
         Cache.myHandle.sendMessage(message);
     }
 
-    private  void sendPD(String value){
+    private  void sendOpenPD(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
 
         data.putString("pd",value);
         message.setData(data);
         Cache.myHandle.sendMessage(message);
+    }
+
+    private  void sendJXQ(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("initJXQ","1");
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
+
+    private  void sendPD(String value){
+        if(Cache.myHandleProgress==null){
+            return;
+        }
+        Message message = Message.obtain(Cache.myHandleProgress);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("pd",value);
+        message.setData(data);
+        Cache.myHandleProgress.sendMessage(message);
     }
 
 
@@ -451,13 +478,13 @@ public class DataThread extends Thread {
         }
         public void run(){
             Cache.listPR.clear();
-            mapDeal.put("A12245678","1");
-            mapDeal.put("A12345678","1");
-            mapDeal.put("B12345678","1");
-            mapDeal.put("C12345679","1");
-            mapDeal.put("D12345679","1");
-            mapDeal.put("E12345680","1");
-            mapDeal.put("F12345681","2");
+//            mapDeal.put("A12245678","1");
+//            mapDeal.put("A12345678","1");
+//            mapDeal.put("B12345678","1");
+//            mapDeal.put("C12345679","1");
+//            mapDeal.put("D12345679","1");
+//            mapDeal.put("E12345680","1");
+//            mapDeal.put("F12345681","2");
 //            mapDeal.put("F12345680","2");
            List<HashMap<String,String>> list = productDao.getAllProduct();
            Set<String> dealKeys=mapDeal.keySet();
@@ -492,8 +519,8 @@ public class DataThread extends Thread {
             for(String key : updatesKey){
                 productDao.updateProductWZ(mapSave.get(key).toString(),key);
             }
-
-
+            //初始化近效期图示
+            sendJXQ();
         }
     }
 
@@ -523,4 +550,16 @@ public class DataThread extends Thread {
     }
 
 
+    private  void sendKH(String value){
+        if(Cache.myHandleKH==null){
+            logger.info("handle卡号发送失败");
+            return;
+        }
+        Message message = Message.obtain(Cache.myHandleKH);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("kh",value);
+        message.setData(data);
+        Cache.myHandleKH.sendMessage(message);
+    }
 }

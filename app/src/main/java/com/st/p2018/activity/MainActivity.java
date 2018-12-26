@@ -36,6 +36,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.st.p2018.dao.ProductDao;
@@ -125,6 +126,7 @@ public class MainActivity extends Activity {
     }
 
 
+
     private void initView() {
         rl=(RelativeLayout)findViewById(R.id.mylayout);
         initG();
@@ -186,11 +188,6 @@ public class MainActivity extends Activity {
                         Intent intent = new Intent(MainActivity.this, DeviceActivity.class);
                         startActivity(intent);
                     }
-                    if(bundle.getString("ui").toString().equals("ta")){
-                        Intent intent = new Intent(MainActivity.this, ProgressDialog.class);
-                        startActivity(intent);
-                    }
-
                 }
                 //缩略图更新
                 if(bundle.getString("type")!=null){
@@ -276,49 +273,7 @@ public class MainActivity extends Activity {
                                     ivh6.setImageResource(R.drawable.wshw);
                                 }
                             }
-
-
                         }
-//                        if(bundle.get("wz").toString().equals("2")){
-//                            //替换红外行程2触发图片
-//                            ivh2.setImageResource(R.drawable.wshw1);
-//                        }else{
-//                            //替换红外行程2不触发图片
-//                            ivh2.setImageResource(R.drawable.wshw);
-//                        }
-//                        if(bundle.get("wz").toString().equals("3")){
-//                            //替换红外行程3触发图片
-//                            ivh3.setImageResource(R.drawable.wshw1);
-//                        }else{
-//                            //替换红外行程3不触发图片
-//                            ivh3.setImageResource(R.drawable.wshw);
-//                        }
-//                        if(bundle.get("wz").toString().equals("4")){
-//                            //替换红外行程4触发图片
-//                            ivh4.setImageResource(R.drawable.wshw1);
-//                        }else{
-//                            //替换红外行程4不触发图片
-//                            ivh4.setImageResource(R.drawable.wshw);
-//                        }
-//                        if(bundle.get("wz").toString().equals("5")){
-//                            //替换红外行程5触发图片
-//                            ivh5.setImageResource(R.drawable.wshw1);
-//                        }else{
-//                            //替换红外行程5不触发图片
-//                            ivh5.setImageResource(R.drawable.wshw);
-//                        }
-//                        if(Cache.gx.equals("Ⅰ型")){
-//
-//                        }else{
-//                            if(bundle.get("wz").toString().equals("6")){
-////                            //替换红外行程6触发图片
-//                            ivh6.setImageResource(R.drawable.wshw1);
-//                        }else{
-//                            //替换红外行程6不触发图片
-//                            ivh6.setImageResource(R.drawable.wshw);
-//                        }
-//                        }
-
                     }
                 }
                 if(bundle.getString("pd")!=null){
@@ -327,9 +282,6 @@ public class MainActivity extends Activity {
                         Intent intent = new Intent(MainActivity.this, ProgressDialog.class);
                         startActivity(intent);
                     }else{
-                        Intent intent = new Intent("jason.broadcast.action");
-                        intent.putExtra("data", value);
-                        sendBroadcast(intent);
                     }
 
 //                    String bfb=bundle.get("pd").toString();
@@ -345,19 +297,10 @@ public class MainActivity extends Activity {
 //                        setData(map);
 //                    }
                 }
-                if(bundle.getString("pd")!=null){
-                    Intent intent = new Intent("jason.broadcast.action");
-                    intent.putExtra("data", bundle.getString("pd"));
-                    sendBroadcast(intent);
+                if(bundle.getString("initJXQ")!=null){
+                    initJXQData();
+                    mChart.animateY(500, Easing.EasingOption.EaseInCirc);
                 }
-
-                if(bundle.getString("closepd")!=null){
-                    Intent intent = new Intent("jason.broadcast.action");
-                    intent.putExtra("data", bundle.getString("pd"));
-                    sendBroadcast(intent);
-                }
-
-
                 if(bundle.getString("record")!=null){
                     Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                     startActivity(intent);
@@ -520,9 +463,13 @@ public class MainActivity extends Activity {
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(Color.RED);
-        colors.add(Color.YELLOW);
+        colors.add(Color.rgb(238,242,14));
         colors.add(Color.BLUE);
-        colors.add(Color.GREEN);
+
+//        colors.add(Color.RED);
+//        colors.add(Color.YELLOW);
+//        colors.add(Color.BLUE);
+        //colors.add(Color.GREEN);
 //        for (int c : ColorTemplate.VORDIPLOM_COLORS)
 //            colors.add(c);
 //
