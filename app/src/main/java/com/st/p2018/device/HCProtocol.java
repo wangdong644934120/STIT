@@ -246,10 +246,48 @@ public class HCProtocol {
     }
 
     /**
+     * 获取工作模式
+     * @return
+     */
+    public static boolean ST_GetWorkModel(){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x03 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x06};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+            if (data!=null && data.length>=8 && data[0] == (byte) 0x3A && data[1] == (byte) 0x08
+                    && data[3] == (byte) 0x06  ) {
+                Cache.zmd=data[4];
+                Cache.pc=data[5];
+                Cache.pccs=data[6];
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("获取工作模式出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+
+    }
+    /**
      * 获取工作状态
      * @return
      */
-    public static HashMap<String,String> ST_GetWorkModel(){
+    public static HashMap<String,String> ST_GetWorkState(){
         try{
             myLock.lock();
             HashMap<String,String> map = new HashMap<String,String>();
@@ -400,7 +438,7 @@ public class HCProtocol {
             if (data!=null && data.length>=4 && data[0] == (byte) 0x3A && data[3] == (byte) 0x09 ) {
                 byte[] cardby = new byte[data.length-5];
                 System.arraycopy(data, 4, cardby, 0, data.length-5);
-                //todo判断cardby内容是否为0
+                //判断cardby内容是否为0
                 for(int i=0;i<cardby.length/9;i++){
                     byte wz=cardby[i*9];
                     byte[] card=new byte[8];
@@ -666,6 +704,47 @@ public class HCProtocol {
         }
     }
 
+    /**
+     * 指定天线号盘存
+     * @param hwxc
+     * @return
+     */
+    public static boolean ST_GetCardByChoose(int hwxc){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x05 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x32};
+            byte[] bydata=new byte[]{0x02};
+            bydata[0]=(byte)hwxc;
+            bydata[1]=(byte)Cache.pccs;
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x32 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("指定天线号盘存出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+    }
+
     //校验数据
     public static byte getJYData(byte[] datas){
 
@@ -678,6 +757,7 @@ public class HCProtocol {
 
         return temp;
     }
+
 
 
 

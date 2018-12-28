@@ -28,8 +28,24 @@ public class DeviceCom extends Thread{
     private String value="1";
     public void run(){
         openCom();
-//        byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
-//        JXDevice(byDevice);
+        byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
+        JXDevice(byDevice);
+        boolean bl=HCProtocol.ST_GetWorkModel();
+        if(bl){
+            String zmd="";
+            if(Cache.zmd==0){
+                zmd="灯自动";
+            }else if(Cache.zmd==1){
+                zmd="灯常开";
+            }else if(Cache.zmd==2){
+                zmd="灯常关";
+            }
+            sendData("状态:照明灯:"+zmd);
+            sendData("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
+            sendData("状态:盘存次数:"+Cache.pccs);
+        }else{
+            sendData("报警:获取工作模式失败");
+        }
         //new HeartThread().start();
         //new TimeThread().start();
        new DataThread().start();
@@ -74,7 +90,10 @@ public class DeviceCom extends Thread{
             Cache.hwxc6=(map.get("6").equals("1"))?true:false;
             sendData("状态:柜体型号："+gx);
             sendData("状态:柜层启用："+map.get("gc1")+map.get("gc2")+map.get("gc3")+map.get("gc4")+map.get("gc5")+map.get("gc6"));
+        }else{
+            sendData("报警:获取设备信息失败");
         }
+        sendGX();
     }
     private void openCom(){
         try{
@@ -108,4 +127,12 @@ public class DeviceCom extends Thread{
         Cache.myHandle.sendMessage(message);
     }
 
+    //根据柜型更新缩略图
+    private  void sendGX(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        data.putString("gx","1");
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
 }

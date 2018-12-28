@@ -39,6 +39,13 @@ public class ProductDao {
         String sql="select * from stit_t_product";
         return DataBaseExec.execQueryForMap(sql, null);
     }
+
+    public List<HashMap<String,String>> getPorductByHWXC(String hwxc){
+        String sql="select * from stit_t_product where wz=0 or wz=?";
+        String[] args = new String[]{hwxc};
+        return DataBaseExec.execQueryForMap(sql,args);
+    }
+
     public void clearAll_AllProduct(){
         String sql="delete from stit_t_allproduct";
         DataBaseExec.execOther(sql,null);

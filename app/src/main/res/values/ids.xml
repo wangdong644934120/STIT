@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="textview_1" type="id">textview_1</item>
+    <item name="textview_2" type="id">textview_2</item>
+    <item name="textview_3" type="id">textview_3</item>
+    <item name="textview_4" type="id">textview_4</item>
+    <item name="textview_5" type="id">textview_5</item>
+    <item name="textview_6" type="id">textview_6</item>
+</resources>

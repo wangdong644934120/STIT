@@ -8,7 +8,7 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="450dp"
+        android:layout_height="342dp"
         android:background="@color/colorWhite"
         android:orientation="vertical">
 
@@ -51,6 +51,12 @@
             android:text="开门"
             android:textColor="@color/colorWhite" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginTop="20dp"
+            android:background="#a7aba9" />
+
         <Button
             android:id="@+id/scsyzw"
             android:layout_width="match_parent"
@@ -61,11 +67,24 @@
             android:background="@drawable/button_selector"
             android:text="删除所有指纹"
             android:textColor="@color/colorWhite" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
             android:layout_marginTop="20dp"
             android:background="#a7aba9" />
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/button_selector"
+            android:text="关闭"
+            android:textColor="@color/colorWhite" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

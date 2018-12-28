@@ -14,10 +14,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
+import com.st.p2018.util.Cache;
+import com.st.p2018.util.MyTextToSpeech;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,16 +28,9 @@ import java.util.List;
 public class PZActivity extends Activity {
 
     private SeekBar sb;
-    private Spinner spGX;
     private Spinner spDK;
     private Button btnOK;
     private int dl;
-    private CheckBox gc1;
-    private CheckBox gc2;
-    private CheckBox gc3;
-    private CheckBox gc4;
-    private CheckBox gc5;
-    private CheckBox gc6;
     private Spinner spPD;
     private EditText edpdcs;
 
@@ -64,66 +60,18 @@ public class PZActivity extends Activity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
-        spGX=(Spinner)findViewById(R.id.spgx);
-
-        spGX.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> arg0, View arg1,
-                                       int arg2, long arg3) {
-                if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
-                    gc6.setVisibility(View.VISIBLE);
-                }else{
-                    gc6.setVisibility(View.INVISIBLE);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-            }
-        });
-
-
         spDK=(Spinner)findViewById(R.id.spdk);
-
         btnOK=(Button)findViewById(R.id.btnok);
         btnOK.setOnClickListener(new onClickListener());
-        gc1=(CheckBox)findViewById(R.id.cb1);
-        gc2=(CheckBox)findViewById(R.id.cb2);
-        gc3=(CheckBox)findViewById(R.id.cb3);
-        gc4=(CheckBox)findViewById(R.id.cb4);
-        gc5=(CheckBox)findViewById(R.id.cb5);
-        gc6=(CheckBox)findViewById(R.id.cb6);
-        if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
-            gc6.setVisibility(View.VISIBLE);
-        }else{
-            gc6.setVisibility(View.INVISIBLE);
-        }
+
         spPD=(Spinner)findViewById(R.id.sppd);
         edpdcs=(EditText)findViewById(R.id.pdcs);
     }
 
     private void initData(){
-        PZDao pzDao = new PZDao();
-        List<HashMap<String,String>> list = pzDao.getPZ();
-        spGX.setSelection(list.get(0).get("gx").toString().equals("Ⅰ型")?0:1);
-        int dk;
-        if(list.get(0).get("dk").toString().equals("灯自动")){
-            dk=0;
-        }else if(list.get(0).get("dk").toString().equals("灯常开")){
-            dk=1;
-        }else {
-            dk=2;
-        }
-        spDK.setSelection(dk);
-        gc1.setChecked(list.get(0).get("gc1").toString().equals("1")?true:false);
-        gc2.setChecked(list.get(0).get("gc2").toString().equals("1")?true:false);
-        gc3.setChecked(list.get(0).get("gc3").toString().equals("1")?true:false);
-        gc4.setChecked(list.get(0).get("gc4").toString().equals("1")?true:false);
-        gc5.setChecked(list.get(0).get("gc5").toString().equals("1")?true:false);
-        gc6.setChecked(list.get(0).get("gc6").toString().equals("1")?true:false);
-
+        spDK.setSelection(Cache.zmd);
+        spPD.setSelection(Cache.pc);
+        edpdcs.setText(String.valueOf(Cache.pccs));
     }
     /**
      * 设置屏幕的亮度
@@ -165,18 +113,6 @@ public class PZActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btnok:
                     btnOK.setPressed(true);
-//                    HashMap<String,String> mapSave = new HashMap<String,String>();
-//                    mapSave.put("gx",spGX.getSelectedItem().toString());
-//                    mapSave.put("dk",spDK.getSelectedItem().toString());
-//                    mapSave.put("pl",String.valueOf(dl));
-//                    mapSave.put("gc1",gc1.isChecked()?"1":"0");
-//                    mapSave.put("gc2",gc2.isChecked()?"1":"0");
-//                    mapSave.put("gc3",gc3.isChecked()?"1":"0");
-//                    mapSave.put("gc4",gc4.isChecked()?"1":"0");
-//                    mapSave.put("gc5",gc5.isChecked()?"1":"0");
-//                    mapSave.put("gc6",gc6.isChecked()?"1":"0");
-//                    PZDao pzDao= new PZDao();
-//                    pzDao.updatePZ(mapSave);
                     int lightModel=0;
                     if(spDK.getSelectedItem().toString().equals("灯自动")){
                         lightModel=0;
@@ -197,11 +133,15 @@ public class PZActivity extends Activity {
                     }catch (Exception e){
 
                     }
-
-                    HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
+                    boolean bl=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
                     btnOK.setPressed(false);
-
-//                    HCProtocol.ST_SetWorkModel()
+                    if(bl){
+                        Toast.makeText(PZActivity.this, "下传配置成功", Toast.LENGTH_LONG).show();
+                        MyTextToSpeech.getInstance().speak("下传配置成功");
+                    }else{
+                        Toast.makeText(PZActivity.this, "下传配置失败", Toast.LENGTH_LONG).show();
+                        MyTextToSpeech.getInstance().speak("下传配置失败");
+                    }
                     break;
                 default:
                     break;

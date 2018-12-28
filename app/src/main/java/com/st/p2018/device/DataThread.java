@@ -13,6 +13,7 @@ import com.st.p2018.util.MyTextToSpeech;
 
 import org.apache.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,7 @@ public class DataThread extends Thread {
         productDao=new ProductDao();
         while(true){
             try {
-                    HashMap<String, String> map = HCProtocol.ST_GetWorkModel();
+                    HashMap<String, String> map = HCProtocol.ST_GetWorkState();
                     if (map.get("skq") != null) {
                         alaSKQ(map.get("skq").toString());
                     }
@@ -379,24 +380,19 @@ public class DataThread extends Thread {
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
             //盘点进度显示
-            if(Cache.pc==0){
-                if(mapSingle.containsValue("6")){
-                    sendPD("95");
-                }else if(mapSingle.containsValue("5")){
-                    sendPD("90");
-                }else if(mapSingle.containsValue("4")){
-                    sendPD("80");
-                }else if(mapSingle.containsValue("3")){
-                    sendPD("70");
-                }else if(mapSingle.containsValue("2")){
-                    sendPD("50");
-                }else if(mapSingle.containsValue("1")){
-                    sendPD("30");
-                }
-            }else{
-
+            if(mapSingle.containsValue("6")){
+                sendPD("95");
+            }else if(mapSingle.containsValue("5")){
+                sendPD("90");
+            }else if(mapSingle.containsValue("4")){
+                sendPD("80");
+            }else if(mapSingle.containsValue("3")){
+                sendPD("70");
+            }else if(mapSingle.containsValue("2")){
+                sendPD("50");
+            }else if(mapSingle.containsValue("1")){
+                sendPD("30");
             }
-
             if(mapSingle.isEmpty()){
                 break;
             }
@@ -486,7 +482,13 @@ public class DataThread extends Thread {
 //            mapDeal.put("E12345680","1");
 //            mapDeal.put("F12345681","2");
 //            mapDeal.put("F12345680","2");
-           List<HashMap<String,String>> list = productDao.getAllProduct();
+           List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
+           if(Cache.cfpdcs.equals("0")){
+                list=productDao.getAllProduct();
+           }else{
+               list=productDao.getPorductByHWXC(Cache.cfpdcs);
+           }
+
            Set<String> dealKeys=mapDeal.keySet();
            HashMap<String,String> mapSave=new HashMap<String,String>();
            for(HashMap map : list){

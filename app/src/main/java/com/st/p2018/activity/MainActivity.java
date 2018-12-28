@@ -43,6 +43,7 @@ import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.LogUtil;
@@ -59,34 +60,28 @@ import java.util.TimeZone;
 
 public class MainActivity extends Activity {
 
-
-    private Button btnPerson;
-    private Button btnPD;
-    private Button btnKM;
     private PieChart mChart;
     private Button tvD;
     private TextView tvTS;
-
-
     ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
     private List<String> listTS = new ArrayList<String>();
-    HashMap<Float,String> fs=new HashMap<Float,String>();
-    private String yxqjx;
-
+//    HashMap<Float,String> fs=new HashMap<Float,String>();
+//    private String yxqjx;
     private RelativeLayout rl;
     private TextView d1;
     private TextView d2;
     private TextView d3;
     private TextView d4;
     private TextView d5;
+    private TextView d6;
 
-    private TextView h1;
-    private TextView h2;
-    private TextView h3;
-    private TextView h4;
-    private TextView h5;
+//    private TextView h1;
+//    private TextView h2;
+//    private TextView h3;
+//    private TextView h4;
+//    private TextView h5;
 
-    private TextView men;
+//    private TextView men;
 
     private ImageView ivh1;
     private ImageView ivh2;
@@ -94,7 +89,6 @@ public class MainActivity extends Activity {
     private ImageView ivh4;
     private ImageView ivh5;
     private ImageView ivh6;
-    private String bfb="1";
     private ImageView ivmen;
     private ImageView ivd1;
     private ImageView ivd2;
@@ -122,14 +116,12 @@ public class MainActivity extends Activity {
         initJXQData();
         new DeviceCom().start();
 
-
     }
 
 
 
     private void initView() {
         rl=(RelativeLayout)findViewById(R.id.mylayout);
-        initG();
 
         tvD=(Button)findViewById(R.id.dian);
         tvD.setOnClickListener(new onClickListener());
@@ -281,21 +273,7 @@ public class MainActivity extends Activity {
                     if(value.equals("openpd")){
                         Intent intent = new Intent(MainActivity.this, ProgressDialog.class);
                         startActivity(intent);
-                    }else{
                     }
-
-//                    String bfb=bundle.get("pd").toString();
-//                    mChart.animateY(500, Easing.EasingOption.EaseInCirc);
-//                    mChart.setCenterText(generateCenterSpannableText("正在盘点..."+bfb+"0%"));
-//                    if(bfb.equals("10")){
-//                        initJXQData();
-//                    }else{
-//                        HashMap map = new HashMap();
-//                        map.put("ygq","已过期(0个)");
-//                        map.put("jxq","近效期(0个)");
-//                        map.put("yxq","远效期(0个)");
-//                        setData(map);
-//                    }
                 }
                 if(bundle.getString("initJXQ")!=null){
                     initJXQData();
@@ -304,6 +282,15 @@ public class MainActivity extends Activity {
                 if(bundle.getString("record")!=null){
                     Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                     startActivity(intent);
+                }
+                if(bundle.getString("gx")!=null){
+                    //根据柜型更新缩略图
+                    if(Cache.gx.equals("Ⅰ型")){
+                        //I型柜
+                        initGX1();
+                    }else{
+                        initGX2();
+                    }
                 }
             }
         };
@@ -338,6 +325,36 @@ public class MainActivity extends Activity {
                     win.setAttributes(params);
                     selectDialog.setCanceledOnTouchOutside(true);//设置点击Dialog外部任意区域关闭Dialog
                     selectDialog.show();
+                    break;
+                case R.id.textview_1:
+                    //盘点第1层
+                    Cache.cfpdcs="1";
+                    HCProtocol.ST_GetCardByChoose(1);
+                    break;
+                case R.id.textview_2:
+                    //盘点第2层
+                    Cache.cfpdcs="2";
+                    HCProtocol.ST_GetCardByChoose(2);
+                    break;
+                case R.id.textview_3:
+                    //盘点第3层
+                    Cache.cfpdcs="3";
+                    HCProtocol.ST_GetCardByChoose(3);
+                    break;
+                case R.id.textview_4:
+                    //盘点第4层
+                    Cache.cfpdcs="4";
+                    HCProtocol.ST_GetCardByChoose(4);
+                    break;
+                case R.id.textview_5:
+                    //盘点第5层
+                    Cache.cfpdcs="5";
+                    HCProtocol.ST_GetCardByChoose(5);
+                    break;
+                case R.id.textview_6:
+                    Cache.cfpdcs="6";
+                    HCProtocol.ST_GetCardByChoose(6);
+                    //判断第6层
                     break;
                 default:
                     break;
@@ -466,29 +483,7 @@ public class MainActivity extends Activity {
         colors.add(Color.rgb(238,242,14));
         colors.add(Color.BLUE);
 
-//        colors.add(Color.RED);
-//        colors.add(Color.YELLOW);
-//        colors.add(Color.BLUE);
-        //colors.add(Color.GREEN);
-//        for (int c : ColorTemplate.VORDIPLOM_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.JOYFUL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.COLORFUL_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.LIBERTY_COLORS)
-//            colors.add(c);
-//
-//        for (int c : ColorTemplate.PASTEL_COLORS)
-//            colors.add(c);
-//
-//        colors.add(ColorTemplate.getHoloBlue());
-
         dataSet.setColors(colors);
-        //dataSet.setSelectionShift(0f);
 
         PieData data = new PieData(dataSet);
         //data.setValueFormatter(new PercentFormatter());
@@ -504,7 +499,18 @@ public class MainActivity extends Activity {
         mChart.invalidate();
     }
 
-    private void initG(){
+    private void initGX(){
+        RelativeLayout.LayoutParams params ;
+        //背景图片
+        params = new RelativeLayout.LayoutParams(390, 390);
+        params.setMargins(20, 20, 20, 20);
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundColor(Color.WHITE);
+        iv.setImageResource(R.drawable.qsh);
+        iv.setLayoutParams(params);
+        rl.addView(iv);
+    }
+    private void initGX1(){
         RelativeLayout.LayoutParams params ;
         //背景图片
         params = new RelativeLayout.LayoutParams(390, 390);
@@ -518,30 +524,40 @@ public class MainActivity extends Activity {
 
         d1=new TextView(this);
         d1.setText("第一层");
+        d1.setId(R.id.textview_1);
+        d1.setOnClickListener(new onClickListener());
         params = new RelativeLayout.LayoutParams(80, 60);
         params.setMargins(30, 100, 0, 0);
         d1.setLayoutParams(params);
         rl.addView(d1);
         d2=new TextView(this);
         d2.setText("第二层");
+        d2.setId(R.id.textview_2);
+        d2.setOnClickListener(new onClickListener());
         params = new RelativeLayout.LayoutParams(80, 60);
         params.setMargins(30, 150, 0, 0);
         d2.setLayoutParams(params);
         rl.addView(d2);
         d3=new TextView(this);
         d3.setText("第三层");
+        d3.setId(R.id.textview_3);
+        d3.setOnClickListener(new onClickListener());
         params = new RelativeLayout.LayoutParams(80, 60);
         params.setMargins(30, 200, 0, 0);
         d3.setLayoutParams(params);
         rl.addView(d3);
         d4=new TextView(this);
         d4.setText("第四层");
+        d4.setId(R.id.textview_4);
+        d4.setOnClickListener(new onClickListener());
         params = new RelativeLayout.LayoutParams(80, 60);
         params.setMargins(30, 250, 0, 0);
         d4.setLayoutParams(params);
         rl.addView(d4);
         d5=new TextView(this);
         d5.setText("第五层");
+        d5.setId(R.id.textview_5);
+        d5.setOnClickListener(new onClickListener());
         params = new RelativeLayout.LayoutParams(80, 60);
         params.setMargins(30, 300, 0, 0);
         d5.setLayoutParams(params);
@@ -620,73 +636,152 @@ public class MainActivity extends Activity {
 //        ivh2.setRotation(-15);
         rl.addView(ivh5);
 
-        //红外
-//        ImageView ivh1=new ImageView(this);
-//        ivh1.setBackgroundColor(Color.RED);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 100, 0, 0);
-//        ivh1.setLayoutParams(params);
-//        rl.addView(ivh1);
-//
-//        ImageView ivh2=new ImageView(this);
-//        ivh2.setBackgroundColor(Color.RED);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 150, 0, 0);
-//        ivh2.setLayoutParams(params);
-//        rl.addView(ivh2);
-//
-//        ImageView ivh3=new ImageView(this);
-//        ivh3.setBackgroundColor(Color.RED);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 200, 0, 0);
-//        ivh3.setLayoutParams(params);
-//        rl.addView(ivh3);
-//
-//        ImageView ivh4=new ImageView(this);
-//        ivh4.setBackgroundColor(Color.RED);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 250, 0, 0);
-//        ivh4.setLayoutParams(params);
-//        rl.addView(ivh4);
-//
-//        ImageView ivh5=new ImageView(this);
-//        ivh5.setBackgroundColor(Color.RED);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 300, 0, 0);
-//        ivh5.setLayoutParams(params);
-//        rl.addView(ivh5);
 
 
-        //gif
-//        ImageView ivh5=new ImageView(this);
-//        params = new RelativeLayout.LayoutParams(200, 200);
-//        params.setMargins(110, 100, 0, 0);
-//        ivh5.setLayoutParams(params);
-//        rl.addView(ivh5);
-//        RequestOptions options = new RequestOptions()
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-//        Glide.with(this).load(R.drawable.timg).apply(options).into(ivh5);
+    }
 
-        //测试旋转
-//         ivh1=new ImageView(this);
-//        ivh1.setBackgroundColor(Color.BLUE);
-//        ivh1.setImageResource(R.drawable.wshw);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 100, 0, 0);
-//        ivh1.setLayoutParams(params);
-//        ivh1.setRotation(-15);
-//        rl.addView(ivh1);
-//
-//        ivh2=new ImageView(this);
-//        ivh2.setBackgroundColor(Color.BLUE);
-//        ivh2.setImageResource(R.drawable.wshw);
-//        params = new RelativeLayout.LayoutParams(220, 20);
-//        params.setMargins(110, 130, 0, 0);
-//        ivh2.setLayoutParams(params);
-//        ivh2.setRotation(-15);
-//        rl.addView(ivh2);
+    private void initGX2(){
+        RelativeLayout.LayoutParams params ;
+        //背景图片
+        params = new RelativeLayout.LayoutParams(390, 390);
+        params.setMargins(20, 20, 20, 20);
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundColor(Color.BLUE);
+        iv.setImageResource(R.drawable.wsbj1);
+        iv.setLayoutParams(params);
+        rl.addView(iv);
 
 
+        d1=new TextView(this);
+        d1.setText("第一组");
+        d1.setId(R.id.textview_1);
+        d1.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 100, 0, 0);
+        d1.setLayoutParams(params);
+        rl.addView(d1);
+        d2=new TextView(this);
+        d2.setText("第二组");
+        d2.setId(R.id.textview_2);
+        d2.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 150, 0, 0);
+        d2.setLayoutParams(params);
+        rl.addView(d2);
+        d3=new TextView(this);
+        d3.setText("第三组");
+        d3.setId(R.id.textview_3);
+        d3.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 200, 0, 0);
+        d3.setLayoutParams(params);
+        rl.addView(d3);
+        d4=new TextView(this);
+        d4.setText("第四组");
+        d4.setId(R.id.textview_4);
+        d4.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 250, 0, 0);
+        d4.setLayoutParams(params);
+        rl.addView(d4);
+        d5=new TextView(this);
+        d5.setText("第五组");
+        d5.setId(R.id.textview_5);
+        d5.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 300, 0, 0);
+        d5.setLayoutParams(params);
+        rl.addView(d5);
+        d6=new TextView(this);
+        d6.setText("第六组");
+        d6.setId(R.id.textview_6);
+        d6.setOnClickListener(new onClickListener());
+        params = new RelativeLayout.LayoutParams(80, 60);
+        params.setMargins(30, 350, 0, 0);
+        d6.setLayoutParams(params);
+        rl.addView(d6);
+        //灯带1
+        params = new RelativeLayout.LayoutParams(20, 280);
+        params.setMargins(80, 80, 0, 0);
+        ivd1 = new ImageView(this);
+        ivd1.setBackgroundColor(Color.GREEN);
+        ivd1.setImageResource(R.drawable.wsd1);
+        ivd1.setLayoutParams(params);
+        rl.addView(ivd1);
+
+        //门
+        params = new RelativeLayout.LayoutParams(250, 40);
+        params.setMargins(100, 40, 0, 0);
+        ivmen = new ImageView(this);
+        ivmen.setBackgroundColor(Color.YELLOW);
+        ivmen.setImageResource(R.drawable.wsm);
+        ivmen.setLayoutParams(params);
+        rl.addView(ivmen);
+
+
+        //灯带2
+        params = new RelativeLayout.LayoutParams(20, 280);
+        params.setMargins(350, 80, 0, 0);
+        ivd2 = new ImageView(this);
+        ivd2.setBackgroundColor(Color.GREEN);
+        ivd2.setImageResource(R.drawable.wsd1);
+        ivd2.setLayoutParams(params);
+        rl.addView(ivd2);
+
+        ivh1=new ImageView(this);
+        ivh1.setBackgroundColor(Color.BLUE);
+        ivh1.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 100, 0, 0);
+        ivh1.setLayoutParams(params);
+        ivh1.setRotation(-15);
+        rl.addView(ivh1);
+
+        ivh2=new ImageView(this);
+        ivh2.setBackgroundColor(Color.BLUE);
+        ivh2.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 150, 0, 0);
+        ivh2.setLayoutParams(params);
+        ivh2.setRotation(-15);
+        rl.addView(ivh2);
+
+        ivh3=new ImageView(this);
+        ivh3.setBackgroundColor(Color.BLUE);
+        ivh3.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 200, 0, 0);
+        ivh3.setLayoutParams(params);
+        ivh3.setRotation(-15);
+        rl.addView(ivh3);
+
+
+        ivh4=new ImageView(this);
+        ivh4.setBackgroundColor(Color.BLUE);
+        ivh4.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 250, 0, 0);
+        ivh4.setLayoutParams(params);
+        ivh4.setRotation(-15);
+        rl.addView(ivh4);
+
+        ivh5=new ImageView(this);
+        ivh5.setBackgroundColor(Color.BLUE);
+        ivh5.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 300, 0, 0);
+        ivh5.setLayoutParams(params);
+        ivh5.setRotation(-15);
+        rl.addView(ivh5);
+
+        ivh6=new ImageView(this);
+        ivh6.setBackgroundColor(Color.BLUE);
+        ivh6.setImageResource(R.drawable.wshw);
+        params = new RelativeLayout.LayoutParams(220, 20);
+        params.setMargins(110, 350, 0, 0);
+        ivh6.setLayoutParams(params);
+        ivh6.setRotation(-15);
+        rl.addView(ivh6);
     }
 
     private SpannableString generateCenterSpannableText(String value) {
