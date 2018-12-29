@@ -24,6 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -114,6 +117,7 @@ public class MainActivity extends Activity {
         initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
+        initGX();
         new DeviceCom().start();
 
     }
@@ -502,13 +506,22 @@ public class MainActivity extends Activity {
     private void initGX(){
         RelativeLayout.LayoutParams params ;
         //背景图片
+//        params = new RelativeLayout.LayoutParams(390, 390);
+//        params.setMargins(20, 20, 20, 20);
+//        ImageView iv = new ImageView(this);
+//        iv.setBackgroundColor(Color.WHITE);
+//        iv.setImageResource(R.drawable.qsh);
+//        iv.setLayoutParams(params);
+//        rl.addView(iv);
+
+        ImageView ivh5=new ImageView(this);
         params = new RelativeLayout.LayoutParams(390, 390);
         params.setMargins(20, 20, 20, 20);
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundColor(Color.WHITE);
-        iv.setImageResource(R.drawable.qsh);
-        iv.setLayoutParams(params);
-        rl.addView(iv);
+        ivh5.setLayoutParams(params);
+        rl.addView(ivh5);
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
     }
     private void initGX1(){
         RelativeLayout.LayoutParams params ;

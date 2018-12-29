@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ListView;
+
 
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.OperationAdapter;
@@ -53,6 +56,7 @@ public class RecordActivity extends Activity {
         initQueryGrid();// 初始查询结果表格
         closeThread =new CloseThread();
         closeThread.start();
+
     }
 
     /**
@@ -124,15 +128,15 @@ public class RecordActivity extends Activity {
      * @return
      */
     private void getdata() {
-        for(int i=0;i<100;i++)
+//        for(int i=0;i<100;i++)
         for(ProductRecord pr : Cache.listPR){
             HashMap<String ,String> map = new HashMap<>();
             map.put("pp",pr.getPp().toString());
             map.put("type",pr.getType().toString());
             map.put("gg",pr.getGg().toString());
             map.put("cz",pr.getCz().toString());
-//            map.put("wz",pr.getWz());
-            map.put("wz",String.valueOf(i));
+            map.put("wz",pr.getWz());
+//            map.put("wz",String.valueOf(i));
             mQueryData.add(map);
         }
 
@@ -168,4 +172,6 @@ public class RecordActivity extends Activity {
             i=0;
         }
     }
+
+
 }

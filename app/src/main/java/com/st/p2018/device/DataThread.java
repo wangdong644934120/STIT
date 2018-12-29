@@ -122,6 +122,7 @@ public class DataThread extends Thread {
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(1);
             logger.info("获取到指纹编号："+card);
+            card=Integer.valueOf(card).toString();
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
@@ -474,14 +475,14 @@ public class DataThread extends Thread {
         }
         public void run(){
             Cache.listPR.clear();
-//            mapDeal.put("A12245678","1");
-//            mapDeal.put("A12345678","1");
-//            mapDeal.put("B12345678","1");
-//            mapDeal.put("C12345679","1");
-//            mapDeal.put("D12345679","1");
-//            mapDeal.put("E12345680","1");
-//            mapDeal.put("F12345681","2");
-//            mapDeal.put("F12345680","2");
+            mapDeal.put("A12245678","1");
+            mapDeal.put("A12345678","1");
+            mapDeal.put("B12345678","1");
+            mapDeal.put("C12345679","1");
+            mapDeal.put("D12345679","1");
+            mapDeal.put("E12345680","1");
+            mapDeal.put("F12345681","2");
+            mapDeal.put("F12345680","2");
            List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
            if(Cache.cfpdcs.equals("0")){
                 list=productDao.getAllProduct();

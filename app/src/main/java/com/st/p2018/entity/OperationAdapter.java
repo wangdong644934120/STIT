@@ -75,6 +75,7 @@ public class OperationAdapter extends BaseAdapter{
             LinearLayout layout = (LinearLayout) paramView.findViewById(R.id.item_div);
             holder.pp = (TextView) paramView.findViewById(R.id.item_pp);
             holder.gg = (TextView) paramView.findViewById(R.id.item_gg);
+            //System.out.println(holder.);
             holder.type = (TextView) paramView.findViewById(R.id.item_type);
             holder.yxq = (TextView) paramView.findViewById(R.id.item_yxq);
             holder.syts = (TextView) paramView.findViewById(R.id.item_syts);

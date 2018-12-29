@@ -55,8 +55,8 @@ public class PersonDao {
         return DataBaseExec.execOther(sql,args);
     }
     public List<HashMap<String,String>> getPersonByCardOrZW(String cardZW){
-        String sql="select id,code,name from stit_t_person where card=? or tzz=?";
-        String[] args=new String[]{cardZW};
+        String sql="select id,code,name from stit_t_person where card=? or code=?";
+        String[] args=new String[]{cardZW,cardZW};
         List<HashMap<String,String>> list = DataBaseExec.execQueryForMap(sql,args);
         return list;
     }

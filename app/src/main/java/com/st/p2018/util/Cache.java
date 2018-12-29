@@ -40,7 +40,7 @@ public class Cache {
     public static boolean gcqy6=true;
     public static boolean zmdzt=false;
     public static List<ProductRecord> listPR = new ArrayList<ProductRecord>();
-    public static String gx="Ⅱ型";
+    public static String gx="Ⅰ型";
     public static int pc=0; //盘存方式  0-全盘，1-触发
     public static int pccs=1;   //盘存次数
     public static int zmd=0;//照明灯控制模式
