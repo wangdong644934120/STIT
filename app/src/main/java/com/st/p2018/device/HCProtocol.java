@@ -669,6 +669,7 @@ public class HCProtocol {
             myLock.unlock();
         }
     }
+
     //关灯
     public static boolean ST_CloseLight() {
         try {
@@ -716,7 +717,7 @@ public class HCProtocol {
             byte[] length = new byte[] { 0x05 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x32};
-            byte[] bydata=new byte[]{0x02};
+            byte[] bydata=new byte[2];
             bydata[0]=(byte)hwxc;
             bydata[1]=(byte)Cache.pccs;
             byte[] before=new byte[]{};
@@ -757,9 +758,6 @@ public class HCProtocol {
 
         return temp;
     }
-
-
-
 
     public static  void sendData(String value){
         Message message = Message.obtain(Cache.myHandle);

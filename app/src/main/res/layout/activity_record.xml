@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.st.p2018.activity.OperationActivity">
 
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="700dp">
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="700dp"
@@ -17,31 +13,13 @@
             android:orientation="vertical"
             tools:layout_editor_absoluteX="457dp"
             tools:layout_editor_absoluteY="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="700dp"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="700dp"
-                    android:orientation="vertical">
-
-                    <ListView
-                        android:id="@+id/listHeaders"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                    <com.bin.david.form.core.SmartTable
+                        android:id="@+id/table"
+                        android:layout_width="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginTop="20dp" />
-
-                    <ListView
-                        android:id="@+id/listResults"
-                        android:layout_width="match_parent"
-                        android:layout_height="580dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
+                        android:layout_marginTop="10dp"
+                        android:layout_height="615dp"/>
 
                     <Button
                         android:id="@+id/close"
@@ -56,11 +34,72 @@
                         android:text="关闭"/>
                 </LinearLayout>
 
-            </LinearLayout>
 
 
-
-        </LinearLayout>
-    </HorizontalScrollView>
 
 </android.support.constraint.ConstraintLayout>
+
+
+<!--<HorizontalScrollView-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="700dp">-->
+
+<!--<LinearLayout-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="700dp"-->
+    <!--android:background="@color/colorWhite"-->
+    <!--android:orientation="vertical"-->
+    <!--tools:layout_editor_absoluteX="457dp"-->
+    <!--tools:layout_editor_absoluteY="16dp">-->
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="700dp"-->
+        <!--android:orientation="horizontal">-->
+
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="700dp"-->
+            <!--android:orientation="vertical">-->
+
+            <!--<com.bin.david.form.core.SmartTable-->
+                <!--android:id="@+id/table"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_height="580dp"/>-->
+            <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/listHeaders"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="30dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginRight="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginTop="20dp" />&ndash;&gt;-->
+
+            <!--&lt;!&ndash;<ListView&ndash;&gt;-->
+            <!--&lt;!&ndash;android:id="@+id/listResults"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_height="580dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginLeft="10dp"&ndash;&gt;-->
+            <!--&lt;!&ndash;android:layout_marginRight="10dp" />&ndash;&gt;-->
+
+            <!--<Button-->
+                <!--android:id="@+id/close"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="50dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:layout_marginLeft="10dp"-->
+                <!--android:layout_marginRight="10dp"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:background="@drawable/button_selector"-->
+                <!--android:textColor="@color/colorWhite"-->
+                <!--android:text="关闭"/>-->
+        <!--</LinearLayout>-->
+
+    <!--</LinearLayout>-->
+
+
+
+<!--</LinearLayout>-->
+<!--</HorizontalScrollView>-->

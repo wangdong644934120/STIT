@@ -2,31 +2,21 @@ package com.st.p2018.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
-import android.widget.ListView;
-
-
-import com.st.p2018.dao.ProductDao;
-import com.st.p2018.entity.OperationAdapter;
+import com.bin.david.form.core.SmartTable;
+import com.bin.david.form.data.Column;
+import com.bin.david.form.data.style.FontStyle;
+import com.bin.david.form.data.table.TableData;
 import com.st.p2018.entity.ProductRecord;
-import com.st.p2018.entity.RecordAdapter;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+
 
 /**
  * Created by Administrator on 2018/12/17.
@@ -34,14 +24,12 @@ import java.util.TimeZone;
 
 public class RecordActivity extends Activity {
 
-    private ListView listHeaders;// 表头ListView
-    private ListView listResults;// //查询结果listview
-    private List<HashMap<String, String>> mQueryData = new ArrayList<HashMap<String, String>>() ;
-    private String type;
-    private String  time;
+
+
     private Button btnClose;
     private Handler myHandler;
     CloseThread closeThread=null;
+    private SmartTable table;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +40,24 @@ public class RecordActivity extends Activity {
         initView();
         this.setTitle("存放记录");
 
-        initGridHeader();// 初始表头
-        initQueryGrid();// 初始查询结果表格
+        Column<String> column1 = new Column<>("品牌", "pp");
+        Column<String> column2 = new Column<>("种类", "type");
+        Column<String> column3 = new Column<>("规格", "gg");
+        Column<String> column4 = new Column<>("操作", "cz");
+        Column<String> column5 = new Column<>("位置", "wz");
+
+        List<ProductRecord> list =Cache.listPR;
+        //表格数据 datas是需要填充的数据
+        TableData<ProductRecord> tableData = new TableData<ProductRecord>("", list, column1, column2, column3, column4, column5);
+        //设置数据
+        table = findViewById(R.id.table);
+        table.setTableData(tableData);
+        table.getConfig().setShowXSequence(false);
+        table.getConfig().setShowYSequence(false);
+        table.getConfig().setShowTableTitle(false);
+        table.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
+        table.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
+        table.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
         closeThread =new CloseThread();
         closeThread.start();
 
@@ -64,8 +68,6 @@ public class RecordActivity extends Activity {
      */
     public void initView() {
         btnClose=(Button)findViewById(R.id.close);
-        listHeaders = (ListView) findViewById(R.id.listHeaders);
-        listResults = (ListView) findViewById(R.id.listResults);
         btnClose.setOnClickListener(new onClickListener());
         myHandler= new Handler() {
             @Override
@@ -96,62 +98,17 @@ public class RecordActivity extends Activity {
         }
 
     }
-    /**
-     * 初始化表头
-     */
-    private void initGridHeader() {
-        List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("pp", "品牌");
-        map.put("type", "种类");
-        map.put("gg", "规格");
-        map.put("cz", "操作");
-        map.put("wz","位置");
-        data.add(map);
-        RecordAdapter adapter = new RecordAdapter(this, data);
-        listHeaders.setAdapter(adapter);
-    }
-
-    /**
-     * 初始查询结果表格
-     */
-    private void initQueryGrid() {
-        getdata();
-        RecordAdapter adapter = new RecordAdapter(this, mQueryData);
-        listResults.setAdapter(adapter);
-
-    }
-
-    /**
-     * 从数据库查询数据
-     *
-     * @return
-     */
-    private void getdata() {
-//        for(int i=0;i<100;i++)
-        for(ProductRecord pr : Cache.listPR){
-            HashMap<String ,String> map = new HashMap<>();
-            map.put("pp",pr.getPp().toString());
-            map.put("type",pr.getType().toString());
-            map.put("gg",pr.getGg().toString());
-            map.put("cz",pr.getCz().toString());
-            map.put("wz",pr.getWz());
-//            map.put("wz",String.valueOf(i));
-            mQueryData.add(map);
-        }
-
-    }
 
 
     class CloseThread extends Thread{
         int i=10;
         public void run(){
-            if(mQueryData.size()==0){
+            if(Cache.listPR.size()==0){
                 i=5;
-            }else if(mQueryData.size()<=5){
+            }else if(Cache.listPR.size()<=5){
                 i=10;
             }else{
-                i=mQueryData.size()*2;
+                i=Cache.listPR.size()*2;
             }
             for(;i>0;i--){
                 Message message = Message.obtain(myHandler);

@@ -7,23 +7,17 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
+import org.apache.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.List;
 
 public class PZActivity extends Activity {
 
@@ -33,6 +27,7 @@ public class PZActivity extends Activity {
     private int dl;
     private Spinner spPD;
     private EditText edpdcs;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,11 +131,17 @@ public class PZActivity extends Activity {
                     boolean bl=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
                     btnOK.setPressed(false);
                     if(bl){
+                        Cache.zmd=lightModel;
+                        Cache.pc=pc;
+                        Cache.pccs=pccs;
                         Toast.makeText(PZActivity.this, "下传配置成功", Toast.LENGTH_LONG).show();
                         MyTextToSpeech.getInstance().speak("下传配置成功");
+
+                        logger.info("下传配置成功："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                     }else{
                         Toast.makeText(PZActivity.this, "下传配置失败", Toast.LENGTH_LONG).show();
                         MyTextToSpeech.getInstance().speak("下传配置失败");
+                        logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                     }
                     break;
                 default:

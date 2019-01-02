@@ -29,6 +29,8 @@ public class DataThread extends Thread {
     private ProductDao productDao=null;
     private HashMap<String,String> map=new HashMap<String,String>();
     private int openPDFlag=0;
+    private long pdstart=0l;
+
     public void run(){
         personDao= new PersonDao();
         productDao=new ProductDao();
@@ -79,7 +81,7 @@ public class DataThread extends Thread {
             String card=HCProtocol.ST_GetUser(0);
             logger.info("获取到卡号:"+card);
             if(Cache.getPersonCard){
-                logger.info("人员管理界面，要卡号，不进行权限判断");
+                logger.info("人员管理界面要卡号，不进行权限判断");
                 sendKH(card);
                 return;
             }
@@ -88,15 +90,12 @@ public class DataThread extends Thread {
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                //addZWSKEvent(Cache.code,Event.EVENTTYPE_SKOPENDOOR);
-
                 sendTS("操作:"+list.get(0).get("name")+"刷卡开门成功");
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"刷卡开门成功");
 
             }else{
                 sendTS("报警:此卡无开门权限");
                 MyTextToSpeech.getInstance().speak("此卡无开门权限");
-                //addZWSKEvent("",Event.EVENTTYPE_SKOPENDOOR);
             }
         }
     }
@@ -128,13 +127,11 @@ public class DataThread extends Thread {
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                //addZWSKEvent(Cache.code,Event.EVENTTYPE_ZWOPENDOOR);
                 sendTS("操作:"+list.get(0).get("name")+"指纹开门成功");
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"指纹开门成功");
             }else{
                 sendTS("报警:此指纹无开门权限");
                 MyTextToSpeech.getInstance().speak("此指纹无开门权限");
-                //addZWSKEvent("",Event.EVENTTYPE_ZWOPENDOOR);
             }
         }
 
@@ -191,7 +188,6 @@ public class DataThread extends Thread {
     }
     //红外行程开关
     private void alaHWXCKG(String hwxckg){
-//        System.out.println(hwxckg);
         String hwxc6=hwxckg.substring(2,3);
         String hwxc5=hwxckg.substring(3,4);
         String hwxc4=hwxckg.substring(4,5);
@@ -208,6 +204,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc1.equals("1")){
+                Cache.cfpdcs.add("1");
                 System.out.println("设置红外1触发");
                 updateUI("hwxc","1","1");
                 Cache.hwxc1=true;
@@ -223,6 +220,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc2.equals("1")){
+                Cache.cfpdcs.add("2");
                 System.out.println("设置红外2触发");
                 updateUI("hwxc","2","1");
                 Cache.hwxc2=true;
@@ -238,6 +236,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc3.equals("1")){
+                Cache.cfpdcs.add("3");
                 System.out.println("设置红外3触发");
                 updateUI("hwxc","3","1");
                 Cache.hwxc3=true;
@@ -253,6 +252,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc4.equals("1")){
+                Cache.cfpdcs.add("4");
                 System.out.println("设置红外4触发");
                 updateUI("hwxc","4","1");
                 Cache.hwxc4=true;
@@ -268,6 +268,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc5.equals("1")){
+                Cache.cfpdcs.add("5");
                 System.out.println("设置红外5触发");
                 updateUI("hwxc","5","1");
                 Cache.hwxc5=true;
@@ -283,6 +284,7 @@ public class DataThread extends Thread {
         }else{
             //元红外关闭状态，现红外触发状态
             if(hwxc6.equals("1")){
+                Cache.cfpdcs.add("6");
                 System.out.println("设置红外6触发");
                 updateUI("hwxc","6","1");
                 Cache.hwxc6=true;
@@ -319,18 +321,27 @@ public class DataThread extends Thread {
             //读写器休眠中
         }else if(zt.equals("01")){
             //正在盘存标签
-            if(data.equals("01")){
+            if(data.equals("00")){
+                //无标签数据
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
+                    pdstart=System.currentTimeMillis();
                     openPDFlag=1;
                 }
-
+            }else if(data.equals("01")){
+                if(openPDFlag==0){
+                    sendOpenPD("openpd");
+                    pdstart=System.currentTimeMillis();
+                    openPDFlag=1;
+                }
                 getCard();
+                //------正式使用需注释
                 sendPD("100");
                 //对标签数据进行处理
                 HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                 map.clear();
                 new DataDeal(mapBQ).start();
+                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
                 try{
                     Thread.sleep(1000);
                 }catch (Exception e){
@@ -340,23 +351,49 @@ public class DataThread extends Thread {
                     sendPD("closedpd");
                     openPDFlag=0;
                 }
+                //------正式使用需注释
 
             }else if(data.equals("10")){
                 //告警
             }
         }else if(zt.equals("10")){
             //标签盘存结束
-            if(data.equals("01")){
+            if(data.equals("00")){
+                //标签盘存结束，无标签数据
+                if(openPDFlag==0){
+                    sendOpenPD("openpd");
+                    pdstart=System.currentTimeMillis();
+                    openPDFlag=1;
+                }
+                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
+                //对标签数据进行处理
+                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                map.clear();
+                new DataDeal(mapBQ).start();
+                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+                try{
+                    Thread.sleep(1000);
+                }catch (Exception e){
+
+                }
+                if(openPDFlag==1){
+                    sendPD("closedpd");
+                    openPDFlag=0;
+                }
+            }else if(data.equals("01")){
                 //有标签数据
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
+                    pdstart=System.currentTimeMillis();
                     openPDFlag=1;
                 }
                getCard();
+                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
                //对标签数据进行处理
                 HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                 map.clear();
                 new DataDeal(mapBQ).start();
+                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
                 try{
                     Thread.sleep(1000);
                 }catch (Exception e){
@@ -475,21 +512,35 @@ public class DataThread extends Thread {
         }
         public void run(){
             Cache.listPR.clear();
-            mapDeal.put("A12245678","1");
-            mapDeal.put("A12345678","1");
-            mapDeal.put("B12345678","1");
-            mapDeal.put("C12345679","1");
-            mapDeal.put("D12345679","1");
-            mapDeal.put("E12345680","1");
-            mapDeal.put("F12345681","2");
-            mapDeal.put("F12345680","2");
+//            mapDeal.put("A12245678","1");
+//            mapDeal.put("A12345678","2");
+//            mapDeal.put("B12345678","1");
+//            mapDeal.put("C12345679","1");
+//            mapDeal.put("D12345679","1");
+//            mapDeal.put("E12345680","1");
+//            mapDeal.put("F12345681","2");
+//            mapDeal.put("F12345680","2");
            List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
-           if(Cache.cfpdcs.equals("0")){
-                list=productDao.getAllProduct();
+           if(Cache.sdpdcs.equals("0")){
+               //不是手动盘点
+               if(Cache.pc==0){
+                   //全部盘存
+                   list=productDao.getAllProduct();
+               }else if(Cache.pc==1){
+                   //触发盘存
+                   list=productDao.getPorductByCFHWXC(Cache.cfpdcs);
+               }
            }else{
-               list=productDao.getPorductByHWXC(Cache.cfpdcs);
+               //手动盘点
+               list=productDao.getPorductBySDHWXC(Cache.sdpdcs);
            }
-
+//           if(Cache.cfpdcs.equals("0")){
+//                list=productDao.getAllProduct();
+//           }else{
+//               list=productDao.getPorductByHWXC(Cache.cfpdcs);
+//           }
+            Cache.sdpdcs="0";
+            Cache.cfpdcs.clear();
            Set<String> dealKeys=mapDeal.keySet();
            HashMap<String,String> mapSave=new HashMap<String,String>();
            for(HashMap map : list){

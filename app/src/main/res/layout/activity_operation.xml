@@ -6,17 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.st.p2018.activity.OperationActivity">
 
-    <!--<LinearLayout-->
-        <!--android:orientation="vertical"-->
-        <!--android:id="@+id/contentView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-    <!--</LinearLayout>-->
-
-    <HorizontalScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="700dp">
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="700dp"
@@ -35,20 +24,15 @@
                     android:layout_height="700dp"
                     android:orientation="vertical">
 
-                    <ListView
-                        android:id="@+id/listHeaders"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
+                    <com.bin.david.form.core.SmartTable
+                        android:id="@+id/table"
+                        android:layout_width="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginTop="20dp" />
+                        android:layout_marginTop="10dp"
+                        android:layout_height="615dp"/>
 
-                    <ListView
-                        android:id="@+id/listResults"
-                        android:layout_width="match_parent"
-                        android:layout_height="580dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp" />
+
                     <Button
                         android:id="@+id/close"
                         android:layout_width="match_parent"
@@ -67,7 +51,7 @@
 
 
         </LinearLayout>
-    </HorizontalScrollView>
+
 
 
 </android.support.constraint.ConstraintLayout>

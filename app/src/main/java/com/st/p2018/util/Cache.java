@@ -44,6 +44,7 @@ public class Cache {
     public static int pc=0; //盘存方式  0-全盘，1-触发
     public static int pccs=1;   //盘存次数
     public static int zmd=0;//照明灯控制模式
-    public static String cfpdcs="0"; //触发判断层数 0-全部盘存，1-只盘存第一层,2...
+    public static String sdpdcs="0";    //手动盘点层数
+    public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
 
 }

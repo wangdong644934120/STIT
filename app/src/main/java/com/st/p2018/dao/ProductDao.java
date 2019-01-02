@@ -40,10 +40,27 @@ public class ProductDao {
         return DataBaseExec.execQueryForMap(sql, null);
     }
 
-    public List<HashMap<String,String>> getPorductByHWXC(String hwxc){
+    public List<HashMap<String, String>> getProductByJXQ() {
+        String sql="select * from stit_t_product where wz!='0'";
+        return DataBaseExec.execQueryForMap(sql, null);
+    }
+
+    public List<HashMap<String,String>> getPorductBySDHWXC(String hwxc){
         String sql="select * from stit_t_product where wz=0 or wz=?";
         String[] args = new String[]{hwxc};
         return DataBaseExec.execQueryForMap(sql,args);
+    }
+
+    public List<HashMap<String,String>> getPorductByCFHWXC(List<String> list){
+        list.add("0");
+        StringBuilder sb=new StringBuilder("select * from stit_t_product "
+            + " where wz in ( ");
+		for (String wz : list) {
+            sb.append("'").append(wz).append("'").append(",");
+        }
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append(")");
+		return DataBaseExec.execQueryForMap(sb.toString(),null);
     }
 
     public void clearAll_AllProduct(){
@@ -62,20 +79,20 @@ public class ProductDao {
     }
     //已过期
     public List<HashMap<String, String>> getYGQProduct(HashMap map) {
-        String sql="select * from stit_t_product where yxq<?";
+        String sql="select * from stit_t_product where yxq<? and wz !='0'";
         String[] args = new String[]{map.get("yxq").toString()};
         return DataBaseExec.execQueryForMap(sql, args);
     }
     //近效期
     public List<HashMap<String, String>> getJXQProduct(HashMap map) {
-        String sql="select * from stit_t_product where yxq>=? and yxq<?";
+        String sql="select * from stit_t_product where yxq>=? and yxq<? and wz !='0'";
         String[] args = new String[]{map.get("yxq1").toString(),map.get("yxq2").toString()};
         return DataBaseExec.execQueryForMap(sql, args);
     }
 
     //远效期
     public List<HashMap<String, String>> getYXQProduct(HashMap map) {
-        String sql="select * from stit_t_product where yxq>=?";
+        String sql="select * from stit_t_product where yxq>=? and wz !='0'";
         String[] args = new String[]{map.get("yxq").toString()};
         return DataBaseExec.execQueryForMap(sql, args);
     }
@@ -91,5 +108,6 @@ public class ProductDao {
         String[] args=new String[]{wz,card};
         DataBaseExec.execOther(sql,args);
     }
+
 
 }

@@ -332,31 +332,31 @@ public class MainActivity extends Activity {
                     break;
                 case R.id.textview_1:
                     //盘点第1层
-                    Cache.cfpdcs="1";
+                    Cache.sdpdcs="1";
                     HCProtocol.ST_GetCardByChoose(1);
                     break;
                 case R.id.textview_2:
                     //盘点第2层
-                    Cache.cfpdcs="2";
+                    Cache.sdpdcs="2";
                     HCProtocol.ST_GetCardByChoose(2);
                     break;
                 case R.id.textview_3:
                     //盘点第3层
-                    Cache.cfpdcs="3";
+                    Cache.sdpdcs="3";
                     HCProtocol.ST_GetCardByChoose(3);
                     break;
                 case R.id.textview_4:
                     //盘点第4层
-                    Cache.cfpdcs="4";
+                    Cache.sdpdcs="4";
                     HCProtocol.ST_GetCardByChoose(4);
                     break;
                 case R.id.textview_5:
                     //盘点第5层
-                    Cache.cfpdcs="5";
+                    Cache.sdpdcs="5";
                     HCProtocol.ST_GetCardByChoose(5);
                     break;
                 case R.id.textview_6:
-                    Cache.cfpdcs="6";
+                    Cache.sdpdcs="6";
                     HCProtocol.ST_GetCardByChoose(6);
                     //判断第6层
                     break;
@@ -523,6 +523,7 @@ public class MainActivity extends Activity {
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
         Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
     }
+
     private void initGX1(){
         RelativeLayout.LayoutParams params ;
         //背景图片
@@ -919,7 +920,7 @@ public class MainActivity extends Activity {
     private void initJXQData(){
         mChart.setCenterText(generateCenterSpannableText("效期图示"));
         ProductDao productDao= new ProductDao();
-        List<HashMap<String,String>> list = productDao.getAll_AllProduct();
+        List<HashMap<String,String>> list = productDao.getProductByJXQ();
         int ygq=0;
         int jxq=0;
         int yxq=0;
