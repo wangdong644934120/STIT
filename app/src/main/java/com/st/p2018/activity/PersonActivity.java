@@ -13,6 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -59,10 +61,18 @@ public class PersonActivity extends Activity {
     private Button delete;
     private int selecItem=-1;
     private PersonDao pd = new PersonDao();
+    private TextView tvfh;
+    private TextView tvtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_person);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        //使用布局文件来定义标题栏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
         initGridHeader();// 初始表头
         initQueryGrid();// 初始查询结果表格
@@ -78,6 +88,10 @@ public class PersonActivity extends Activity {
      * 初始化view，设置event listener
      */
     public void initView() {
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+        tvtitle.setText("人员管理");
         code=(EditText)findViewById(R.id.code);
         name=(EditText)findViewById(R.id.name);
         btntzz=(Button)findViewById(R.id.btntzz);
@@ -236,6 +250,9 @@ public class PersonActivity extends Activity {
                     delete.setPressed(true);
                     delete();
                     delete.setPressed(false);
+                    break;
+                case R.id.fh:
+                    PersonActivity.this.finish();
                     break;
                 default:
                     break;

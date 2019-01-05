@@ -29,6 +29,9 @@ public class DeviceCom extends Thread{
     public void run(){
         openCom();
         byte[] byDevice=HCProtocol.ST_GetDeviceInfo();
+        if(byDevice.length==0){
+            logger.info("获取设备信息无返回数据");
+        }
         JXDevice(byDevice);
         boolean bl=HCProtocol.ST_GetWorkModel();
         if(bl){
@@ -53,7 +56,7 @@ public class DeviceCom extends Thread{
 
     private void JXDevice(byte[] data){
         if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
-                && data[3] == (byte) 0x05 && data[4] == (byte) 0x0E ) {
+                && data[3] == (byte) 0x05  ) {
             HashMap<String,String> map=new HashMap<String,String>();
             String gx="Ⅰ型";
             if(data[4]==0x01){
@@ -71,23 +74,30 @@ public class DeviceCom extends Thread{
             map.put("gc4","0");
             map.put("gc5","0");
             map.put("gc6","0");
+//            00000111
             String qygc=DataTypeChange.getBit(data[13]);
-            for(int i=qygc.length();i>=0;i--){
-                if(qygc.substring(qygc.length()-1,qygc.length()).equals("1")){
-                    map.put("gc"+i,"1");
-                }else{
-                    map.put("gc"+i,"0");
-                }
-            }
+            map.put("gc1",qygc.substring(7,8));
+            map.put("gc2",qygc.substring(6,7));
+            map.put("gc3",qygc.substring(5,6));
+            map.put("gc4",qygc.substring(4,5));
+            map.put("gc5",qygc.substring(3,4));
+            map.put("gc6",qygc.substring(2,3));
+//            for(int i=qygc.length();i>=0;i--){
+//                if(qygc.substring(qygc.length()-1,qygc.length()).equals("1")){
+//                    map.put("gc"+i,"1");
+//                }else{
+//                    map.put("gc"+i,"0");
+//                }
+//            }
             PZDao pzDao=new PZDao();
             pzDao.updatePZByDevice(map);
             logger.info("获取设备信息完成");
-            Cache.hwxc1=(map.get("1").equals("1"))?true:false;
-            Cache.hwxc2=(map.get("2").equals("1"))?true:false;
-            Cache.hwxc3=(map.get("3").equals("1"))?true:false;
-            Cache.hwxc4=(map.get("4").equals("1"))?true:false;
-            Cache.hwxc5=(map.get("5").equals("1"))?true:false;
-            Cache.hwxc6=(map.get("6").equals("1"))?true:false;
+            Cache.hwxc1=(map.get("gc1").equals("1"))?true:false;
+            Cache.hwxc2=(map.get("gc2").equals("1"))?true:false;
+            Cache.hwxc3=(map.get("gc3").equals("1"))?true:false;
+            Cache.hwxc4=(map.get("gc4").equals("1"))?true:false;
+            Cache.hwxc5=(map.get("gc5").equals("1"))?true:false;
+            Cache.hwxc6=(map.get("gc6").equals("1"))?true:false;
             sendData("状态:柜体型号："+gx);
             sendData("状态:柜层启用："+map.get("gc1")+map.get("gc2")+map.get("gc3")+map.get("gc4")+map.get("gc5")+map.get("gc6"));
         }else{

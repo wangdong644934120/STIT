@@ -3,7 +3,10 @@ package com.st.p2018.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.st.p2018.device.HCProtocol;
@@ -17,14 +20,24 @@ public class KZActivity extends Activity {
     private Button btnGD;
     private Button btnSCSYZW;
     private Button btnClose;
+    private TextView tvfh;
+    private TextView tvtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_kz);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
     }
     private void initView(){
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+        tvtitle.setText("控制管理");
         btnKM=(Button)findViewById(R.id.km);
         btnKM.setOnClickListener(new onClickListener());
         btnKD=(Button)findViewById(R.id.kd);
@@ -94,6 +107,8 @@ public class KZActivity extends Activity {
                     btnClose.setPressed(true);
                     KZActivity.this.finish();
                     btnClose.setPressed(false);
+                case R.id.fh:
+                    KZActivity.this.finish();
                 default:
                     break;
             }

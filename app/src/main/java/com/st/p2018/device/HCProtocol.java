@@ -180,7 +180,7 @@ public class HCProtocol {
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x08 };
+            byte[] length = new byte[] { 0x03 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x05};
             byte[] before=new byte[]{};

@@ -141,7 +141,7 @@ public class DataThread extends Thread {
 //        sendTS("时间:15:43:20");
 //        sendTS("操作:张大山 存100 取100");
     }
-    //门状态传感器
+    //门状态传感器 开门 监控状态   关门  监控门状态
     private void alaMZTCGQ(String mztcgq){
         mztcgq=mztcgq.substring(5,7);
         if(mztcgq.contains("1")){
@@ -152,15 +152,16 @@ public class DataThread extends Thread {
                 updateUI("men","","1");
                 Cache.mztcgq=true;
             }
-        }else if(mztcgq.equals("00")){
-            //门关
-            if(Cache.mztcgq){
-                System.out.println("设置门关");
-                //设置门关
-                updateUI("men","","0");
-                Cache.mztcgq=false;
-            }
         }
+//        else if(mztcgq.equals("00")){
+//            //门关
+//            if(Cache.mztcgq){
+//                System.out.println("设置门关");
+//                //设置门关
+//                updateUI("men","","0");
+//                Cache.mztcgq=false;
+//            }
+//        }
         //门状态传感器，下发获取门状态
     }
     //电控锁
@@ -176,15 +177,16 @@ public class DataThread extends Thread {
 //                updateUI("men","","1");
 //                Cache.mztcgq=true;
 //            }
-//        }else if(dks.equals("00")){
-//            //门关
-//            if(Cache.mztcgq){
-//                System.out.println("设置门关");
-//                //设置门关
-//                updateUI("men","","0");
-//                Cache.mztcgq=false;
-//            }
-//        }
+//        }else
+          if(dks.equals("00")){
+            //门关
+            if(Cache.mztcgq){
+                System.out.println("设置门关");
+                //设置门关
+                updateUI("men","","0");
+                Cache.mztcgq=false;
+            }
+        }
     }
     //红外行程开关
     private void alaHWXCKG(String hwxckg){
@@ -320,8 +322,10 @@ public class DataThread extends Thread {
         if(zt.equals("00")){
             //读写器休眠中
         }else if(zt.equals("01")){
+            logger.info("正在盘存标签");
             //正在盘存标签
             if(data.equals("00")){
+                logger.info("正在盘存标签无标签数据");
                 //无标签数据
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
@@ -329,6 +333,7 @@ public class DataThread extends Thread {
                     openPDFlag=1;
                 }
             }else if(data.equals("01")){
+                logger.info("正在盘存标签有标签数据");
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
                     pdstart=System.currentTimeMillis();
@@ -336,21 +341,21 @@ public class DataThread extends Thread {
                 }
                 getCard();
                 //------正式使用需注释
-                sendPD("100");
-                //对标签数据进行处理
-                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-                map.clear();
-                new DataDeal(mapBQ).start();
-                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-                try{
-                    Thread.sleep(1000);
-                }catch (Exception e){
-
-                }
-                if(openPDFlag==1){
-                    sendPD("closedpd");
-                    openPDFlag=0;
-                }
+//                sendPD("100");
+//                //对标签数据进行处理
+//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+//                map.clear();
+//                new DataDeal(mapBQ).start();
+//                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+//                try{
+//                    Thread.sleep(1000);
+//                }catch (Exception e){
+//
+//                }
+//                if(openPDFlag==1){
+//                    sendPD("closedpd");
+//                    openPDFlag=0;
+//                }
                 //------正式使用需注释
 
             }else if(data.equals("10")){
@@ -358,29 +363,32 @@ public class DataThread extends Thread {
             }
         }else if(zt.equals("10")){
             //标签盘存结束
+            logger.info("标签盘存结束");
             if(data.equals("00")){
+                logger.info("标签盘存结束无标签数据");
                 //标签盘存结束，无标签数据
-                if(openPDFlag==0){
-                    sendOpenPD("openpd");
-                    pdstart=System.currentTimeMillis();
-                    openPDFlag=1;
-                }
-                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
-                //对标签数据进行处理
-                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-                map.clear();
-                new DataDeal(mapBQ).start();
-                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-                try{
-                    Thread.sleep(1000);
-                }catch (Exception e){
-
-                }
-                if(openPDFlag==1){
-                    sendPD("closedpd");
-                    openPDFlag=0;
-                }
+//                if(openPDFlag==0){
+//                    sendOpenPD("openpd");
+//                    pdstart=System.currentTimeMillis();
+//                    openPDFlag=1;
+//                }
+//                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
+//                //对标签数据进行处理
+//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+//                map.clear();
+//                new DataDeal(mapBQ).start();
+//                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+//                try{
+//                    Thread.sleep(1000);
+//                }catch (Exception e){
+//
+//                }
+//                if(openPDFlag==1){
+//                    sendPD("closedpd");
+//                    openPDFlag=0;
+//                }
             }else if(data.equals("01")){
+                logger.info("标签盘存结束有标签数据");
                 //有标签数据
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
@@ -415,6 +423,7 @@ public class DataThread extends Thread {
         //有标签数据
         while(true){
             HashMap<String,String> mapSingle=HCProtocol.ST_GetCard();
+            logger.info("标签个数:"+mapSingle.size());
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
             //盘点进度显示

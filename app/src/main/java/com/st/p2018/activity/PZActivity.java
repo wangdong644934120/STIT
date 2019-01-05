@@ -6,11 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
@@ -27,17 +29,28 @@ public class PZActivity extends Activity {
     private int dl;
     private Spinner spPD;
     private EditText edpdcs;
+    private TextView tvfh;
+    private TextView tvtitle;
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_pz);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        //使用布局文件来定义标题栏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
         initData();
     }
 
     private void initView(){
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+        tvtitle.setText("配置管理");
         sb=(SeekBar) findViewById(R.id.sb);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -143,6 +156,9 @@ public class PZActivity extends Activity {
                         MyTextToSpeech.getInstance().speak("下传配置失败");
                         logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                     }
+                    break;
+                case R.id.fh:
+                    PZActivity.this.finish();
                     break;
                 default:
                     break;

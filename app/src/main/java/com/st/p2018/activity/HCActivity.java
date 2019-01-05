@@ -8,12 +8,15 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.st.p2018.dao.ProductDao;
@@ -31,20 +34,51 @@ public class HCActivity extends Activity {
     private Button btnUP;
     private Button btnCS;
     private Button btnDown;
+    private TextView tvfh;
+    private TextView tvtitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_hc);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        //使用布局文件来定义标题栏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
     }
+    @Override
+    protected void onDestroy(){
+        Cache.getHCCS=false;
+        super.onDestroy();
+    }
     private void initView(){
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+        tvtitle.setText("耗材管理");
         btnUP=(Button)findViewById(R.id.up);
         btnUP.setOnClickListener(new onClickListener());
         btnCS=(Button)findViewById(R.id.cs);
         btnCS.setOnClickListener(new onClickListener());
         btnDown=(Button)findViewById(R.id.down);
         btnDown.setOnClickListener(new onClickListener());
+        Cache.myHandleHCCS = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                //提示信息
+                if (bundle.getString("hccs") != null) {
+
+                    Cache.getHCCS=false;
+                }
+
+            }
+        };
     }
+
 
 
 
@@ -90,14 +124,21 @@ public class HCActivity extends Activity {
                     btnDown.setPressed(false);
                     break;
                 case R.id.cs:
+                    Cache.getHCCS=true;
                     btnCS.setPressed(true);
+
                     ProductDao productDao = new ProductDao();
                     productDao.clearAllProduct();
+
                     productDao.addMutilAllProduct();
                     //todo替换该方法
                     productDao.updateAllProductWZ();
                     Toast.makeText(HCActivity.this, "初始柜内耗材完成", Toast.LENGTH_SHORT).show();
                     btnCS.setPressed(false);
+                    Cache.getHCCS=false;
+                    break;
+                case R.id.fh:
+                    HCActivity.this.finish();
                     break;
                 default:
                     break;

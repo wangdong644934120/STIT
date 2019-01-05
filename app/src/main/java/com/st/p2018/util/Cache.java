@@ -22,7 +22,9 @@ public class Cache {
     public static Handler myHandle;
     public static Handler myHandleProgress;
     public static Handler myHandleKH;
+    public static Handler myHandleHCCS;
     public static boolean getPersonCard;
+    public static boolean getHCCS;
     public static String code;
     public static boolean mztcgq=false;//门状态传感器  true--开，false--关
     public static boolean hwxc1=false;

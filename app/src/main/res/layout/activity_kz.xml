@@ -8,64 +8,68 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="342dp"
+        android:layout_height="fill_parent"
         android:background="@color/colorWhite"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/kd"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="80dp"
             android:background="@drawable/button_selector"
             android:text="开灯"
+            android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 
         <Button
             android:id="@+id/gd"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/button_selector"
             android:text="关灯"
+            android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:background="#a7aba9" />
 
         <Button
             android:id="@+id/km"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/button_selector"
             android:text="开门"
+            android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2px"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:background="#a7aba9" />
 
         <Button
             android:id="@+id/scsyzw"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/button_selector"
             android:text="删除所有指纹"
+            android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 
         <View
@@ -81,9 +85,9 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
             android:background="@drawable/button_selector"
             android:text="关闭"
+            android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 
     </LinearLayout>

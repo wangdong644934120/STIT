@@ -55,11 +55,14 @@ import com.st.p2018.util.MySpeechUtil;
 import com.st.p2018.util.MyTextToSpeech;
 
 
+import org.apache.log4j.Logger;
+
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
+
 
 public class MainActivity extends Activity {
 
@@ -96,9 +99,15 @@ public class MainActivity extends Activity {
     private ImageView ivd1;
     private ImageView ivd2;
 
+    private TextView tvczy;
+    private TextView tvczsc;
+
     final static int COUNTS = 5;// 点击次数
     final static long DURATION = 3000;// 规定有效时间
     long[] mHits = new long[COUNTS];
+
+    private CZSCShow czscShow=null;
+    private boolean czscflag=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,12 +128,16 @@ public class MainActivity extends Activity {
         initJXQData();
         initGX();
         new DeviceCom().start();
+        new CZSCShow().start();
 
     }
 
 
 
     private void initView() {
+        tvczy=(TextView)findViewById(R.id.czy);
+        tvczsc=(TextView)findViewById(R.id.czsc);
+
         rl=(RelativeLayout)findViewById(R.id.mylayout);
 
         tvD=(Button)findViewById(R.id.dian);
@@ -189,11 +202,20 @@ public class MainActivity extends Activity {
                 if(bundle.getString("type")!=null){
                     if(bundle.get("type").toString().equals("men")){
                         if(bundle.get("zt").toString().equals("1")){
-                            //替换开门图片
+                            //
+                            if(czscShow==null){
+                                czscflag=true;
+                                czscShow=new CZSCShow();
+                                czscShow.start();
+                            }
+                            // /替换开门图片
                             ivmen.setImageResource(R.drawable.wsm1);
 
                         }else{
                             //替换关门图片
+                            tvczy.setText("操作员：无");
+                            tvczsc.setText("操作时长：0秒");
+                            czscflag=false;
                             ivmen.setImageResource(R.drawable.wsm);
                         }
                     }
@@ -295,6 +317,16 @@ public class MainActivity extends Activity {
                     }else{
                         initGX2();
                     }
+                }
+                if(bundle.getString("czy")!=null){
+                    //根据柜型更新缩略图
+                   tvczy.setText(bundle.getString("czy"));
+
+                }
+                if(bundle.getString("czsc")!=null){
+                    //更新操作时长
+                    tvczsc.setText(bundle.getString("czsc")+"秒");
+
                 }
             }
         };
@@ -960,4 +992,29 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    class CZSCShow extends Thread{
+        private Logger logger = Logger.getLogger(this.getClass());
+        public void run(){
+            int time=1;
+            while(czscflag){
+                try{
+                    Message message = Message.obtain(Cache.myHandle);
+                    Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                    data.putString("czsc",String.valueOf(time));
+                    message.setData(data);
+                    Cache.myHandle.sendMessage(message);
+                    time=time+1;
+                }catch (Exception e){
+                    logger.error(e);
+                }
+                try{
+                    Thread.sleep(1000);
+                }catch (Exception e){
+
+                }
+            }
+            czscShow=null;
+        }
+    }
 }
