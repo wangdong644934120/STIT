@@ -13,6 +13,7 @@ import com.st.p2018.util.MyTextToSpeech;
 
 import org.apache.log4j.Logger;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +31,8 @@ public class DataThread extends Thread {
     private HashMap<String,String> map=new HashMap<String,String>();
     private int openPDFlag=0;
     private long pdstart=0l;
+    private boolean dealFlag=false;
+    private String pcjd="0";
 
     public void run(){
         personDao= new PersonDao();
@@ -318,13 +321,14 @@ public class DataThread extends Thread {
         //RFID读写器
         String zt = rfid.substring(0,2);
         String data=rfid.substring(2,4);
+        String jd=rfid.substring(4,8);
 
-        if(zt.equals("00")){
-            //读写器休眠中
-        }else if(zt.equals("01")){
-            logger.info("正在盘存标签");
+
+        if(zt.equals("01")){
             //正在盘存标签
+            dealFlag=true;
             if(data.equals("00")){
+                //无标签数据初始
                 logger.info("正在盘存标签无标签数据");
                 //无标签数据
                 if(openPDFlag==0){
@@ -333,6 +337,7 @@ public class DataThread extends Thread {
                     openPDFlag=1;
                 }
             }else if(data.equals("01")){
+                //有标签数据
                 logger.info("正在盘存标签有标签数据");
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
@@ -340,81 +345,129 @@ public class DataThread extends Thread {
                     openPDFlag=1;
                 }
                 getCard();
-                //------正式使用需注释
-//                sendPD("100");
-//                //对标签数据进行处理
-//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-//                map.clear();
-//                new DataDeal(mapBQ).start();
-//                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-//                try{
-//                    Thread.sleep(1000);
-//                }catch (Exception e){
-//
-//                }
-//                if(openPDFlag==1){
-//                    sendPD("closedpd");
-//                    openPDFlag=0;
-//                }
-                //------正式使用需注释
-
-            }else if(data.equals("10")){
-                //告警
             }
-        }else if(zt.equals("10")){
-            //标签盘存结束
-            logger.info("标签盘存结束");
-            if(data.equals("00")){
-                logger.info("标签盘存结束无标签数据");
-                //标签盘存结束，无标签数据
-//                if(openPDFlag==0){
-//                    sendOpenPD("openpd");
-//                    pdstart=System.currentTimeMillis();
-//                    openPDFlag=1;
-//                }
-//                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
-//                //对标签数据进行处理
-//                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-//                map.clear();
-//                new DataDeal(mapBQ).start();
-//                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-//                try{
-//                    Thread.sleep(1000);
-//                }catch (Exception e){
-//
-//                }
-//                if(openPDFlag==1){
-//                    sendPD("closedpd");
-//                    openPDFlag=0;
-//                }
-            }else if(data.equals("01")){
-                logger.info("标签盘存结束有标签数据");
+            //更新进度
+            BigInteger bi = new BigInteger(jd, 2);
+            int dqcs =Integer.parseInt(bi.toString());
+            int zcs=Cache.pccs;
+            int zjd=(int)((double)dqcs/(double)zcs*100);
+            if(!String.valueOf(zjd).equals(pcjd)){
+                pcjd=String.valueOf(zjd);
+                sendPD(pcjd);
+            }
+
+        }else if(zt.equals("00")){
+            if(dealFlag){
+                dealFlag=false;
+                //处理器标签数据
+                logger.info("标签盘存结束，开始的处理数据");
                 //有标签数据
                 if(openPDFlag==0){
                     sendOpenPD("openpd");
                     pdstart=System.currentTimeMillis();
                     openPDFlag=1;
                 }
-               getCard();
                 logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
-               //对标签数据进行处理
-                HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-                map.clear();
-                new DataDeal(mapBQ).start();
-                sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-                try{
-                    Thread.sleep(1000);
-                }catch (Exception e){
+                //更新进度
+                BigInteger bi = new BigInteger(jd, 2);
+                int dqcs =Integer.parseInt(bi.toString());
+                int zcs=Cache.pccs;
+                int zjd=(int)((double)dqcs/(double)zcs*100);
+                if(!String.valueOf(zjd).equals(pcjd)){
+                    pcjd=String.valueOf(zjd);
+                    sendPD(pcjd);
+                }
+                //对标签数据进行处理
+                if(Cache.getHCCS){
+                    //耗材初始化要数据
+                    Cache.HCCSMap=(HashMap<String,String>)map.clone();
+                    map.clear();
+                    sendHCCS();
+                }else{
+                    HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                    map.clear();
+                    new DataDeal(mapBQ).start();
+                    sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+                    try{
+                        Thread.sleep(1000);
+                    }catch (Exception e){
 
+                    }
+                    if(openPDFlag==1){
+                        sendPD("closedpd");
+                        openPDFlag=0;
+                    }
                 }
-                if(openPDFlag==1){
-                    sendPD("closedpd");
-                    openPDFlag=0;
-                }
-            }else if(data.equals("10")){
-                //告警
+
             }
         }
+
+
+//        if(zt.equals("00")){
+//            //读写器休眠中
+//        }else if(zt.equals("01")){
+//            logger.info("正在盘存标签");
+//            //正在盘存标签
+//            if(data.equals("00")){
+//                logger.info("正在盘存标签无标签数据");
+//                //无标签数据
+//                if(openPDFlag==0){
+//                    sendOpenPD("openpd");
+//                    pdstart=System.currentTimeMillis();
+//                    openPDFlag=1;
+//                }
+//            }else if(data.equals("01")){
+//                logger.info("正在盘存标签有标签数据");
+//                if(openPDFlag==0){
+//                    sendOpenPD("openpd");
+//                    pdstart=System.currentTimeMillis();
+//                    openPDFlag=1;
+//                }
+//                getCard();
+//            }else if(data.equals("10")){
+//                //告警
+//            }
+//        }else if(zt.equals("10")){
+//            //标签盘存结束
+//            logger.info("标签盘存结束");
+//            if(data.equals("00")){
+//                logger.info("标签盘存结束无标签数据");
+//            }else if(data.equals("01")){
+//                logger.info("标签盘存结束有标签数据");
+//                //有标签数据
+//                if(openPDFlag==0){
+//                    sendOpenPD("openpd");
+//                    pdstart=System.currentTimeMillis();
+//                    openPDFlag=1;
+//                }
+//               getCard();
+//                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
+//               //对标签数据进行处理
+//                if(Cache.getHCCS){
+//                    //耗材初始化要数据
+//                    Cache.HCCSMap=(HashMap<String,String>)map.clone();
+//                    map.clear();
+//                    sendHCCS();
+//                }else{
+//                    HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+//                    map.clear();
+//                    new DataDeal(mapBQ).start();
+//                    sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+//                    try{
+//                        Thread.sleep(1000);
+//                    }catch (Exception e){
+//
+//                    }
+//                    if(openPDFlag==1){
+//                        sendPD("closedpd");
+//                        openPDFlag=0;
+//                    }
+//                }
+//
+//            }else if(data.equals("10")){
+//                //告警
+//            }
+//        }
 
 
     }
@@ -426,20 +479,20 @@ public class DataThread extends Thread {
             logger.info("标签个数:"+mapSingle.size());
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
-            //盘点进度显示
-            if(mapSingle.containsValue("6")){
-                sendPD("95");
-            }else if(mapSingle.containsValue("5")){
-                sendPD("90");
-            }else if(mapSingle.containsValue("4")){
-                sendPD("80");
-            }else if(mapSingle.containsValue("3")){
-                sendPD("70");
-            }else if(mapSingle.containsValue("2")){
-                sendPD("50");
-            }else if(mapSingle.containsValue("1")){
-                sendPD("30");
-            }
+//            //盘点进度显示
+//            if(mapSingle.containsValue("6")){
+//                sendPD("95");
+//            }else if(mapSingle.containsValue("5")){
+//                sendPD("90");
+//            }else if(mapSingle.containsValue("4")){
+//                sendPD("80");
+//            }else if(mapSingle.containsValue("3")){
+//                sendPD("70");
+//            }else if(mapSingle.containsValue("2")){
+//                sendPD("50");
+//            }else if(mapSingle.containsValue("1")){
+//                sendPD("30");
+//            }
             if(mapSingle.isEmpty()){
                 break;
             }
@@ -624,5 +677,18 @@ public class DataThread extends Thread {
         data.putString("kh",value);
         message.setData(data);
         Cache.myHandleKH.sendMessage(message);
+    }
+
+    private  void sendHCCS(){
+        if(Cache.myHandleHCCS==null){
+            logger.info("初始耗材发送失败");
+            return;
+        }
+        Message message = Message.obtain(Cache.myHandleHCCS);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("cshc","1");
+        message.setData(data);
+        Cache.myHandleHCCS.sendMessage(message);
     }
 }

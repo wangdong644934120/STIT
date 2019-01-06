@@ -66,27 +66,9 @@
             android:layout_height="60dp"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/button_selector"
             android:text="删除所有指纹"
-            android:textSize="20dp"
-            android:textColor="@color/colorWhite" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:layout_marginTop="20dp"
-            android:background="#a7aba9" />
-
-        <Button
-            android:id="@+id/close"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@drawable/button_selector"
-            android:text="关闭"
             android:textSize="20dp"
             android:textColor="@color/colorWhite" />
 

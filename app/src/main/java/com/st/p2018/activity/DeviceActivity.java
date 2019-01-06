@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -30,31 +31,45 @@ public class DeviceActivity extends Activity {
     private CheckBox gc4;
     private CheckBox gc5;
     private CheckBox gc6;
-    private Button btnClose;
+    private TextView tvfh;
+    private TextView tvtitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
         setContentView(R.layout.activity_device);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
         initData();
     }
 
     private void initView(){
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+        tvtitle.setText("设备信息");
         gx=(TextView)findViewById(R.id.gx);
         gc1=(CheckBox)findViewById(R.id.cb1);
+        gc1.setEnabled(false);
         gc2=(CheckBox)findViewById(R.id.cb2);
+        gc2.setEnabled(false);
         gc3=(CheckBox)findViewById(R.id.cb3);
+        gc3.setEnabled(false);
         gc4=(CheckBox)findViewById(R.id.cb4);
+        gc4.setEnabled(false);
         gc5=(CheckBox)findViewById(R.id.cb5);
+        gc5.setEnabled(false);
         gc6=(CheckBox)findViewById(R.id.cb6);
+        gc6.setEnabled(false);
 
         if(gx.getText().equals("Ⅰ型")){
             gc6.setVisibility(View.VISIBLE);
         }else{
             gc6.setVisibility(View.INVISIBLE);
         }
-        btnClose=(Button)findViewById(R.id.close);
-        btnClose.setOnClickListener(new onClickListener());
+
     }
 
     private void initData(){
@@ -74,7 +89,7 @@ public class DeviceActivity extends Activity {
             if (v.isEnabled() == false)
                 return;
             switch (v.getId()) {
-                case R.id.close:
+                case R.id.fh:
                     DeviceActivity.this.finish();
                     break;
                 default:

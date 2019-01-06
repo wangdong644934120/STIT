@@ -20,14 +20,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.st.p2018.dao.ProductDao;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.ExpportDataBeExcel;
 
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+
 
 public class HCActivity extends Activity {
 
@@ -36,6 +42,7 @@ public class HCActivity extends Activity {
     private Button btnDown;
     private TextView tvfh;
     private TextView tvtitle;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +77,31 @@ public class HCActivity extends Activity {
                 super.handleMessage(msg);
                 Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
                 //提示信息
-                if (bundle.getString("hccs") != null) {
+                if (bundle.getString("cshc") != null) {
+                    logger.info("初始耗材获取标签原始个数："+Cache.HCCSMap.size());
+                    ProductDao productDao = new ProductDao();
+                    productDao.clearAllProduct();
+                    if(!Cache.HCCSMap.isEmpty()){
+                        List<HashMap<String,String>> list=productDao.getAllProductByHCCS();
+                        if(list!=null && !list.isEmpty()){
+                            Set<String> cards = Cache.HCCSMap.keySet();
+                            for(String card : cards){
+                                for(HashMap<String,String> map : list){
+                                    if(card.toUpperCase().equals(map.get("card").toString().toUpperCase())){
+                                        map.put("wz",Cache.HCCSMap.get(card).toString());
+                                        break;
+                                    }
+                                }
+                            }
+                            productDao.updateAllProductWZ(list);
+                        }else{
+                            logger.info("1111");
+                        }
 
+                    }
+                    sendJXQ();
+                    Toast.makeText(HCActivity.this, "初始柜内耗材完成,个数："+Cache.HCCSMap.size(), Toast.LENGTH_SHORT).show();
+                    Cache.HCCSMap.clear();
                     Cache.getHCCS=false;
                 }
 
@@ -126,16 +156,16 @@ public class HCActivity extends Activity {
                 case R.id.cs:
                     Cache.getHCCS=true;
                     btnCS.setPressed(true);
-
-                    ProductDao productDao = new ProductDao();
-                    productDao.clearAllProduct();
-
-                    productDao.addMutilAllProduct();
-                    //todo替换该方法
-                    productDao.updateAllProductWZ();
-                    Toast.makeText(HCActivity.this, "初始柜内耗材完成", Toast.LENGTH_SHORT).show();
                     btnCS.setPressed(false);
-                    Cache.getHCCS=false;
+
+                    //下发盘点指令
+                    if(HCProtocol.ST_GetAllCard()){
+
+                        logger.info("下发指令盘存所有成功");
+                    }else{
+                        Cache.getHCCS=false;
+                        logger.info("下发指令盘存所有失败");
+                    }
                     break;
                 case R.id.fh:
                     HCActivity.this.finish();
@@ -209,6 +239,13 @@ public class HCActivity extends Activity {
         return data;
     }
 
+    private  void sendJXQ(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
 
+        data.putString("initJXQ","1");
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
 
 }

@@ -19,7 +19,6 @@ public class KZActivity extends Activity {
     private Button btnKD;
     private Button btnGD;
     private Button btnSCSYZW;
-    private Button btnClose;
     private TextView tvfh;
     private TextView tvtitle;
 
@@ -46,8 +45,6 @@ public class KZActivity extends Activity {
         btnGD.setOnClickListener(new onClickListener());
         btnSCSYZW=(Button)findViewById(R.id.scsyzw);
         btnSCSYZW.setOnClickListener(new onClickListener());
-        btnClose=(Button)findViewById(R.id.close);
-        btnClose.setOnClickListener(new onClickListener());
     }
 
     /**
@@ -103,12 +100,9 @@ public class KZActivity extends Activity {
                         sendTS("删除所有指纹失败");
                     }
                     break;
-                case R.id.close:
-                    btnClose.setPressed(true);
-                    KZActivity.this.finish();
-                    btnClose.setPressed(false);
                 case R.id.fh:
                     KZActivity.this.finish();
+                    break;
                 default:
                     break;
             }

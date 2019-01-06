@@ -49,7 +49,7 @@ public class DeviceCom extends Thread{
         }else{
             sendData("报警:获取工作模式失败");
         }
-        //new HeartThread().start();
+        new HeartThread().start();
         //new TimeThread().start();
        new DataThread().start();
     }

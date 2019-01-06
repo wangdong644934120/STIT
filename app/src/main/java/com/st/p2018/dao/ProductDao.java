@@ -2,10 +2,12 @@ package com.st.p2018.dao;
 
 import com.st.p2018.database.DataBaseExec;
 import com.st.p2018.entity.ProductBar;
+import com.st.p2018.util.Cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Administrator on 2018/11/29.
@@ -68,9 +70,35 @@ public class ProductDao {
         DataBaseExec.execOther(sql,null);
     }
 
-    public void addMutilAllProduct(){
-        String sql="insert into stit_t_product (id,pp,zl,gg,yxq,card) select id,pp,zl,gg,yxq,card from stit_t_allproduct";
-        DataBaseExec.execOther(sql,null);
+    public List<HashMap<String,String>> getAllProductByHCCS(){
+        Set<String> cards = Cache.HCCSMap.keySet();
+        StringBuilder sql=new StringBuilder("select id,pp,zl,gg,yxq,card from stit_t_allproduct " +
+                "where card in(");
+        for(String card : cards){
+            sql.append("'").append(card).append("',");
+        }
+        sql.deleteCharAt(sql.length()-1);
+        sql.append(")");
+
+        List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql.toString(),null);
+        return list;
+    }
+
+    public void getAllProductByHCCS1(){
+        Set<String> cards = Cache.HCCSMap.keySet();
+        StringBuilder sql=new StringBuilder("insert into stit_t_product (id,pp,zl,gg,yxq,card) select id,pp,zl,gg,yxq,card from stit_t_allproduct " +
+                "where card in(");
+        for(String card : cards){
+            sql.append("'").append(card).append("',");
+        }
+        sql.deleteCharAt(sql.length()-1);
+        sql.append(")");
+
+        DataBaseExec.execOther(sql.toString(),null);
+    }
+
+    public void updateHCCSWZ(){
+
     }
 
     public void clearAllProduct(){
@@ -97,10 +125,20 @@ public class ProductDao {
         return DataBaseExec.execQueryForMap(sql, args);
     }
 
-    public void updateAllProductWZ(){
-        String sql="update stit_t_product set wz=?";
-        String[] args=new String[]{"1"};
-        DataBaseExec.execOther(sql,args);
+    public void updateAllProductWZ(List<HashMap<String,String>> list){
+        StringBuilder sql=new StringBuilder("insert into stit_t_product (id,pp,zl,gg,yxq,card,wz) values ");
+        for(HashMap<String,String> map : list){
+            sql.append("('").append(map.get("id").toString()).append("','");
+            sql.append(map.get("pp").toString()).append("','");
+            sql.append(map.get("zl").toString()).append("','");
+            sql.append(map.get("gg").toString()).append("','");
+            sql.append(map.get("yxq").toString()).append("','");
+            sql.append(map.get("card").toString().toUpperCase()).append("','");
+            sql.append(map.get("wz").toString()).append("'),");
+        }
+        sql.deleteCharAt(sql.length()-1);
+        System.out.println(sql);
+        DataBaseExec.execOther(sql.toString(),null);
     }
 
     public void updateProductWZ(String wz,String card){
