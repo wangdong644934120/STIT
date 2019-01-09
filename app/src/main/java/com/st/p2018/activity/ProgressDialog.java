@@ -18,7 +18,6 @@ import com.st.p2018.view.PercentCircle;
 public class ProgressDialog extends Activity {
 
     public static final String action = "jason.broadcast.action";
-//    BroadcastReceiver broadcastReceiver;
     PercentCircle percentCircle2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +25,8 @@ public class ProgressDialog extends Activity {
         setContentView(R.layout.activity_progress);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-//        PercentCircle percentCircle = (PercentCircle) findViewById(R.id.percentCircle);
         percentCircle2 = (PercentCircle) findViewById(R.id.percentCircle2);
-        //percentCircle.setTargetPercent(100);
+
         percentCircle2.setTargetPercent(1);
 
 
@@ -40,13 +38,6 @@ public class ProgressDialog extends Activity {
                 //提示信息
                 if (bundle.getString("pd") != null) {
                     if(bundle.getString("pd").equals("closedpd")){
-//                        percentCircle2.setTargetPercent(100);
-//                        percentCircle2.update();
-//                        try{
-//                            Thread.sleep(5000);
-//                        }catch (Exception e){
-//
-//                        }
                         ProgressDialog.this.finish();
                     }else{
                         //显示提示信息
@@ -58,27 +49,8 @@ public class ProgressDialog extends Activity {
             }
         };
 
-//        IntentFilter filter = new IntentFilter(action);
-//        registerReceiver(broadcastReceiver, filter);
-//
-//        broadcastReceiver = new BroadcastReceiver() {
-//
-//            @Override
-//            public void onReceive(Context context, Intent intent){
-//            // TODO Auto-generated method stub  
-//                String value=intent.getExtras().getString("data");
-//                if(value.equals("closepd")){
-//                    ProgressDialog.this.finish();
-//                }else{
-//                    percentCircle2.setTargetPercent(Integer.valueOf(value));
-//                    percentCircle2.update();
-//                }
-//
-//            }
-//        };
     }
         protected void onDestroy() {
                 super.onDestroy();
-//                unregisterReceiver(broadcastReceiver);
         };
 }

@@ -82,6 +82,7 @@ public class DataThread extends Thread {
             System.out.println("刷卡器有动作："+skq);
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(0);
+            card=card.toUpperCase();
             logger.info("获取到卡号:"+card);
             if(Cache.getPersonCard){
                 logger.info("人员管理界面要卡号，不进行权限判断");
@@ -123,8 +124,9 @@ public class DataThread extends Thread {
             //指纹匹配成功，下发获取指纹编号
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(1);
-            logger.info("获取到指纹编号："+card);
-            card=Integer.valueOf(card).toString();
+            logger.info("获取到指纹编号十六进制："+card);
+            card=String.valueOf(Long.parseLong(card,  16));
+            logger.info("指纹编号转十进制结果："+card);
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
@@ -322,7 +324,7 @@ public class DataThread extends Thread {
         String zt = rfid.substring(0,2);
         String data=rfid.substring(2,4);
         String jd=rfid.substring(4,8);
-
+        //logger.info("盘存状态："+zt);
 
         if(zt.equals("01")){
             //正在盘存标签
@@ -330,53 +332,29 @@ public class DataThread extends Thread {
             if(data.equals("00")){
                 //无标签数据初始
                 logger.info("正在盘存标签无标签数据");
-                //无标签数据
-                if(openPDFlag==0){
-                    sendOpenPD("openpd");
-                    pdstart=System.currentTimeMillis();
-                    openPDFlag=1;
-                }
+                //无标签数据，打开盘存进度
+                openJD();
             }else if(data.equals("01")){
                 //有标签数据
                 logger.info("正在盘存标签有标签数据");
-                if(openPDFlag==0){
-                    sendOpenPD("openpd");
-                    pdstart=System.currentTimeMillis();
-                    openPDFlag=1;
-                }
+                openJD();
                 getCard();
             }
             //更新进度
-            BigInteger bi = new BigInteger(jd, 2);
-            int dqcs =Integer.parseInt(bi.toString());
-            int zcs=Cache.pccs;
-            int zjd=(int)((double)dqcs/(double)zcs*100);
-            if(!String.valueOf(zjd).equals(pcjd)){
-                pcjd=String.valueOf(zjd);
-                sendPD(pcjd);
-            }
+            updateJD(jd);
 
         }else if(zt.equals("00")){
             if(dealFlag){
                 dealFlag=false;
                 //处理器标签数据
-                logger.info("标签盘存结束，开始的处理数据");
+                logger.info("标签盘存结束，开始处理数据");
                 //有标签数据
-                if(openPDFlag==0){
-                    sendOpenPD("openpd");
-                    pdstart=System.currentTimeMillis();
-                    openPDFlag=1;
-                }
+                openJD();
                 logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
                 //更新进度
-                BigInteger bi = new BigInteger(jd, 2);
-                int dqcs =Integer.parseInt(bi.toString());
-                int zcs=Cache.pccs;
-                int zjd=(int)((double)dqcs/(double)zcs*100);
-                if(!String.valueOf(zjd).equals(pcjd)){
-                    pcjd=String.valueOf(zjd);
-                    sendPD(pcjd);
-                }
+                updateJD(jd);
+                //关闭盘存进度
+                closeJD();
                 //对标签数据进行处理
                 if(Cache.getHCCS){
                     //耗材初始化要数据
@@ -388,87 +366,10 @@ public class DataThread extends Thread {
                     map.clear();
                     new DataDeal(mapBQ).start();
                     sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-                    try{
-                        Thread.sleep(1000);
-                    }catch (Exception e){
-
-                    }
-                    if(openPDFlag==1){
-                        sendPD("closedpd");
-                        openPDFlag=0;
-                    }
                 }
 
             }
         }
-
-
-//        if(zt.equals("00")){
-//            //读写器休眠中
-//        }else if(zt.equals("01")){
-//            logger.info("正在盘存标签");
-//            //正在盘存标签
-//            if(data.equals("00")){
-//                logger.info("正在盘存标签无标签数据");
-//                //无标签数据
-//                if(openPDFlag==0){
-//                    sendOpenPD("openpd");
-//                    pdstart=System.currentTimeMillis();
-//                    openPDFlag=1;
-//                }
-//            }else if(data.equals("01")){
-//                logger.info("正在盘存标签有标签数据");
-//                if(openPDFlag==0){
-//                    sendOpenPD("openpd");
-//                    pdstart=System.currentTimeMillis();
-//                    openPDFlag=1;
-//                }
-//                getCard();
-//            }else if(data.equals("10")){
-//                //告警
-//            }
-//        }else if(zt.equals("10")){
-//            //标签盘存结束
-//            logger.info("标签盘存结束");
-//            if(data.equals("00")){
-//                logger.info("标签盘存结束无标签数据");
-//            }else if(data.equals("01")){
-//                logger.info("标签盘存结束有标签数据");
-//                //有标签数据
-//                if(openPDFlag==0){
-//                    sendOpenPD("openpd");
-//                    pdstart=System.currentTimeMillis();
-//                    openPDFlag=1;
-//                }
-//               getCard();
-//                logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
-//               //对标签数据进行处理
-//                if(Cache.getHCCS){
-//                    //耗材初始化要数据
-//                    Cache.HCCSMap=(HashMap<String,String>)map.clone();
-//                    map.clear();
-//                    sendHCCS();
-//                }else{
-//                    HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-//                    map.clear();
-//                    new DataDeal(mapBQ).start();
-//                    sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
-//                    try{
-//                        Thread.sleep(1000);
-//                    }catch (Exception e){
-//
-//                    }
-//                    if(openPDFlag==1){
-//                        sendPD("closedpd");
-//                        openPDFlag=0;
-//                    }
-//                }
-//
-//            }else if(data.equals("10")){
-//                //告警
-//            }
-//        }
-
 
     }
     //获取标签数据
@@ -479,23 +380,42 @@ public class DataThread extends Thread {
             logger.info("标签个数:"+mapSingle.size());
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
-//            //盘点进度显示
-//            if(mapSingle.containsValue("6")){
-//                sendPD("95");
-//            }else if(mapSingle.containsValue("5")){
-//                sendPD("90");
-//            }else if(mapSingle.containsValue("4")){
-//                sendPD("80");
-//            }else if(mapSingle.containsValue("3")){
-//                sendPD("70");
-//            }else if(mapSingle.containsValue("2")){
-//                sendPD("50");
-//            }else if(mapSingle.containsValue("1")){
-//                sendPD("30");
-//            }
             if(mapSingle.isEmpty()){
                 break;
             }
+        }
+    }
+
+    /**
+     * 更新盘存进度
+     * @param jd
+     */
+    private void updateJD(String jd){
+        //更新进度
+        BigInteger bi = new BigInteger(jd, 2);
+        int dqcs =Integer.parseInt(bi.toString());
+        int zcs=Cache.pccs;
+        int zjd=(int)((double)dqcs/(double)zcs*100);
+        if(!String.valueOf(zjd).equals(pcjd)){
+            pcjd=String.valueOf(zjd);
+            sendPD(pcjd);
+        }
+    }
+    //打开盘存进度提示
+    private void openJD(){
+        if(openPDFlag==0){
+            sendOpenPD("openpd");
+            pdstart=System.currentTimeMillis();
+            openPDFlag=1;
+            MyTextToSpeech.getInstance().speak("正在盘存请稍候");
+        }
+    }
+    //关闭盘存进度
+    private void closeJD(){
+        if(openPDFlag==1){
+            sendPD("closedpd");
+            openPDFlag=0;
+            MyTextToSpeech.getInstance().speak("盘存结束，请确认");
         }
     }
 
@@ -574,14 +494,6 @@ public class DataThread extends Thread {
         }
         public void run(){
             Cache.listPR.clear();
-//            mapDeal.put("A12245678","1");
-//            mapDeal.put("A12345678","2");
-//            mapDeal.put("B12345678","1");
-//            mapDeal.put("C12345679","1");
-//            mapDeal.put("D12345679","1");
-//            mapDeal.put("E12345680","1");
-//            mapDeal.put("F12345681","2");
-//            mapDeal.put("F12345680","2");
            List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
            if(Cache.sdpdcs.equals("0")){
                //不是手动盘点

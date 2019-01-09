@@ -115,7 +115,6 @@ public class RecordActivity extends Activity {
                 Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                 data.putString("value","关闭("+i+"s)");
                 message.setData(data);
-                System.out.println(i);
                 myHandler.sendMessage(message);
                 try{
                     Thread.sleep(1000);

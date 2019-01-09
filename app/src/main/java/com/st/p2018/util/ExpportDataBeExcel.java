@@ -70,11 +70,12 @@ public  class ExpportDataBeExcel {
                 }else{
                     pb.setYxq(sdf.parse(yxq).getTime()+1000*60*60*24-1);
                 }
-                pb.setCard(oneRow.getCell((short)4)==null?"":oneRow.getCell((short)4).toString().trim());
+                pb.setCard(oneRow.getCell((short)4)==null?"":oneRow.getCell((short)4).toString().trim().toUpperCase());
                 list.add(pb);
             }
 
             pd.addMutil_AllProduct(list);
+            logger.info("上传耗材库成功，个数："+list.size());
             return true;
 
         } catch (Exception ex) {

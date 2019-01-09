@@ -94,8 +94,6 @@ public class HCActivity extends Activity {
                                 }
                             }
                             productDao.updateAllProductWZ(list);
-                        }else{
-                            logger.info("1111");
                         }
 
                     }

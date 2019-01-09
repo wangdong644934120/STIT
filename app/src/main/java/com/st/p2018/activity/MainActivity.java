@@ -71,8 +71,7 @@ public class MainActivity extends Activity {
     private TextView tvTS;
     ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
     private List<String> listTS = new ArrayList<String>();
-//    HashMap<Float,String> fs=new HashMap<Float,String>();
-//    private String yxqjx;
+
     private RelativeLayout rl;
     private TextView d1;
     private TextView d2;
@@ -81,13 +80,6 @@ public class MainActivity extends Activity {
     private TextView d5;
     private TextView d6;
 
-//    private TextView h1;
-//    private TextView h2;
-//    private TextView h3;
-//    private TextView h4;
-//    private TextView h5;
-
-//    private TextView men;
 
     private ImageView ivh1;
     private ImageView ivh2;

@@ -75,7 +75,7 @@ public class ProductDao {
         StringBuilder sql=new StringBuilder("select id,pp,zl,gg,yxq,card from stit_t_allproduct " +
                 "where card in(");
         for(String card : cards){
-            sql.append("'").append(card).append("',");
+            sql.append("'").append(card.toUpperCase()).append("',");
         }
         sql.deleteCharAt(sql.length()-1);
         sql.append(")");
@@ -137,7 +137,7 @@ public class ProductDao {
             sql.append(map.get("wz").toString()).append("'),");
         }
         sql.deleteCharAt(sql.length()-1);
-        System.out.println(sql);
+
         DataBaseExec.execOther(sql.toString(),null);
     }
 

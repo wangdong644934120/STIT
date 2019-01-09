@@ -444,7 +444,7 @@ public class HCProtocol {
                     byte[] card=new byte[8];
                     System.arraycopy(cardby,i*9+1,card,0,8);
                     String cardS = DataTypeChange.byteArrayToHexString(card);
-                    map.put(cardS,String.valueOf(wz));
+                    map.put(cardS.toUpperCase(),String.valueOf(wz));
                 }
 
             }
@@ -675,7 +675,7 @@ public class HCProtocol {
         try {
             myLock.lock();
             byte[] head = new byte[]{0x3A};
-            byte[] length = new byte[]{0x03};
+            byte[] length = new byte[]{0x04};
             byte[] deviceID = new byte[]{0x00};
             byte[] order = new byte[]{0x51};
             byte[] bydata=new byte[]{0x00};

@@ -6,6 +6,7 @@ import android.os.Message;
 
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.util.Cache;
+import com.st.p2018.util.MyTextToSpeech;
 
 import org.apache.log4j.Logger;
 
@@ -49,7 +50,7 @@ public class DeviceCom extends Thread{
         }else{
             sendData("报警:获取工作模式失败");
         }
-        new HeartThread().start();
+        //new HeartThread().start();
         //new TimeThread().start();
        new DataThread().start();
     }
@@ -82,13 +83,7 @@ public class DeviceCom extends Thread{
             map.put("gc4",qygc.substring(4,5));
             map.put("gc5",qygc.substring(3,4));
             map.put("gc6",qygc.substring(2,3));
-//            for(int i=qygc.length();i>=0;i--){
-//                if(qygc.substring(qygc.length()-1,qygc.length()).equals("1")){
-//                    map.put("gc"+i,"1");
-//                }else{
-//                    map.put("gc"+i,"0");
-//                }
-//            }
+
             PZDao pzDao=new PZDao();
             pzDao.updatePZByDevice(map);
             logger.info("获取设备信息完成");

@@ -113,7 +113,7 @@
 
         <activity android:name="com.st.p2018.activity.ProgressDialog"
             android:colorMode="default"
-            android:label="正在盘点请稍后..."
+            android:label="正在盘存请稍后..."
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/prostyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />

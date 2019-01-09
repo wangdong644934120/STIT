@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorWhite"
+        android:background="@drawable/bg"
         android:orientation="vertical">
 
         <View
@@ -28,10 +28,13 @@
                 android:layout_height="match_parent"/>
 
         </AbsoluteLayout>
+
+
         <View
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="#a7aba9" />
+            android:layout_width="match_parent"
+            android:layout_height="46px"
+            android:background="@drawable/zhuangtai" />
+
         <LinearLayout
             android:id="@+id/d3"
             android:layout_width="match_parent"
@@ -66,12 +69,11 @@
                 android:layout_weight="2"
                 android:lines="15"
                 android:text="提示信息" />
+
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="#a7aba9" />
+
+        <!--操作员-->
         <LinearLayout
             android:id="@+id/d4"
             android:layout_width="match_parent"
@@ -114,62 +116,3 @@
 
 </android.support.constraint.ConstraintLayout>
 
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="310dp"-->
-<!--android:orientation="vertical">-->
-
-<!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="74dp"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<Button-->
-            <!--android:id="@+id/pd"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="盘点" />-->
-
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="开门" />-->
-
-        <!--<Button-->
-            <!--android:id="@+id/person"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:text="人员管理" />-->
-    <!--</LinearLayout>-->
-<!--</LinearLayout>-->
-
-
-<!--</LinearLayout>-->
-
-<!--<View-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="2px"-->
-<!--android:background="#a7aba9" />-->
-
-
-<!--<LinearLayout-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:orientation="vertical">-->
-
-<!--<TextView-->
-    <!--android:id="@+id/ts"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:text="提示信息" />-->
-<!--</LinearLayout>-->
