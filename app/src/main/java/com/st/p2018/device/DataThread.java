@@ -94,11 +94,11 @@ public class DataThread extends Thread {
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                sendTS("操作:"+list.get(0).get("name")+"刷卡开门成功");
+                sendCZY(list.get(0).get("name"));
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"刷卡开门成功");
 
             }else{
-                sendTS("报警:此卡无开门权限");
+                sendCZY("");
                 MyTextToSpeech.getInstance().speak("此卡无开门权限");
             }
         }
@@ -115,7 +115,7 @@ public class DataThread extends Thread {
         }
         if (zwcgq.equals("10")) {
             //指纹匹配失败
-            sendTS("报警:此指纹无开门权限");
+            sendCZY("");
             MyTextToSpeech.getInstance().speak("此指纹无开门权限");
         }
         //应该为11
@@ -132,48 +132,60 @@ public class DataThread extends Thread {
                 //下发开门指令
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
-                sendTS("操作:"+list.get(0).get("name")+"指纹开门成功");
+                sendCZY(list.get(0).get("name"));
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"指纹开门成功");
             }else{
-                sendTS("报警:此指纹无开门权限");
+                sendCZY("");
                 MyTextToSpeech.getInstance().speak("此指纹无开门权限");
             }
         }
 
 //        //指纹传感器，下发获取指纹信息
-//        sendTS("时间:15:43:20");
-//        sendTS("报警:指纹识别失败");
-//        sendTS("时间:15:43:20");
-//        sendTS("操作:张大山 存100 取100");
+
     }
-    //门状态传感器 开门 监控状态   关门  监控门状态
+    //门状态传感器 开门 监控电控锁状态   关门  监控门状态
     private void alaMZTCGQ(String mztcgq){
-        mztcgq=mztcgq.substring(5,7);
+
+        mztcgq=mztcgq.substring(6,8);
         if(mztcgq.contains("1")){
-            //门开
-            if(!Cache.mztcgq){
-                System.out.println("设置门开");
+
+            //初始化第一次判断
+            if(Cache.mztcgq==2){
+                logger.info("设置门开");
                 //设置门开
                 updateUI("men","","1");
-                Cache.mztcgq=true;
+                Cache.mztcgq=1;
+            }
+            //门开
+            if(Cache.mztcgq==0){
+                logger.info("设置门开");
+                //设置门开
+                updateUI("men","","1");
+                Cache.mztcgq=1;
+            }
+        }else if(mztcgq.equals("00")){
+            //初始化第一次判断
+            if(Cache.mztcgq==2){
+                logger.info("设置门关");
+                //设置门关
+                updateUI("men","","0");
+                Cache.mztcgq=0;
+            }
+            //门关
+            if(Cache.mztcgq==1){
+                logger.info("设置门关");
+                //设置门关
+                updateUI("men","","0");
+                Cache.mztcgq=0;
             }
         }
-//        else if(mztcgq.equals("00")){
-//            //门关
-//            if(Cache.mztcgq){
-//                System.out.println("设置门关");
-//                //设置门关
-//                updateUI("men","","0");
-//                Cache.mztcgq=false;
-//            }
-//        }
         //门状态传感器，下发获取门状态
     }
     //电控锁
     private void alaDKS(String dks){
         //电控锁,下发获取电控锁状态
 
-//        dks=dks.substring(5,7);
+        //dks=dks.substring(5,7);
 //        if(dks.contains("1")){
 //            //门开
 //            if(!Cache.mztcgq){
@@ -183,15 +195,15 @@ public class DataThread extends Thread {
 //                Cache.mztcgq=true;
 //            }
 //        }else
-          if(dks.equals("00")){
-            //门关
-            if(Cache.mztcgq){
-                System.out.println("设置门关");
-                //设置门关
-                updateUI("men","","0");
-                Cache.mztcgq=false;
-            }
-        }
+//          if(dks.equals("00")){
+//            //门关
+//            if(Cache.mztcgq){
+//                logger.info("设置门关");
+//                //设置门关
+//                updateUI("men","","0");
+//                Cache.mztcgq=false;
+//            }
+//        }
     }
     //红外行程开关
     private void alaHWXCKG(String hwxckg){
@@ -301,6 +313,21 @@ public class DataThread extends Thread {
     //照明灯
     private void alaZMD(String zmd){
         zmd=zmd.substring(5,7);
+        //照明灯初始状态判断
+        if(Cache.zmdztcs==2){
+            Cache.zmdztcs=1;
+            if(zmd.contains("1")){
+                logger.info("设置灯开");
+                updateUI("deng","","1");
+                Cache.zmdzt=true;
+
+            }else if(zmd.equals("00")){
+                //设置灯关
+                logger.info("设置灯关");
+                updateUI("deng","","0");
+                Cache.zmdzt=false;
+            }
+        }
         if(zmd.contains("1")){
             //设置灯开
             if(!Cache.zmdzt){
@@ -365,7 +392,7 @@ public class DataThread extends Thread {
                     HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                     map.clear();
                     new DataDeal(mapBQ).start();
-                    sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+                    //sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
                 }
 
             }
@@ -419,14 +446,15 @@ public class DataThread extends Thread {
         }
     }
 
-    private  void sendTS(String value){
+
+
+    private  void sendCZY(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-        data.putString("ts",value);
+        data.putString("czy",value);
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
-
     private  void sendZT(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。

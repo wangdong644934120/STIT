@@ -73,12 +73,7 @@ public class MainActivity extends Activity {
     private List<String> listTS = new ArrayList<String>();
 
     private RelativeLayout rl;
-    private TextView d1;
-    private TextView d2;
-    private TextView d3;
-    private TextView d4;
-    private TextView d5;
-    private TextView d6;
+
 
 
     private ImageView ivh1;
@@ -88,11 +83,16 @@ public class MainActivity extends Activity {
     private ImageView ivh5;
     private ImageView ivh6;
     private ImageView ivmen;
-    private ImageView ivd1;
-    private ImageView ivd2;
+    private ImageView ivdeng;
+
 
     private TextView tvczy;
     private TextView tvczsc;
+    private TextView tvmzt;
+    private TextView tvdeng;
+
+    private Button btnKD;
+    private Button btnPD;
 
     final static int COUNTS = 5;// 点击次数
     final static long DURATION = 3000;// 规定有效时间
@@ -118,24 +118,24 @@ public class MainActivity extends Activity {
         initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
-        initGX();
+        initGX1();
         new DeviceCom().start();
-        new CZSCShow().start();
-
     }
 
 
 
     private void initView() {
-        tvczy=(TextView)findViewById(R.id.czy);
-        tvczsc=(TextView)findViewById(R.id.czsc);
 
+        btnKD=(Button)findViewById(R.id.kaideng);
+        btnKD.setOnClickListener(new onClickListener());
+        btnPD=(Button)findViewById(R.id.pandian);
+        btnPD.setOnClickListener(new onClickListener());
         rl=(RelativeLayout)findViewById(R.id.mylayout);
 
         tvD=(Button)findViewById(R.id.dian);
         tvD.setOnClickListener(new onClickListener());
         mChart = (PieChart) findViewById(R.id.chart);
-        tvTS=(TextView)findViewById(R.id.ts);
+//        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
 
         Cache.myHandle = new Handler() {
@@ -145,6 +145,9 @@ public class MainActivity extends Activity {
                 Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
                 //提示信息
                 if (bundle.getString("ts") != null) {
+                    if(1==1){
+                        return;
+                    }
                     //显示提示信息
                     listTS.add(bundle.getString("ts"));
                     if (listTS.size() > 15) {
@@ -192,6 +195,7 @@ public class MainActivity extends Activity {
                 }
                 //缩略图更新
                 if(bundle.getString("type")!=null){
+
                     if(bundle.get("type").toString().equals("men")){
                         if(bundle.get("zt").toString().equals("1")){
                             //
@@ -201,75 +205,77 @@ public class MainActivity extends Activity {
                                 czscShow.start();
                             }
                             // /替换开门图片
-                            ivmen.setImageResource(R.drawable.wsm1);
-
+                            ivmen.setImageResource(R.drawable.menkai);
+                            tvmzt.setText("门状态：门已开");
                         }else{
                             //替换关门图片
-                            tvczy.setText("操作员：无");
-                            tvczsc.setText("操作时长：0秒");
+                            tvczy.setText("操作员：");
+                            tvczsc.setText("操作时长：00:00");
                             czscflag=false;
-                            ivmen.setImageResource(R.drawable.wsm);
+                            ivmen.setImageResource(R.drawable.menguan);
+                            tvmzt.setText("门状态：门已关");
                         }
                     }
                     if(bundle.get("type").toString().equals("deng")){
                         if(bundle.get("zt").toString().equals("1")){
                             //替换开灯图片
-                            ivd1.setImageResource(R.drawable.wsd);
-                            ivd2.setImageResource(R.drawable.wsd);
+                            ivdeng.setImageResource(R.drawable.dengkai);
+                            tvdeng.setText("灯状态：灯已开");
                         }else{
                             //替换关灯图片
-                            ivd1.setImageResource(R.drawable.wsd1);
-                            ivd2.setImageResource(R.drawable.wsd1);
+                            ivdeng.setImageResource(R.drawable.dengguan);
+                            tvdeng.setText("灯状态：灯已关");
+
                         }
                     }
                     if(bundle.get("type").toString().equals("hwxc")){
                        if(bundle.get("wz").toString().equals("1")){
                            if(bundle.get("zt").toString().equals("1")){
                                //替换红外行程1触发图片
-                               ivh1.setImageResource(R.drawable.wshw1);
+                               ivh1.setImageResource(R.drawable.hongwaichufa);
                            }else{
                                //替换红外行程1不触发图片
-                               ivh1.setImageResource(R.drawable.wshw);
+                               ivh1.setImageResource(R.drawable.hongwaizhengchang);
                            }
 
                        }
                         if(bundle.get("wz").toString().equals("2")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh2.setImageResource(R.drawable.wshw1);
+                                ivh2.setImageResource(R.drawable.hongwaichufa);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh2.setImageResource(R.drawable.wshw);
+                                ivh2.setImageResource(R.drawable.hongwaizhengchang);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("3")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh3.setImageResource(R.drawable.wshw1);
+                                ivh3.setImageResource(R.drawable.hongwaichufa);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh3.setImageResource(R.drawable.wshw);
+                                ivh3.setImageResource(R.drawable.hongwaizhengchang);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("4")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh4.setImageResource(R.drawable.wshw1);
+                                ivh4.setImageResource(R.drawable.hongwaichufa);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh4.setImageResource(R.drawable.wshw);
+                                ivh4.setImageResource(R.drawable.hongwaizhengchang);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("5")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh5.setImageResource(R.drawable.wshw1);
+                                ivh5.setImageResource(R.drawable.hongwaichufa);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh5.setImageResource(R.drawable.wshw);
+                                ivh5.setImageResource(R.drawable.hongwaizhengchang);
                             }
 
                         }
@@ -277,10 +283,10 @@ public class MainActivity extends Activity {
                             if(!Cache.gx.equals("Ⅰ型")){
                                 if(bundle.get("zt").toString().equals("1")){
                                     //替换红外行程1触发图片
-                                    ivh6.setImageResource(R.drawable.wshw1);
+                                    ivh6.setImageResource(R.drawable.hongwaichufa);
                                 }else{
                                     //替换红外行程1不触发图片
-                                    ivh6.setImageResource(R.drawable.wshw);
+                                    ivh6.setImageResource(R.drawable.hongwaizhengchang);
                                 }
                             }
                         }
@@ -312,12 +318,12 @@ public class MainActivity extends Activity {
                 }
                 if(bundle.getString("czy")!=null){
                     //根据柜型更新缩略图
-                   tvczy.setText(bundle.getString("czy"));
+                   tvczy.setText("操作员："+bundle.getString("czy"));
 
                 }
                 if(bundle.getString("czsc")!=null){
                     //更新操作时长
-                    tvczsc.setText(bundle.getString("czsc")+"秒");
+                    tvczsc.setText("操作时长："+bundle.getString("czsc"));
 
                 }
             }
@@ -354,35 +360,22 @@ public class MainActivity extends Activity {
                     selectDialog.setCanceledOnTouchOutside(true);//设置点击Dialog外部任意区域关闭Dialog
                     selectDialog.show();
                     break;
-                case R.id.textview_1:
-                    //盘点第1层
-                    Cache.sdpdcs="1";
-                    HCProtocol.ST_GetCardByChoose(1);
+                case R.id.kaideng:
+                    boolean bl=HCProtocol.ST_OpenLight();
+                    if(bl){
+                        MyTextToSpeech.getInstance().speak("开灯成功");
+                        Toast.makeText(MainActivity.this, "开灯成功", Toast.LENGTH_SHORT).show();
+                    }else{
+                        MyTextToSpeech.getInstance().speak("开灯失败");
+                        Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();
+                    }
                     break;
-                case R.id.textview_2:
-                    //盘点第2层
-                    Cache.sdpdcs="2";
-                    HCProtocol.ST_GetCardByChoose(2);
-                    break;
-                case R.id.textview_3:
-                    //盘点第3层
-                    Cache.sdpdcs="3";
-                    HCProtocol.ST_GetCardByChoose(3);
-                    break;
-                case R.id.textview_4:
-                    //盘点第4层
-                    Cache.sdpdcs="4";
-                    HCProtocol.ST_GetCardByChoose(4);
-                    break;
-                case R.id.textview_5:
-                    //盘点第5层
-                    Cache.sdpdcs="5";
-                    HCProtocol.ST_GetCardByChoose(5);
-                    break;
-                case R.id.textview_6:
-                    Cache.sdpdcs="6";
-                    HCProtocol.ST_GetCardByChoose(6);
-                    //判断第6层
+                case R.id.pandian:
+                    if(HCProtocol.ST_GetAllCard()){
+                    }else{
+                        MyTextToSpeech.getInstance().speak("盘点失败");
+                        Toast.makeText(MainActivity.this, "盘点失败", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 default:
                     break;
@@ -538,141 +531,249 @@ public class MainActivity extends Activity {
 //        iv.setLayoutParams(params);
 //        rl.addView(iv);
 
-        ImageView ivh5=new ImageView(this);
-        params = new RelativeLayout.LayoutParams(390, 390);
-        params.setMargins(20, 20, 20, 20);
-        ivh5.setLayoutParams(params);
-        rl.addView(ivh5);
-        RequestOptions options = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
+//        ImageView ivh5=new ImageView(this);
+//        params = new RelativeLayout.LayoutParams(390, 390);
+//        params.setMargins(20, 20, 20, 20);
+//        ivh5.setLayoutParams(params);
+//        rl.addView(ivh5);
+//        RequestOptions options = new RequestOptions()
+//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+//        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
     }
 
     private void initGX1(){
         RelativeLayout.LayoutParams params ;
-        //背景图片
-        params = new RelativeLayout.LayoutParams(390, 390);
-        params.setMargins(20, 20, 20, 20);
+        //操作员图片
+        params = new RelativeLayout.LayoutParams(82, 82);
+        params.setMargins(40, 50, 0, 0);
         ImageView iv = new ImageView(this);
-        iv.setBackgroundColor(Color.BLUE);
-        iv.setImageResource(R.drawable.wsbj1);
+        iv.setImageResource(R.drawable.caozuoyuan);
         iv.setLayoutParams(params);
         rl.addView(iv);
 
-
-        d1=new TextView(this);
-        d1.setText("第一层");
-        d1.setId(R.id.textview_1);
-        d1.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 100, 0, 0);
-        d1.setLayoutParams(params);
-        rl.addView(d1);
-        d2=new TextView(this);
-        d2.setText("第二层");
-        d2.setId(R.id.textview_2);
-        d2.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
+        params = new RelativeLayout.LayoutParams(150, 82);
         params.setMargins(30, 150, 0, 0);
-        d2.setLayoutParams(params);
-        rl.addView(d2);
-        d3=new TextView(this);
-        d3.setText("第三层");
-        d3.setId(R.id.textview_3);
-        d3.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 200, 0, 0);
-        d3.setLayoutParams(params);
-        rl.addView(d3);
-        d4=new TextView(this);
-        d4.setText("第四层");
-        d4.setId(R.id.textview_4);
-        d4.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 250, 0, 0);
-        d4.setLayoutParams(params);
-        rl.addView(d4);
-        d5=new TextView(this);
-        d5.setText("第五层");
-        d5.setId(R.id.textview_5);
-        d5.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 300, 0, 0);
-        d5.setLayoutParams(params);
-        rl.addView(d5);
-        //灯带1
-        params = new RelativeLayout.LayoutParams(20, 280);
-        params.setMargins(80, 80, 0, 0);
-        ivd1 = new ImageView(this);
-        ivd1.setBackgroundColor(Color.GREEN);
-        ivd1.setImageResource(R.drawable.wsd1);
-        ivd1.setLayoutParams(params);
-        rl.addView(ivd1);
+        tvczy = new TextView(this);
+        tvczy.setText("操作员：");
+        tvczy.setTextColor(Color.WHITE);
+        tvczy.setTextSize(18);
+        tvczy.setLayoutParams(params);
+        rl.addView(tvczy);
 
-        //门
-        params = new RelativeLayout.LayoutParams(250, 40);
-        params.setMargins(100, 40, 0, 0);
+        params = new RelativeLayout.LayoutParams(82, 82);
+        params.setMargins(40, 200, 0, 0);
         ivmen = new ImageView(this);
-        ivmen.setBackgroundColor(Color.YELLOW);
-        ivmen.setImageResource(R.drawable.wsm);
+        ivmen.setImageResource(R.drawable.menguan);
         ivmen.setLayoutParams(params);
         rl.addView(ivmen);
 
+        params = new RelativeLayout.LayoutParams(150, 82);
+        params.setMargins(30, 300, 0, 0);
+        tvmzt = new TextView(this);
+        tvmzt.setText("");
+//        tvmzt.setText("门状态：门已关");
+        tvmzt.setTextColor(Color.WHITE);
+        tvmzt.setTextSize(18);
+        tvmzt.setLayoutParams(params);
+        rl.addView(tvmzt);
 
-        //灯带2
-        params = new RelativeLayout.LayoutParams(20, 280);
-        params.setMargins(350, 80, 0, 0);
-        ivd2 = new ImageView(this);
-        ivd2.setBackgroundColor(Color.GREEN);
-        ivd2.setImageResource(R.drawable.wsd1);
-        ivd2.setLayoutParams(params);
-        rl.addView(ivd2);
+        params = new RelativeLayout.LayoutParams(82, 82);
+        params.setMargins(220, 50, 0, 0);
+        ImageView ivsc = new ImageView(this);
+        ivsc.setImageResource(R.drawable.shichang);
+        ivsc.setLayoutParams(params);
+        rl.addView(ivsc);
+
+        params = new RelativeLayout.LayoutParams(250, 82);
+        params.setMargins(190, 150, 0, 0);
+        tvczsc = new TextView(this);
+        tvczsc.setText("");
+//        tvczsc.setText("操作时长：0分0秒");
+        tvczsc.setTextColor(Color.WHITE);
+        tvczsc.setTextSize(18);
+        tvczsc.setLayoutParams(params);
+        rl.addView(tvczsc);
+
+        params = new RelativeLayout.LayoutParams(82, 82);
+        params.setMargins(220, 200, 0, 0);
+        ivdeng = new ImageView(this);
+        ivdeng.setImageResource(R.drawable.dengguan);
+        ivdeng.setLayoutParams(params);
+        rl.addView(ivdeng);
+
+        params = new RelativeLayout.LayoutParams(150, 82);
+        params.setMargins(200, 300, 0, 0);
+        tvdeng = new TextView(this);
+        tvdeng.setText("");
+//        tvdeng.setText("灯状态：关闭");
+        tvdeng.setTextColor(Color.WHITE);
+        tvdeng.setTextSize(18);
+        tvdeng.setLayoutParams(params);
+        rl.addView(tvdeng);
+
+        params = new RelativeLayout.LayoutParams(126, 256);
+        params.setMargins(400, 40, 0, 0);
+        ImageView ivguizi = new ImageView(this);
+        ivguizi.setImageResource(R.drawable.guiziyuanshi);
+        ivguizi.setLayoutParams(params);
+        rl.addView(ivguizi);
 
         ivh1=new ImageView(this);
-        ivh1.setBackgroundColor(Color.BLUE);
-        ivh1.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 100, 0, 0);
+        ivh1.setImageResource(R.drawable.hongwaizhengchang);
+        params = new RelativeLayout.LayoutParams(110, 40);
+        params.setMargins(410, 70, 0, 0);
         ivh1.setLayoutParams(params);
 //        ivh1.setRotation(-15);
         rl.addView(ivh1);
 
         ivh2=new ImageView(this);
-        ivh2.setBackgroundColor(Color.BLUE);
-        ivh2.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 150, 0, 0);
+        ivh2.setImageResource(R.drawable.hongwaizhengchang);
+        params = new RelativeLayout.LayoutParams(110, 40);
+        params.setMargins(410, 110, 0, 0);
         ivh2.setLayoutParams(params);
 //        ivh2.setRotation(-15);
         rl.addView(ivh2);
 
         ivh3=new ImageView(this);
-        ivh3.setBackgroundColor(Color.BLUE);
-        ivh3.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 200, 0, 0);
+        ivh3.setImageResource(R.drawable.hongwaizhengchang);
+        params = new RelativeLayout.LayoutParams(110, 40);
+        params.setMargins(410, 150, 0, 0);
         ivh3.setLayoutParams(params);
 //        ivh2.setRotation(-15);
         rl.addView(ivh3);
 
 
         ivh4=new ImageView(this);
-        ivh4.setBackgroundColor(Color.BLUE);
-        ivh4.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 250, 0, 0);
+        ivh4.setImageResource(R.drawable.hongwaizhengchang);
+        params = new RelativeLayout.LayoutParams(110, 40);
+        params.setMargins(410, 190, 0, 0);
         ivh4.setLayoutParams(params);
 //        ivh2.setRotation(-15);
         rl.addView(ivh4);
 
         ivh5=new ImageView(this);
-        ivh5.setBackgroundColor(Color.BLUE);
-        ivh5.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 300, 0, 0);
+        ivh5.setImageResource(R.drawable.hongwaizhengchang);
+        params = new RelativeLayout.LayoutParams(110, 40);
+        params.setMargins(410, 230, 0, 0);
         ivh5.setLayoutParams(params);
 //        ivh2.setRotation(-15);
         rl.addView(ivh5);
+
+//
+//
+//        d1=new TextView(this);
+//        d1.setText("第一层");
+//        d1.setId(R.id.textview_1);
+//        d1.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 100, 0, 0);
+//        d1.setLayoutParams(params);
+//        rl.addView(d1);
+//        d2=new TextView(this);
+//        d2.setText("第二层");
+//        d2.setId(R.id.textview_2);
+//        d2.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 150, 0, 0);
+//        d2.setLayoutParams(params);
+//        rl.addView(d2);
+//        d3=new TextView(this);
+//        d3.setText("第三层");
+//        d3.setId(R.id.textview_3);
+//        d3.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 200, 0, 0);
+//        d3.setLayoutParams(params);
+//        rl.addView(d3);
+//        d4=new TextView(this);
+//        d4.setText("第四层");
+//        d4.setId(R.id.textview_4);
+//        d4.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 250, 0, 0);
+//        d4.setLayoutParams(params);
+//        rl.addView(d4);
+//        d5=new TextView(this);
+//        d5.setText("第五层");
+//        d5.setId(R.id.textview_5);
+//        d5.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 300, 0, 0);
+//        d5.setLayoutParams(params);
+//        rl.addView(d5);
+//        //灯带1
+//        params = new RelativeLayout.LayoutParams(20, 280);
+//        params.setMargins(80, 80, 0, 0);
+//        ivd1 = new ImageView(this);
+//        ivd1.setBackgroundColor(Color.GREEN);
+//        ivd1.setImageResource(R.drawable.wsd1);
+//        ivd1.setLayoutParams(params);
+//        rl.addView(ivd1);
+//
+//        //门
+//        params = new RelativeLayout.LayoutParams(250, 40);
+//        params.setMargins(100, 40, 0, 0);
+//        ivmen = new ImageView(this);
+//        ivmen.setBackgroundColor(Color.YELLOW);
+//        ivmen.setImageResource(R.drawable.wsm);
+//        ivmen.setLayoutParams(params);
+//        rl.addView(ivmen);
+//
+//
+//        //灯带2
+//        params = new RelativeLayout.LayoutParams(20, 280);
+//        params.setMargins(350, 80, 0, 0);
+//        ivd2 = new ImageView(this);
+//        ivd2.setBackgroundColor(Color.GREEN);
+//        ivd2.setImageResource(R.drawable.wsd1);
+//        ivd2.setLayoutParams(params);
+//        rl.addView(ivd2);
+//
+//        ivh1=new ImageView(this);
+//        ivh1.setBackgroundColor(Color.BLUE);
+//        ivh1.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 100, 0, 0);
+//        ivh1.setLayoutParams(params);
+////        ivh1.setRotation(-15);
+//        rl.addView(ivh1);
+//
+//        ivh2=new ImageView(this);
+//        ivh2.setBackgroundColor(Color.BLUE);
+//        ivh2.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 150, 0, 0);
+//        ivh2.setLayoutParams(params);
+////        ivh2.setRotation(-15);
+//        rl.addView(ivh2);
+//
+//        ivh3=new ImageView(this);
+//        ivh3.setBackgroundColor(Color.BLUE);
+//        ivh3.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 200, 0, 0);
+//        ivh3.setLayoutParams(params);
+////        ivh2.setRotation(-15);
+//        rl.addView(ivh3);
+//
+//
+//        ivh4=new ImageView(this);
+//        ivh4.setBackgroundColor(Color.BLUE);
+//        ivh4.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 250, 0, 0);
+//        ivh4.setLayoutParams(params);
+////        ivh2.setRotation(-15);
+//        rl.addView(ivh4);
+//
+//        ivh5=new ImageView(this);
+//        ivh5.setBackgroundColor(Color.BLUE);
+//        ivh5.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 300, 0, 0);
+//        ivh5.setLayoutParams(params);
+////        ivh2.setRotation(-15);
+//        rl.addView(ivh5);
 
 
 
@@ -685,141 +786,141 @@ public class MainActivity extends Activity {
         params.setMargins(20, 20, 20, 20);
         ImageView iv = new ImageView(this);
         iv.setBackgroundColor(Color.BLUE);
-        iv.setImageResource(R.drawable.wsbj1);
+        //iv.setImageResource(R.drawable.wsbj1);
         iv.setLayoutParams(params);
         rl.addView(iv);
 
 
-        d1=new TextView(this);
-        d1.setText("第一组");
-        d1.setId(R.id.textview_1);
-        d1.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 100, 0, 0);
-        d1.setLayoutParams(params);
-        rl.addView(d1);
-        d2=new TextView(this);
-        d2.setText("第二组");
-        d2.setId(R.id.textview_2);
-        d2.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 150, 0, 0);
-        d2.setLayoutParams(params);
-        rl.addView(d2);
-        d3=new TextView(this);
-        d3.setText("第三组");
-        d3.setId(R.id.textview_3);
-        d3.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 200, 0, 0);
-        d3.setLayoutParams(params);
-        rl.addView(d3);
-        d4=new TextView(this);
-        d4.setText("第四组");
-        d4.setId(R.id.textview_4);
-        d4.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 250, 0, 0);
-        d4.setLayoutParams(params);
-        rl.addView(d4);
-        d5=new TextView(this);
-        d5.setText("第五组");
-        d5.setId(R.id.textview_5);
-        d5.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 300, 0, 0);
-        d5.setLayoutParams(params);
-        rl.addView(d5);
-        d6=new TextView(this);
-        d6.setText("第六组");
-        d6.setId(R.id.textview_6);
-        d6.setOnClickListener(new onClickListener());
-        params = new RelativeLayout.LayoutParams(80, 60);
-        params.setMargins(30, 350, 0, 0);
-        d6.setLayoutParams(params);
-        rl.addView(d6);
-        //灯带1
-        params = new RelativeLayout.LayoutParams(20, 280);
-        params.setMargins(80, 80, 0, 0);
-        ivd1 = new ImageView(this);
-        ivd1.setBackgroundColor(Color.GREEN);
-        ivd1.setImageResource(R.drawable.wsd1);
-        ivd1.setLayoutParams(params);
-        rl.addView(ivd1);
-
-        //门
-        params = new RelativeLayout.LayoutParams(250, 40);
-        params.setMargins(100, 40, 0, 0);
-        ivmen = new ImageView(this);
-        ivmen.setBackgroundColor(Color.YELLOW);
-        ivmen.setImageResource(R.drawable.wsm);
-        ivmen.setLayoutParams(params);
-        rl.addView(ivmen);
-
-
-        //灯带2
-        params = new RelativeLayout.LayoutParams(20, 280);
-        params.setMargins(350, 80, 0, 0);
-        ivd2 = new ImageView(this);
-        ivd2.setBackgroundColor(Color.GREEN);
-        ivd2.setImageResource(R.drawable.wsd1);
-        ivd2.setLayoutParams(params);
-        rl.addView(ivd2);
-
-        ivh1=new ImageView(this);
-        ivh1.setBackgroundColor(Color.BLUE);
-        ivh1.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 100, 0, 0);
-        ivh1.setLayoutParams(params);
-        ivh1.setRotation(-15);
-        rl.addView(ivh1);
-
-        ivh2=new ImageView(this);
-        ivh2.setBackgroundColor(Color.BLUE);
-        ivh2.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 150, 0, 0);
-        ivh2.setLayoutParams(params);
-        ivh2.setRotation(-15);
-        rl.addView(ivh2);
-
-        ivh3=new ImageView(this);
-        ivh3.setBackgroundColor(Color.BLUE);
-        ivh3.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 200, 0, 0);
-        ivh3.setLayoutParams(params);
-        ivh3.setRotation(-15);
-        rl.addView(ivh3);
-
-
-        ivh4=new ImageView(this);
-        ivh4.setBackgroundColor(Color.BLUE);
-        ivh4.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 250, 0, 0);
-        ivh4.setLayoutParams(params);
-        ivh4.setRotation(-15);
-        rl.addView(ivh4);
-
-        ivh5=new ImageView(this);
-        ivh5.setBackgroundColor(Color.BLUE);
-        ivh5.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 300, 0, 0);
-        ivh5.setLayoutParams(params);
-        ivh5.setRotation(-15);
-        rl.addView(ivh5);
-
-        ivh6=new ImageView(this);
-        ivh6.setBackgroundColor(Color.BLUE);
-        ivh6.setImageResource(R.drawable.wshw);
-        params = new RelativeLayout.LayoutParams(220, 20);
-        params.setMargins(110, 350, 0, 0);
-        ivh6.setLayoutParams(params);
-        ivh6.setRotation(-15);
-        rl.addView(ivh6);
+//        d1=new TextView(this);
+//        d1.setText("第一组");
+//        d1.setId(R.id.textview_1);
+//        d1.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 100, 0, 0);
+//        d1.setLayoutParams(params);
+//        rl.addView(d1);
+//        d2=new TextView(this);
+//        d2.setText("第二组");
+//        d2.setId(R.id.textview_2);
+//        d2.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 150, 0, 0);
+//        d2.setLayoutParams(params);
+//        rl.addView(d2);
+//        d3=new TextView(this);
+//        d3.setText("第三组");
+//        d3.setId(R.id.textview_3);
+//        d3.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 200, 0, 0);
+//        d3.setLayoutParams(params);
+//        rl.addView(d3);
+//        d4=new TextView(this);
+//        d4.setText("第四组");
+//        d4.setId(R.id.textview_4);
+//        d4.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 250, 0, 0);
+//        d4.setLayoutParams(params);
+//        rl.addView(d4);
+//        d5=new TextView(this);
+//        d5.setText("第五组");
+//        d5.setId(R.id.textview_5);
+//        d5.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 300, 0, 0);
+//        d5.setLayoutParams(params);
+//        rl.addView(d5);
+//        d6=new TextView(this);
+//        d6.setText("第六组");
+//        d6.setId(R.id.textview_6);
+//        d6.setOnClickListener(new onClickListener());
+//        params = new RelativeLayout.LayoutParams(80, 60);
+//        params.setMargins(30, 350, 0, 0);
+//        d6.setLayoutParams(params);
+//        rl.addView(d6);
+//        //灯带1
+//        params = new RelativeLayout.LayoutParams(20, 280);
+//        params.setMargins(80, 80, 0, 0);
+//        ivd1 = new ImageView(this);
+//        ivd1.setBackgroundColor(Color.GREEN);
+//        ivd1.setImageResource(R.drawable.wsd1);
+//        ivd1.setLayoutParams(params);
+//        rl.addView(ivd1);
+//
+//        //门
+//        params = new RelativeLayout.LayoutParams(250, 40);
+//        params.setMargins(100, 40, 0, 0);
+//        ivmen = new ImageView(this);
+//        ivmen.setBackgroundColor(Color.YELLOW);
+//        ivmen.setImageResource(R.drawable.wsm);
+//        ivmen.setLayoutParams(params);
+//        rl.addView(ivmen);
+//
+//
+//        //灯带2
+//        params = new RelativeLayout.LayoutParams(20, 280);
+//        params.setMargins(350, 80, 0, 0);
+//        ivd2 = new ImageView(this);
+//        ivd2.setBackgroundColor(Color.GREEN);
+//        ivd2.setImageResource(R.drawable.wsd1);
+//        ivd2.setLayoutParams(params);
+//        rl.addView(ivd2);
+//
+//        ivh1=new ImageView(this);
+//        ivh1.setBackgroundColor(Color.BLUE);
+//        ivh1.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 100, 0, 0);
+//        ivh1.setLayoutParams(params);
+//        ivh1.setRotation(-15);
+//        rl.addView(ivh1);
+//
+//        ivh2=new ImageView(this);
+//        ivh2.setBackgroundColor(Color.BLUE);
+//        ivh2.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 150, 0, 0);
+//        ivh2.setLayoutParams(params);
+//        ivh2.setRotation(-15);
+//        rl.addView(ivh2);
+//
+//        ivh3=new ImageView(this);
+//        ivh3.setBackgroundColor(Color.BLUE);
+//        ivh3.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 200, 0, 0);
+//        ivh3.setLayoutParams(params);
+//        ivh3.setRotation(-15);
+//        rl.addView(ivh3);
+//
+//
+//        ivh4=new ImageView(this);
+//        ivh4.setBackgroundColor(Color.BLUE);
+//        ivh4.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 250, 0, 0);
+//        ivh4.setLayoutParams(params);
+//        ivh4.setRotation(-15);
+//        rl.addView(ivh4);
+//
+//        ivh5=new ImageView(this);
+//        ivh5.setBackgroundColor(Color.BLUE);
+//        ivh5.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 300, 0, 0);
+//        ivh5.setLayoutParams(params);
+//        ivh5.setRotation(-15);
+//        rl.addView(ivh5);
+//
+//        ivh6=new ImageView(this);
+//        ivh6.setBackgroundColor(Color.BLUE);
+//        ivh6.setImageResource(R.drawable.wshw);
+//        params = new RelativeLayout.LayoutParams(220, 20);
+//        params.setMargins(110, 350, 0, 0);
+//        ivh6.setLayoutParams(params);
+//        ivh6.setRotation(-15);
+//        rl.addView(ivh6);
     }
 
     private SpannableString generateCenterSpannableText(String value) {
@@ -993,7 +1094,7 @@ public class MainActivity extends Activity {
                 try{
                     Message message = Message.obtain(Cache.myHandle);
                     Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                    data.putString("czsc",String.valueOf(time));
+                    data.putString("czsc",secToTime(time));
                     message.setData(data);
                     Cache.myHandle.sendMessage(message);
                     time=time+1;
@@ -1008,5 +1109,39 @@ public class MainActivity extends Activity {
             }
             czscShow=null;
         }
+        // a integer to xx:xx:xx
+        public  String secToTime(int time) {
+            String timeStr = null;
+            int hour = 0;
+            int minute = 0;
+            int second = 0;
+            if (time <= 0)
+                return "00:00";
+            else {
+                minute = time / 60;
+                if (minute < 60) {
+                    second = time % 60;
+                    timeStr = unitFormat(minute) + ":" + unitFormat(second);
+                } else {
+                    hour = minute / 60;
+                    if (hour > 99)
+                        return "99:59:59";
+                    minute = minute % 60;
+                    second = time - hour * 3600 - minute * 60;
+                    timeStr = unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
+                }
+            }
+            return timeStr;
+        }
+
+        public  String unitFormat(int i) {
+            String retStr = null;
+            if (i >= 0 && i < 10)
+                retStr = "0" + Integer.toString(i);
+            else
+                retStr = "" + i;
+            return retStr;
+        }
+
     }
 }

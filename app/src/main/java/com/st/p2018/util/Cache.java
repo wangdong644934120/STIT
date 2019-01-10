@@ -27,7 +27,8 @@ public class Cache {
     public static boolean getHCCS;
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>();
     public static String code;
-    public static boolean mztcgq=false;//门状态传感器  true--开，false--关
+    public static int mztcgq=2;//门状态传感器  1--开，0--关
+    public static int zmdztcs=2; //照明灯状态初始
     public static boolean hwxc1=false;
     public static boolean hwxc2=false;
     public static boolean hwxc3=false;
@@ -44,7 +45,7 @@ public class Cache {
     public static boolean zmdzt=false;
     public static List<ProductRecord> listPR = new ArrayList<ProductRecord>();
     public static String gx="Ⅰ型";
-    public static int pc=0; //盘存方式  0-全盘，1-触发
+    public static int pc=1; //盘存方式  0-全盘，1-触发
     public static int pccs=5;   //盘存次数
     public static int zmd=0;//照明灯控制模式
     public static String sdpdcs="0";    //手动盘点层数
