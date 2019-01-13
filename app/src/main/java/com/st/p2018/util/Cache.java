@@ -24,8 +24,8 @@ public class Cache {
     public static Handler myHandleKH;
     public static Handler myHandleHCCS;
     public static boolean getPersonCard;
-    public static boolean getHCCS;
-    public static HashMap<String,String> HCCSMap=new HashMap<String,String>();
+    public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
+    public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
     public static String code;
     public static int mztcgq=2;//门状态传感器  1--开，0--关
     public static int zmdztcs=2; //照明灯状态初始

@@ -383,12 +383,18 @@ public class DataThread extends Thread {
                 //关闭盘存进度
                 closeJD();
                 //对标签数据进行处理
-                if(Cache.getHCCS){
+                if(Cache.getHCCS==1){
                     //耗材初始化要数据
                     Cache.HCCSMap=(HashMap<String,String>)map.clone();
                     map.clear();
                     sendHCCS();
+                }else if(Cache.getHCCS==2){
+                    //主界面盘点要数据
+                    Cache.HCCSMap=(HashMap<String,String>)map.clone();
+                    map.clear();
+                    sendPDZJM();
                 }else{
+                    //关门盘点数据
                     HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                     map.clear();
                     new DataDeal(mapBQ).start();
@@ -498,6 +504,15 @@ public class DataThread extends Thread {
         Cache.myHandleProgress.sendMessage(message);
     }
 
+    //盘点主界面
+    private  void sendPDZJM(){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("pdzjm","1");
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
 
     /**
      * 更新界面控件

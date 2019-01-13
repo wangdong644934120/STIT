@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">耗材柜智能管理系统</string>
+    <string name="app_name">高值耗材柜</string>
 
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>

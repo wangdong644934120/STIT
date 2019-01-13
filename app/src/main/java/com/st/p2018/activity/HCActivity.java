@@ -57,7 +57,7 @@ public class HCActivity extends Activity {
     }
     @Override
     protected void onDestroy(){
-        Cache.getHCCS=false;
+        Cache.getHCCS=0;
         super.onDestroy();
     }
     private void initView(){
@@ -100,7 +100,7 @@ public class HCActivity extends Activity {
                     sendJXQ();
                     Toast.makeText(HCActivity.this, "初始柜内耗材完成,个数："+Cache.HCCSMap.size(), Toast.LENGTH_SHORT).show();
                     Cache.HCCSMap.clear();
-                    Cache.getHCCS=false;
+                    Cache.getHCCS=0;
                 }
 
             }
@@ -152,7 +152,7 @@ public class HCActivity extends Activity {
                     btnDown.setPressed(false);
                     break;
                 case R.id.cs:
-                    Cache.getHCCS=true;
+                    Cache.getHCCS=1;
                     btnCS.setPressed(true);
                     btnCS.setPressed(false);
 
@@ -161,7 +161,7 @@ public class HCActivity extends Activity {
 
                         logger.info("下发指令盘存所有成功");
                     }else{
-                        Cache.getHCCS=false;
+                        Cache.getHCCS=0;
                         logger.info("下发指令盘存所有失败");
                     }
                     break;
@@ -175,27 +175,6 @@ public class HCActivity extends Activity {
 
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == 1) {
-//                Uri uri = data.getData();
-//                String docId = DocumentsContract.getDocumentId(uri);
-//              //591c-1504
-////                String path=uri.getPath().toString();
-//                String path=FileUtils.getFilePathByUri(HCActivity.this,uri);
-//                Toast.makeText(this, path, Toast.LENGTH_SHORT).show();
-//                System.out.println(path);
-//                File file = new File(path);
-//                if(file.exists()){
-//                    System.out.println("cunzai");
-//                }else{
-//                    System.out.println("bucunzai");
-//                }
-//            }
-//        }
-//
-//    }
 
     /**
      * 根据Uri获取真实图片路径

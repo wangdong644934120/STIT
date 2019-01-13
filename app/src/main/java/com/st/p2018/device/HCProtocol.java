@@ -519,12 +519,12 @@ public class HCProtocol {
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[5] ;
+            byte[] length = new byte[]{0x05} ;
 
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x22};
             byte[] bydata=new byte[2];
-            bydata[0]=(byte)01;
+            bydata[0]=(byte)00;
             bydata[1]=(byte)02;
 
             byte[] before=new byte[]{};
@@ -541,7 +541,7 @@ public class HCProtocol {
             byte[] data=sp.sendAndGet(send);
 
             if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-                    && data[3] == (byte) 0x28 && data[4] == (byte) 0x00) {
+                    && data[3] == (byte) 0x22 && data[4] == (byte) 0x00) {
                 return true;
             }else{
                 return false;

@@ -134,6 +134,12 @@ public class MainActivity extends Activity {
         mChart = (PieChart) findViewById(R.id.chart);
 //        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
+        initHandler();
+
+
+    }
+
+    private void initHandler(){
 
         Cache.myHandle = new Handler() {
             @Override
@@ -228,16 +234,16 @@ public class MainActivity extends Activity {
                         }
                     }
                     if(bundle.get("type").toString().equals("hwxc")){
-                       if(bundle.get("wz").toString().equals("1")){
-                           if(bundle.get("zt").toString().equals("1")){
-                               //替换红外行程1触发图片
-                               ivh1.setImageResource(R.drawable.hongwaichufa);
-                           }else{
-                               //替换红外行程1不触发图片
-                               ivh1.setImageResource(R.drawable.hongwaizhengchang);
-                           }
+                        if(bundle.get("wz").toString().equals("1")){
+                            if(bundle.get("zt").toString().equals("1")){
+                                //替换红外行程1触发图片
+                                ivh1.setImageResource(R.drawable.hongwaichufa);
+                            }else{
+                                //替换红外行程1不触发图片
+                                ivh1.setImageResource(R.drawable.hongwaizhengchang);
+                            }
 
-                       }
+                        }
                         if(bundle.get("wz").toString().equals("2")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
@@ -317,20 +323,20 @@ public class MainActivity extends Activity {
                 }
                 if(bundle.getString("czy")!=null){
                     //根据柜型更新缩略图
-                   tvczy.setText("操作员："+bundle.getString("czy"));
+                    tvczy.setText("操作员："+bundle.getString("czy"));
 
                 }
                 if(bundle.getString("czsc")!=null){
                     //更新操作时长
                     tvczsc.setText("操作时长："+bundle.getString("czsc"));
-
+                }
+                if(bundle.getString("pdzjm")!=null){
+                    //显示盘点结果
+                    pdshow();
                 }
             }
         };
-
-
     }
-
     //显示Toast函数
     private void displayToast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
@@ -382,11 +388,13 @@ public class MainActivity extends Activity {
 
                     break;
                 case R.id.pandian:
+                    Cache.getHCCS=2;
                     if(HCProtocol.ST_GetAllCard()){
                     }else{
                         MyTextToSpeech.getInstance().speak("盘点失败");
                         Toast.makeText(MainActivity.this, "盘点失败", Toast.LENGTH_SHORT).show();
                     }
+
                     break;
                 default:
                     break;
@@ -481,6 +489,7 @@ public class MainActivity extends Activity {
         l.setYEntrySpace(0f);
         l.setYOffset(0f);
         l.setTextSize(15f);
+        l.setEnabled(false);
 
         // entry label styling
         mChart.setEntryLabelColor(Color.WHITE);
@@ -1102,6 +1111,7 @@ public class MainActivity extends Activity {
         System.exit(0);
         super.onDestroy();
     }
+
     class CZSCShow extends Thread{
         private Logger logger = Logger.getLogger(this.getClass());
         public void run(){
@@ -1158,6 +1168,12 @@ public class MainActivity extends Activity {
                 retStr = "" + i;
             return retStr;
         }
+
+    }
+
+    private void pdshow(){
+        Intent intent = new Intent(MainActivity.this, PDActivity.class);
+        startActivity(intent);
 
     }
 }

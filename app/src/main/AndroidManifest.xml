@@ -24,12 +24,13 @@
     <!-- android:theme="@android:style/Theme.Dialog" -->
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/titlestyle">
         <activity android:name="com.st.p2018.activity.MainActivity">
+            le
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -110,13 +111,14 @@
             android:label="设备信息"
             android:theme="@style/otstyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
-
-        <activity android:name="com.st.p2018.activity.ProgressDialog"
+        <activity
+            android:name="com.st.p2018.activity.ProgressDialog"
             android:colorMode="default"
-            android:label="正在盘存请稍后..."
             android:configChanges="keyboardHidden|orientation"
+            android:label="正在盘存请稍后..."
             android:theme="@style/prostyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
+        <activity android:name="com.st.p2018.activity.PDActivity"></activity>
     </application>
 
 </manifest>
