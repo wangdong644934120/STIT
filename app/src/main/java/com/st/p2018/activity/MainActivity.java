@@ -74,8 +74,6 @@ public class MainActivity extends Activity {
 
     private RelativeLayout rl;
 
-
-
     private ImageView ivh1;
     private ImageView ivh2;
     private ImageView ivh3;
@@ -121,7 +119,6 @@ public class MainActivity extends Activity {
         initGX1();
         new DeviceCom().start();
     }
-
 
 
     private void initView() {
@@ -220,10 +217,12 @@ public class MainActivity extends Activity {
                         if(bundle.get("zt").toString().equals("1")){
                             //替换开灯图片
                             ivdeng.setImageResource(R.drawable.dengkai);
+                            btnKD.setBackgroundResource(R.drawable.guandeng);
                             tvdeng.setText("灯状态：灯已开");
                         }else{
                             //替换关灯图片
                             ivdeng.setImageResource(R.drawable.dengguan);
+                            btnKD.setBackgroundResource(R.drawable.kaideng);
                             tvdeng.setText("灯状态：灯已关");
 
                         }
@@ -361,14 +360,26 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
-                    boolean bl=HCProtocol.ST_OpenLight();
-                    if(bl){
-                        MyTextToSpeech.getInstance().speak("开灯成功");
-                        Toast.makeText(MainActivity.this, "开灯成功", Toast.LENGTH_SHORT).show();
+                    if(Cache.zmdzt){
+                        boolean bl=HCProtocol.ST_CloseLight();
+                        if(bl){
+                            MyTextToSpeech.getInstance().speak("关灯成功");
+                            Toast.makeText(MainActivity.this, "关灯成功", Toast.LENGTH_SHORT).show();
+                        }else{
+                            MyTextToSpeech.getInstance().speak("关灯失败");
+                            Toast.makeText(MainActivity.this, "关灯失败", Toast.LENGTH_SHORT).show();
+                        }
                     }else{
-                        MyTextToSpeech.getInstance().speak("开灯失败");
-                        Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();
+                        boolean bl=HCProtocol.ST_OpenLight();
+                        if(bl){
+                            MyTextToSpeech.getInstance().speak("开灯成功");
+                            Toast.makeText(MainActivity.this, "开灯成功", Toast.LENGTH_SHORT).show();
+                        }else{
+                            MyTextToSpeech.getInstance().speak("开灯失败");
+                            Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();
+                        }
                     }
+
                     break;
                 case R.id.pandian:
                     if(HCProtocol.ST_GetAllCard()){
@@ -502,7 +513,7 @@ public class MainActivity extends Activity {
         ArrayList<Integer> colors = new ArrayList<Integer>();
         colors.add(Color.RED);
         colors.add(Color.rgb(238,242,14));
-        colors.add(Color.BLUE);
+        colors.add(Color.rgb(135,162,86));
 
         dataSet.setColors(colors);
 
@@ -1085,7 +1096,12 @@ public class MainActivity extends Activity {
         }
     }
 
-
+    @Override
+    protected void onDestroy(){
+        czscflag=false;
+        System.exit(0);
+        super.onDestroy();
+    }
     class CZSCShow extends Thread{
         private Logger logger = Logger.getLogger(this.getClass());
         public void run(){
