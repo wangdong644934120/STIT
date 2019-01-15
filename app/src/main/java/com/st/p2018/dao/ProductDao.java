@@ -33,12 +33,12 @@ public class ProductDao {
     }
 
     public List<HashMap<String, String>> getAll_AllProduct() {
-        String sql="select * from stit_t_allproduct";
+        String sql="select * from stit_t_allproduct order by wz asc";
         return DataBaseExec.execQueryForMap(sql, null);
     }
 
     public List<HashMap<String, String>> getAllProduct() {
-        String sql="select * from stit_t_product";
+        String sql="select * from stit_t_product order by wz asc";
         return DataBaseExec.execQueryForMap(sql, null);
     }
 

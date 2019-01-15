@@ -121,6 +121,24 @@ public class PersonActivity extends Activity {
                     kh.setText(bundle.getString("kh"));
                     Cache.getPersonCard=false;
                 }
+                if (bundle.getString("zw") != null) {
+                    if(bundle.getString("zw").toString().equals("ok")){
+                        tzz.setText("AE1849231A5C");
+                        btntzz.setText("录入");
+                        MyTextToSpeech.getInstance().speak("指纹录入成功");
+                        Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
+                    }else if(bundle.getString("zw").toString().equals("fail")){
+                        tzz.setText("");
+                        btntzz.setText("1秒");
+                        btntzz.setText("录入");
+                        MyTextToSpeech.getInstance().speak("指纹录入失败");
+                        Toast.makeText(PersonActivity.this, "指纹录入失败", Toast.LENGTH_SHORT).show();
+                    }else{
+                        System.out.println("设置显示："+bundle.getString("zw").toString()+"秒");
+                        btntzz.setText(bundle.getString("zw").toString()+"秒");
+                    }
+
+                }
 
             }
         };
@@ -366,10 +384,7 @@ public class PersonActivity extends Activity {
         Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
         boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
         if(bl){
-            tzz.setText("录入成功");
-            MyTextToSpeech.getInstance().speak("指纹录入成功");
-            Toast.makeText(this, "指纹录入成功", Toast.LENGTH_SHORT).show();
-
+            new ZWLR().start();
         }else{
             MyTextToSpeech.getInstance().speak("指纹录入失败");
             Toast.makeText(this, "指纹录入失败", Toast.LENGTH_SHORT).show();
@@ -389,5 +404,10 @@ public class PersonActivity extends Activity {
         return false;
     }
 
+    class ZWLR extends Thread{
+        public void run(){
+            HCProtocol.ST_GetZWZT();
+        }
+    }
 
 }

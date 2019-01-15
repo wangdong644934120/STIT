@@ -135,8 +135,8 @@ public class DataThread extends Thread {
                 sendCZY(list.get(0).get("name"));
                 MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"指纹开门成功");
             }else{
-                sendCZY("");
-                MyTextToSpeech.getInstance().speak("此指纹无开门权限");
+//                sendCZY("");
+//                MyTextToSpeech.getInstance().speak("此指纹无开门权限");
             }
         }
 
@@ -570,7 +570,7 @@ public class DataThread extends Thread {
                //存放标签
                if(map.get("wz").toString().equals("0") && dealKeys.contains(map.get("card").toString())){
                    //标签被存放
-                   mapSave.put(map.get("card").toString(),"1");
+                   mapSave.put(map.get("card").toString(),mapDeal.get(map.get("card").toString()).toString());
                    Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
                }
                //标签未动

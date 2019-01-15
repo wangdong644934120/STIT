@@ -7,7 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+
 import com.bin.david.form.core.SmartTable;
 import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
@@ -25,17 +29,17 @@ import java.util.List;
 public class RecordActivity extends Activity {
 
 
-
+    //关门后自动盘点返回界面
     private Button btnClose;
     private Handler myHandler;
     CloseThread closeThread=null;
     private SmartTable table;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
-
         Intent intent = getIntent();
         initView();
         this.setTitle("存放记录");

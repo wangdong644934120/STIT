@@ -5,7 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
+
 import com.bin.david.form.core.SmartTable;
 import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
@@ -13,6 +17,8 @@ import com.bin.david.form.data.table.TableData;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.ProductQuery;
 import com.st.p2018.stit.R;
+import com.st.p2018.util.Cache;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,18 +28,26 @@ import java.util.TimeZone;
 
 public class OperationActivity extends Activity {
 
-    private Button btnClose;
+    //点击饼图打开界面
     private SmartTable table;
+    private TextView tvfh;
+    private TextView tvtitle;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_operation);
 
+        requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+        setContentView(R.layout.activity_operation);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+        //使用布局文件来定义标题栏
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         Intent intent = getIntent();
         String yxqFlag = intent.getStringExtra("yxq");
         String title = intent.getStringExtra("title");
         initView();
-        this.setTitle(title);
+
+        tvtitle.setText(title);
         //https://github.com/huangyanbin/smartTable
         //普通列
         Column<String> column1 = new Column<>("品牌", "pp");
@@ -41,7 +55,7 @@ public class OperationActivity extends Activity {
         Column<String> column3 = new Column<>("规格", "gg");
         Column<String> column4 = new Column<>("有效日期", "yxrq");
         Column<String> column5 = new Column<>("剩余天数", "syts");
-        Column<String> column6 = new Column<>("位置", "wz");
+        Column<String> column6 = new Column<>("位置(层/抽)", "wz");
 
         List<ProductQuery> list =getdata(yxqFlag);
         //表格数据 datas是需要填充的数据
@@ -63,8 +77,10 @@ public class OperationActivity extends Activity {
      * 初始化view，设置event listener
      */
     public void initView() {
-        btnClose=(Button)findViewById(R.id.close);
-        btnClose.setOnClickListener(new onClickListener());
+        tvfh=(TextView)findViewById(R.id.fh);
+        tvfh.setOnClickListener(new onClickListener());
+        tvtitle=(TextView)findViewById(R.id.title);
+
     }
 
     public class onClickListener implements View.OnClickListener {
@@ -74,7 +90,7 @@ public class OperationActivity extends Activity {
             if (v.isEnabled() == false)
                 return;
             switch (v.getId()) {
-                case R.id.close:
+                case R.id.fh:
                     OperationActivity.this.finish();
                     break;
                 default:

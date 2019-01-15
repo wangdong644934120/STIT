@@ -45,6 +45,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
+import com.st.p2018.device.DataTypeChange;
 import com.st.p2018.device.DeviceCom;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
@@ -135,7 +136,7 @@ public class MainActivity extends Activity {
 //        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
         initHandler();
-
+        initGX();
 
     }
 
@@ -543,25 +544,26 @@ public class MainActivity extends Activity {
     private void initGX(){
         RelativeLayout.LayoutParams params ;
         //背景图片
-//        params = new RelativeLayout.LayoutParams(390, 390);
-//        params.setMargins(20, 20, 20, 20);
-//        ImageView iv = new ImageView(this);
-//        iv.setBackgroundColor(Color.WHITE);
-//        iv.setImageResource(R.drawable.qsh);
-//        iv.setLayoutParams(params);
-//        rl.addView(iv);
+        params = new RelativeLayout.LayoutParams(390, 390);
+        params.setMargins(20, 20, 20, 20);
+        ImageView iv = new ImageView(this);
+        iv.setBackgroundColor(Color.WHITE);
+        iv.setImageResource(R.drawable.qsh);
+        iv.setLayoutParams(params);
+        rl.addView(iv);
 
-//        ImageView ivh5=new ImageView(this);
-//        params = new RelativeLayout.LayoutParams(390, 390);
-//        params.setMargins(20, 20, 20, 20);
-//        ivh5.setLayoutParams(params);
-//        rl.addView(ivh5);
-//        RequestOptions options = new RequestOptions()
-//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-//        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
+        ImageView ivh5=new ImageView(this);
+        params = new RelativeLayout.LayoutParams(390, 390);
+        params.setMargins(20, 20, 20, 20);
+        ivh5.setLayoutParams(params);
+        rl.addView(ivh5);
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
     }
 
     private void initGX1(){
+        rl.removeAllViews();
         RelativeLayout.LayoutParams params ;
         //操作员图片
         params = new RelativeLayout.LayoutParams(82, 82);
@@ -590,8 +592,8 @@ public class MainActivity extends Activity {
         params = new RelativeLayout.LayoutParams(150, 82);
         params.setMargins(30, 300, 0, 0);
         tvmzt = new TextView(this);
-        tvmzt.setText("");
-//        tvmzt.setText("门状态：门已关");
+//        tvmzt.setText("");
+        tvmzt.setText("门状态：…");
         tvmzt.setTextColor(Color.WHITE);
         tvmzt.setTextSize(18);
         tvmzt.setLayoutParams(params);
@@ -607,8 +609,8 @@ public class MainActivity extends Activity {
         params = new RelativeLayout.LayoutParams(250, 82);
         params.setMargins(190, 150, 0, 0);
         tvczsc = new TextView(this);
-        tvczsc.setText("");
-//        tvczsc.setText("操作时长：0分0秒");
+//        tvczsc.setText("");
+        tvczsc.setText("操作时长：00:00");
         tvczsc.setTextColor(Color.WHITE);
         tvczsc.setTextSize(18);
         tvczsc.setLayoutParams(params);
@@ -624,8 +626,8 @@ public class MainActivity extends Activity {
         params = new RelativeLayout.LayoutParams(150, 82);
         params.setMargins(200, 300, 0, 0);
         tvdeng = new TextView(this);
-        tvdeng.setText("");
-//        tvdeng.setText("灯状态：关闭");
+//        tvdeng.setText("");
+        tvdeng.setText("灯状态：…");
         tvdeng.setTextColor(Color.WHITE);
         tvdeng.setTextSize(18);
         tvdeng.setLayoutParams(params);

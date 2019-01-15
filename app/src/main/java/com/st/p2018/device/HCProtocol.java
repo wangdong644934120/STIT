@@ -515,17 +515,59 @@ public class HCProtocol {
         }
     }
 
+    public static void ST_GetZWZT(){
+        int i=14;
+        try{
+            myLock.lock();
+            while(i>0){
+                //发送数据
+                byte[] data=sp.getOnly();
+                if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                        && data[3] == (byte) 0x22) {
+                    if( data[4] == (byte) 0x20){
+                        //指纹录入成功
+                        sendZWZT("ok");
+                        break;
+                    }else if(data[4]==(byte)0x22){
+                        //指纹录入失败
+                        sendZWZT("fail");
+                        break;
+                    }else if(data[4]==(byte)0x21){
+                        //指纹录入中
+                        sendZWZT(String.valueOf(i));
+                    }
+
+                }
+                i=i-1;
+                Thread.sleep(1000);
+            }
+
+        }catch (Exception e){
+            i=-1;
+            logger.error("添加指纹出错",e);
+        }finally {
+            myLock.unlock();
+        }
+    }
     public static boolean ST_AddSaveZW(int code){
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[]{0x05} ;
-
+            byte[] length = new byte[]{0x06} ;
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x22};
-            byte[] bydata=new byte[2];
-            bydata[0]=(byte)00;
-            bydata[1]=(byte)02;
+            byte[] bydata=new byte[3];
+            String hex=intToHex(code);
+            if(hex.length()==1){
+                hex="000"+hex;
+            }else if(hex.length()==2){
+                hex="00"+hex;
+            }else if(hex.length()==3){
+                hex="0"+hex;
+            }
+            bydata[0]=(byte) Integer.parseInt(hex.substring(0,2), 16);
+            bydata[1]=(byte) Integer.parseInt(hex.substring(2,4), 16);
+            bydata[2]=(byte)15;
 
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
@@ -540,12 +582,12 @@ public class HCProtocol {
             //发送数据
             byte[] data=sp.sendAndGet(send);
 
-            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-                    && data[3] == (byte) 0x22 && data[4] == (byte) 0x00) {
+//            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+//                    && data[3] == (byte) 0x22 ) {
                 return true;
-            }else{
-                return false;
-            }
+//            }else{
+//                return false;
+//            }
         }catch (Exception e){
             logger.error("添加指纹出错",e);
             return  false;
@@ -553,6 +595,19 @@ public class HCProtocol {
             myLock.unlock();
         }
 
+    }
+
+    private static  String intToHex(int n) {
+        //StringBuffer s = new StringBuffer();
+        StringBuilder sb = new StringBuilder(8);
+        String a;
+        char []b = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+        while(n != 0){
+            sb = sb.append(b[n%16]);
+            n = n/16;
+        }
+        a = sb.reverse().toString();
+        return a;
     }
     /**
      * 添加指纹信息
@@ -801,5 +856,13 @@ public class HCProtocol {
         data.putString("ts",value);
         message.setData(data);
         Cache.myHandle.sendMessage(message);
+    }
+
+    public static  void sendZWZT(String value){
+        Message message = Message.obtain(Cache.myHandleKH);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        data.putString("zw",value);
+        message.setData(data);
+        Cache.myHandleKH.sendMessage(message);
     }
 }
