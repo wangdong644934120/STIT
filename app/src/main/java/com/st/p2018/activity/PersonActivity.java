@@ -120,10 +120,12 @@ public class PersonActivity extends Activity {
                 if (bundle.getString("kh") != null) {
                     kh.setText(bundle.getString("kh"));
                     Cache.getPersonCard=false;
+                    MyTextToSpeech.getInstance().speak("刷卡成功");
+                    Toast.makeText(PersonActivity.this, "刷卡成功", Toast.LENGTH_SHORT).show();
                 }
                 if (bundle.getString("zw") != null) {
                     if(bundle.getString("zw").toString().equals("ok")){
-                        tzz.setText("AE1849231A5C");
+                        tzz.setText("AE1849231A5C3487A234DF232");
                         btntzz.setText("录入");
                         MyTextToSpeech.getInstance().speak("指纹录入成功");
                         Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
@@ -134,7 +136,6 @@ public class PersonActivity extends Activity {
                         MyTextToSpeech.getInstance().speak("指纹录入失败");
                         Toast.makeText(PersonActivity.this, "指纹录入失败", Toast.LENGTH_SHORT).show();
                     }else{
-                        System.out.println("设置显示："+bundle.getString("zw").toString()+"秒");
                         btntzz.setText(bundle.getString("zw").toString()+"秒");
                     }
 
@@ -166,18 +167,9 @@ public class PersonActivity extends Activity {
      */
     private void initQueryGrid() {
         getdata();
-//        List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-//        HashMap<String, String> map = new HashMap<String, String>();
-//        map.put("id", "id");
-//        map.put("name", "姓名");
-//        map.put("code", "编号");
-//        map.put("iszw", "指纹录取");
-//        map.put("tzz", "指纹特征值");
-//
-//        data.add(map);
         PersonAdapter adapter = new PersonAdapter(PersonActivity.this, mQueryData);
         listResults.setAdapter(adapter);
-        //adapter.notifyDataSetChanged();
+
     }
 
     /**
@@ -270,6 +262,9 @@ public class PersonActivity extends Activity {
                     delete.setPressed(false);
                     break;
                 case R.id.fh:
+                    if(Cache.zwlrNow){
+                        return;
+                    }
                     PersonActivity.this.finish();
                     break;
                 default:
@@ -355,10 +350,18 @@ public class PersonActivity extends Activity {
             return;
         }
         String id=mQueryData.get(selecItem).get("id").toString();
+        HCProtocol.ST_DeleteZW(0,Integer.valueOf(mQueryData.get(selecItem).get("code").toString()));
         if(pd.deletePerson(id)){
             initQueryGrid();
             Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
             MyTextToSpeech.getInstance().speak("删除成功");
+            code.setText("");
+            name.setText("");
+            tzz.setText("");
+            kh.setText("");
+//            if(mQueryData.isEmpty()){
+//                HCProtocol.ST_DeleteZW(1,0);
+//            }
         }
     }
 
@@ -371,6 +374,9 @@ public class PersonActivity extends Activity {
     }
 
     private void getZW(){
+        if(Cache.zwlrNow){
+            return;
+        }
         if(code.getText().toString().trim().equals("")){
             MyTextToSpeech.getInstance().speak("请先输入工号");
             Toast.makeText(this, "请先输入工号", Toast.LENGTH_SHORT).show();
@@ -406,6 +412,7 @@ public class PersonActivity extends Activity {
 
     class ZWLR extends Thread{
         public void run(){
+            Cache.zwlrNow=true;
             HCProtocol.ST_GetZWZT();
         }
     }

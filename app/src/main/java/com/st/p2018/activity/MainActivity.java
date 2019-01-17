@@ -238,50 +238,62 @@ public class MainActivity extends Activity {
                         if(bundle.get("wz").toString().equals("1")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh1.setImageResource(R.drawable.hongwaichufa);
+//                                ivh1.setImageResource(R.drawable.hongwaichufa);
+                                ivh1.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh1.setImageResource(R.drawable.hongwaizhengchang);
+//                                ivh1.setImageResource(R.drawable.hongwaizhengchang);
+                                ivh1.setVisibility(View.INVISIBLE);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("2")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh2.setImageResource(R.drawable.hongwaichufa);
+//                                ivh2.setImageResource(R.drawable.hongwaichufa);
+                                ivh2.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh2.setImageResource(R.drawable.hongwaizhengchang);
+//                                ivh2.setImageResource(R.drawable.hongwaizhengchang);
+                                ivh2.setVisibility(View.INVISIBLE);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("3")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh3.setImageResource(R.drawable.hongwaichufa);
+//                                ivh3.setImageResource(R.drawable.hongwaichufa);
+                                ivh3.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh3.setImageResource(R.drawable.hongwaizhengchang);
+//                                ivh3.setImageResource(R.drawable.hongwaizhengchang);
+                                ivh3.setVisibility(View.INVISIBLE);
                             }
+
 
                         }
                         if(bundle.get("wz").toString().equals("4")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh4.setImageResource(R.drawable.hongwaichufa);
+//                                ivh4.setImageResource(R.drawable.hongwaichufa);
+                                ivh4.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh4.setImageResource(R.drawable.hongwaizhengchang);
+//                                ivh4.setImageResource(R.drawable.hongwaizhengchang);
+                                ivh4.setVisibility(View.INVISIBLE);
                             }
+
 
                         }
                         if(bundle.get("wz").toString().equals("5")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-                                ivh5.setImageResource(R.drawable.hongwaichufa);
+//                                ivh5.setImageResource(R.drawable.hongwaichufa);
+                                ivh5.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-                                ivh5.setImageResource(R.drawable.hongwaizhengchang);
+//                                ivh5.setImageResource(R.drawable.hongwaizhengchang);
+                                ivh5.setVisibility(View.INVISIBLE);
                             }
 
                         }
@@ -289,10 +301,11 @@ public class MainActivity extends Activity {
                             if(!Cache.gx.equals("Ⅰ型")){
                                 if(bundle.get("zt").toString().equals("1")){
                                     //替换红外行程1触发图片
-                                    ivh6.setImageResource(R.drawable.hongwaichufa);
+//                                    ivh6.setImageResource(R.drawable.hongwaichufa);
+                                    ivh6.setVisibility(View.VISIBLE);
                                 }else{
                                     //替换红外行程1不触发图片
-                                    ivh6.setImageResource(R.drawable.hongwaizhengchang);
+                                    ivh6.setVisibility(View.INVISIBLE);
                                 }
                             }
                         }
@@ -636,50 +649,51 @@ public class MainActivity extends Activity {
         params = new RelativeLayout.LayoutParams(126, 256);
         params.setMargins(400, 40, 0, 0);
         ImageView ivguizi = new ImageView(this);
-        ivguizi.setImageResource(R.drawable.guiziyuanshi);
+        ivguizi.setImageResource(R.drawable.guizi);
         ivguizi.setLayoutParams(params);
         rl.addView(ivguizi);
 
         ivh1=new ImageView(this);
-        ivh1.setImageResource(R.drawable.hongwaizhengchang);
-        params = new RelativeLayout.LayoutParams(110, 40);
+        //ivh1.setImageResource(R.drawable.hongwaizhengchang);
+        ivh1.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(100, 40);
         params.setMargins(410, 70, 0, 0);
         ivh1.setLayoutParams(params);
-//        ivh1.setRotation(-15);
         rl.addView(ivh1);
+        ivh1.setVisibility(View.INVISIBLE);
 
         ivh2=new ImageView(this);
-        ivh2.setImageResource(R.drawable.hongwaizhengchang);
-        params = new RelativeLayout.LayoutParams(110, 40);
+        ivh2.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(100, 40);
         params.setMargins(410, 110, 0, 0);
         ivh2.setLayoutParams(params);
-//        ivh2.setRotation(-15);
         rl.addView(ivh2);
+        ivh2.setVisibility(View.INVISIBLE);
 
         ivh3=new ImageView(this);
-        ivh3.setImageResource(R.drawable.hongwaizhengchang);
-        params = new RelativeLayout.LayoutParams(110, 40);
+        ivh3.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(100, 40);
         params.setMargins(410, 150, 0, 0);
         ivh3.setLayoutParams(params);
-//        ivh2.setRotation(-15);
         rl.addView(ivh3);
+        ivh3.setVisibility(View.INVISIBLE);
 
 
         ivh4=new ImageView(this);
-        ivh4.setImageResource(R.drawable.hongwaizhengchang);
-        params = new RelativeLayout.LayoutParams(110, 40);
+        ivh4.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(100, 40);
         params.setMargins(410, 190, 0, 0);
         ivh4.setLayoutParams(params);
-//        ivh2.setRotation(-15);
         rl.addView(ivh4);
+        ivh4.setVisibility(View.INVISIBLE);
 
         ivh5=new ImageView(this);
-        ivh5.setImageResource(R.drawable.hongwaizhengchang);
-        params = new RelativeLayout.LayoutParams(110, 40);
+        ivh5.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(100, 40);
         params.setMargins(410, 230, 0, 0);
         ivh5.setLayoutParams(params);
-//        ivh2.setRotation(-15);
         rl.addView(ivh5);
+        ivh5.setVisibility(View.INVISIBLE);
 
 //
 //
@@ -1126,6 +1140,9 @@ public class MainActivity extends Activity {
                     message.setData(data);
                     Cache.myHandle.sendMessage(message);
                     time=time+1;
+                    if(time/600>0 && time%600==0){
+                        HCProtocol.ST_GetAllCard();
+                    }
                 }catch (Exception e){
                     logger.error(e);
                 }

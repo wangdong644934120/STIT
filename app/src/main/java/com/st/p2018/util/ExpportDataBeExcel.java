@@ -139,7 +139,7 @@ public  class ExpportDataBeExcel {
                 }else if(i==3){
                     cell.setCellValue(new HSSFRichTextString("有效期(格式：2018-01-01)"));
                 }else if(i==4){
-                    cell.setCellValue(new HSSFRichTextString("标签ID"));
+                    cell.setCellValue(new HSSFRichTextString("EPC"));
                 }
             }
             //内容
@@ -179,95 +179,5 @@ public  class ExpportDataBeExcel {
         }
         return true;
 
-
-        //-----------------------------------
-//        FileOutputStream outFile = null;
-//        FileInputStream inFile = null;
-//        try {
-//            inFile = new FileInputStream(file);
-//            HSSFWorkbook book = new HSSFWorkbook(inFile);
-//            HSSFSheet sheet = book.getSheetAt(0);
-//           for(int i=0;i<5;i++){
-//               HSSFRow row = sheet.getRow(0);
-//               HSSFCell cell = row.getCell((short) i);
-//               if (cell == null) {
-//                   cell = row.createCell((short) i);
-//               }
-//               HSSFCellStyle style = cell.getCellStyle();
-//               style.setFillBackgroundColor((short) 0x00ff);
-//               cell.setCellStyle(style);
-//               if(i==0){
-//                   cell.setCellValue(new HSSFRichTextString("品牌"));
-//               }else if(i==1){
-//                   cell.setCellValue(new HSSFRichTextString("种类"));
-//               }else if(i==2){
-//                   cell.setCellValue(new HSSFRichTextString("规格"));
-//               }else if(i==3){
-//                   cell.setCellValue(new HSSFRichTextString("有效期"));
-//               }else if(i==4){
-//                   cell.setCellValue(new HSSFRichTextString("标签ID"));
-//               }
-//
-//           }
-
-
-            //int firstBlockColumn = 0;
-//            for (int i = 0; i < 50; i++) {
-//                String cell = "";
-//                try {
-//                    cell = rown.getCell((short) i).toString().trim();
-//                } catch (Exception e) {
-//                    firstBlockColumn = i;
-//                    break;
-//                }
-//                if (cell.equals("")) {
-//                    firstBlockColumn = i;
-//                    break;
-//                }
-//            }
-//            int rownum=1;
-//            for(HashMap map : list){
-//                HSSFRow row = sheet.getRow(rownum);
-//                rownum=rownum+1;
-//                HSSFCell cell = row.getCell((short) firstBlockColumn);
-//                if (cell == null) {
-//                    cell = row.createCell((short) firstBlockColumn);
-//                }
-//                HSSFCellStyle style = cell.getCellStyle();
-//                style.setFillBackgroundColor((short) 0x00ff);
-//                cell.setCellStyle(style);
-//                cell.setCellValue(new HSSFRichTextString(pir.getDescription()));
-//            }
-//            for (int i = 0; i < report.size(); i++) {
-//                //PersonInReport pir = report.get(i);
-//                HSSFRow row = sheet.getRow(i + 3);
-//                HSSFCell cell = row.getCell((short) firstBlockColumn);
-//                if (cell == null) {
-//                    cell = row.createCell((short) firstBlockColumn);
-//                }
-//                HSSFCellStyle style = cell.getCellStyle();
-//                style.setFillBackgroundColor((short) 0x00ff);
-//                cell.setCellStyle(style);
-//                cell.setCellValue(new HSSFRichTextString(pir.getDescription()));
-//            }
-//            if (inFile != null) {
-//                inFile.close();
-//            }
-//            outFile = new FileOutputStream(file);
-//            book.write(outFile);
-//
-//            try {
-//                if (outFile != null) {
-//                    outFile.close();
-//                }
-//                return true;
-//            } catch (IOException ex) {
-//                logger.error(ex);
-//                return false;
-//            }
-//        } catch (Exception ex) {
-//            logger.error(ex);
-//            return false;
-//        }
     }
 }

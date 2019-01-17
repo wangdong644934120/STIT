@@ -9,20 +9,31 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.st.p2018.device.DataTypeChange;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 
+import java.util.HashMap;
+
 
 public class PZActivity extends Activity {
 
+    private CheckBox gc1;
+    private CheckBox gc2;
+    private CheckBox gc3;
+    private CheckBox gc4;
+    private CheckBox gc5;
+    private CheckBox gc6;
     private SeekBar sb;
     private Spinner spDK;
     private Button btnOK;
@@ -31,6 +42,11 @@ public class PZActivity extends Activity {
     private EditText edpdcs;
     private TextView tvfh;
     private TextView tvtitle;
+    private byte[] bysblx=new byte[1]; //设备类型
+    private byte[] bycpxlh=new byte[6]; //产品序列号
+    private byte[] byyjbbh=new byte[1]; //硬件版本号
+    private byte[] bygjbbh=new byte[1];//固件版本号
+
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
@@ -42,10 +58,65 @@ public class PZActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
+        getDataFromDevice();
         initView();
         initData();
     }
 
+    private void getDataFromDevice() {
+        byte[] byDevice = HCProtocol.ST_GetDeviceInfo();
+        if (byDevice.length == 0) {
+            logger.info("打开配置界面时获取设备信息无返回数据");
+            Toast.makeText(this, "获取设备信息失败", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("获取设备信息失败");
+            return;
+        }
+        JXDevice(byDevice);
+        boolean bl = HCProtocol.ST_GetWorkModel();
+        if (bl) {
+        }else{
+            Toast.makeText(this, "获取工作模式失败", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("获取工作模式失败");
+        }
+    }
+    private void JXDevice(byte[] data){
+        if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
+                && data[3] == (byte) 0x05  ) {
+            bysblx[0]=data[4];
+            bycpxlh[0]=data[5];
+            bycpxlh[1]=data[6];
+            bycpxlh[2]=data[7];
+            bycpxlh[3]=data[8];
+            bycpxlh[4]=data[9];
+            bycpxlh[5]=data[10];
+            byyjbbh[0]=data[11];
+            bygjbbh[0]=data[12];
+
+            String gx="Ⅰ型";
+            if(data[4]==0x01){
+                //1型柜
+                gx="Ⅰ型";
+            }else if(data[4]==0x02){
+                //11型柜
+                gx="Ⅱ型";
+                Cache.gx=gx;
+            }
+
+//            00000111
+            String qygc= DataTypeChange.getBit(data[13]);
+            Cache.hwxc1=qygc.substring(7,8).equals("1")?true:false;
+            Cache.hwxc2=qygc.substring(6,7).equals("1")?true:false;
+            Cache.hwxc3=qygc.substring(5,6).equals("1")?true:false;
+            Cache.hwxc4=qygc.substring(4,5).equals("1")?true:false;
+            Cache.hwxc5=qygc.substring(3,4).equals("1")?true:false;
+            Cache.hwxc6=qygc.substring(2,3).equals("1")?true:false;
+
+        }else{
+            Toast.makeText(this, "获取设备信息失败", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("获取设备信息失败");
+        }
+
+    }
     private void initView(){
         tvfh=(TextView)findViewById(R.id.fh);
         tvfh.setOnClickListener(new onClickListener());
@@ -71,15 +142,32 @@ public class PZActivity extends Activity {
         spDK=(Spinner)findViewById(R.id.spdk);
         btnOK=(Button)findViewById(R.id.btnok);
         btnOK.setOnClickListener(new onClickListener());
-
         spPD=(Spinner)findViewById(R.id.sppd);
         edpdcs=(EditText)findViewById(R.id.pdcs);
+
+        gc1=(CheckBox)findViewById(R.id.cb1);
+        gc2=(CheckBox)findViewById(R.id.cb2);
+        gc3=(CheckBox)findViewById(R.id.cb3);
+        gc4=(CheckBox)findViewById(R.id.cb4);
+        gc5=(CheckBox)findViewById(R.id.cb5);
+        gc6=(CheckBox)findViewById(R.id.cb6);
+        if(Cache.gx.equals("Ⅰ型")){
+            gc6.setVisibility(View.INVISIBLE);
+        }else{
+            gc6.setVisibility(View.VISIBLE);
+        }
     }
 
     private void initData(){
         spDK.setSelection(Cache.zmd);
         spPD.setSelection(Cache.pc);
         edpdcs.setText(String.valueOf(Cache.pccs));
+        gc1.setChecked(Cache.gcqy1);
+        gc2.setChecked(Cache.gcqy2);
+        gc3.setChecked(Cache.gcqy3);
+        gc4.setChecked(Cache.gcqy4);
+        gc5.setChecked(Cache.gcqy5);
+        gc6.setChecked(Cache.gcqy6);
     }
     /**
      * 设置屏幕的亮度
@@ -139,11 +227,33 @@ public class PZActivity extends Activity {
                     try{
                         pccs=Integer.valueOf(edpdcs.getText().toString());
                     }catch (Exception e){
-
                     }
-                    boolean bl=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
+                    boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
+                    if(bl1){
+                       logger.info("下发工作模式成功");
+                    }else{
+                        logger.info("下发工作模式失败");
+                    }
+                    byte[] bydata=new byte[14];
+                    bydata[0]=bysblx[0];
+                    bydata[1]=bycpxlh[0];
+                    bydata[2]=bycpxlh[1];
+                    bydata[3]=bycpxlh[2];
+                    bydata[4]=bycpxlh[3];
+                    bydata[5]=bycpxlh[4];
+                    bydata[6]=bycpxlh[5];
+                    bydata[7]=byyjbbh[0];
+                    bydata[8]=bygjbbh[0];
+                    String str="00"+(gc6.isChecked()?"1":"0")+(gc5.isChecked()?"1":"0")+(gc4.isChecked()?"1":"0")+(gc3.isChecked()?"1":"0")+(gc2.isChecked()?"1":"0")+(gc1.isChecked()?"1":"0");
+                    int da=Integer.parseInt(str,2);
+                    boolean bl2=HCProtocol.ST_SetDeviceInfo((byte)da);
+                    if(bl2){
+                        logger.info("下发设备信息成功");
+                    }else{
+                        logger.info("下发设备信息失败");
+                    }
                     btnOK.setPressed(false);
-                    if(bl){
+                    if(bl1 && bl2){
                         Cache.zmd=lightModel;
                         Cache.pc=pc;
                         Cache.pccs=pccs;

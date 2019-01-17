@@ -36,12 +36,12 @@ public class Cache {
     public static boolean hwxc5=false;
     public static boolean hwxc6=false;
 
-    public static boolean gcqy1=true;
-    public static boolean gcqy2=true;
-    public static boolean gcqy3=true;
-    public static boolean gcqy4=true;
-    public static boolean gcqy5=true;
-    public static boolean gcqy6=true;
+    public static boolean gcqy1=false;
+    public static boolean gcqy2=false;
+    public static boolean gcqy3=false;
+    public static boolean gcqy4=false;
+    public static boolean gcqy5=false;
+    public static boolean gcqy6=false;
     public static boolean zmdzt=false;
     public static List<ProductRecord> listPR = new ArrayList<ProductRecord>();
     public static String gx="Ⅰ型";
@@ -50,5 +50,6 @@ public class Cache {
     public static int zmd=0;//照明灯控制模式
     public static String sdpdcs="0";    //手动盘点层数
     public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
+    public static boolean zwlrNow=false;   //正在录入指纹
 
 }

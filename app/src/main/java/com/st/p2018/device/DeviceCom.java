@@ -84,8 +84,8 @@ public class DeviceCom extends Thread{
             map.put("gc5",qygc.substring(3,4));
             map.put("gc6",qygc.substring(2,3));
 
-            PZDao pzDao=new PZDao();
-            pzDao.updatePZByDevice(map);
+//            PZDao pzDao=new PZDao();
+//            pzDao.updatePZByDevice(map);
             logger.info("获取设备信息完成");
             Cache.hwxc1=(map.get("gc1").equals("1"))?true:false;
             Cache.hwxc2=(map.get("gc2").equals("1"))?true:false;

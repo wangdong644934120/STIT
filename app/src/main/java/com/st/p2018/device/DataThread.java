@@ -95,7 +95,7 @@ public class DataThread extends Thread {
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
                 sendCZY(list.get(0).get("name"));
-                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"刷卡开门成功");
+                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
 
             }else{
                 sendCZY("");
@@ -133,7 +133,7 @@ public class DataThread extends Thread {
                 HCProtocol.ST_OpenDoor();
                 Cache.code=list.get(0).get("code");
                 sendCZY(list.get(0).get("name"));
-                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"指纹开门成功");
+                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
             }else{
 //                sendCZY("");
 //                MyTextToSpeech.getInstance().speak("此指纹无开门权限");
@@ -382,6 +382,10 @@ public class DataThread extends Thread {
                 updateJD(jd);
                 //关闭盘存进度
                 closeJD();
+                Set<String> pr=map.keySet();
+                for(String p : pr){
+                    System.out.println("标签："+p+",位置："+map.get(p));
+                }
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
                     //耗材初始化要数据
@@ -440,7 +444,7 @@ public class DataThread extends Thread {
             sendOpenPD("openpd");
             pdstart=System.currentTimeMillis();
             openPDFlag=1;
-            MyTextToSpeech.getInstance().speak("正在盘存请稍候");
+            MyTextToSpeech.getInstance().speak("正在盘点请稍候");
         }
     }
     //关闭盘存进度
@@ -448,7 +452,7 @@ public class DataThread extends Thread {
         if(openPDFlag==1){
             sendPD("closedpd");
             openPDFlag=0;
-            MyTextToSpeech.getInstance().speak("盘存结束，请确认");
+            MyTextToSpeech.getInstance().speak("盘点结束");
         }
     }
 

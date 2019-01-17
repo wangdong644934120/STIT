@@ -202,6 +202,41 @@ public class HCProtocol {
     }
 
     /**
+     * 配置设备信息
+     * @return
+     */
+    public static boolean  ST_SetDeviceInfo(byte bydata){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x03 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x05};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x05 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("获取设备信息出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+    }
+
+    /**
      * 设置工作模式
      * @param lightModel 灯模式
      * @param cardModel 标签模式
@@ -461,7 +496,7 @@ public class HCProtocol {
     /**
      * 删除指纹
      * @param flag 0-删除单个指纹  1-删除所有指纹
-     * @param code 为0时，该参数有效，需要删除的指纹编号。为10时，传入0即可
+     * @param code flag为0时，该参数有效，需要删除的指纹编号。flag为1时，传入0即可
      * @return
      */
     public static boolean ST_DeleteZW(int flag,int code){
@@ -516,10 +551,11 @@ public class HCProtocol {
     }
 
     public static void ST_GetZWZT(){
-        int i=14;
+        int i=13;
+        boolean bl=true;
         try{
             myLock.lock();
-            while(i>0){
+            while(bl){
                 //发送数据
                 byte[] data=sp.getOnly();
                 if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
@@ -527,16 +563,25 @@ public class HCProtocol {
                     if( data[4] == (byte) 0x20){
                         //指纹录入成功
                         sendZWZT("ok");
+                        bl=false;
                         break;
                     }else if(data[4]==(byte)0x22){
                         //指纹录入失败
                         sendZWZT("fail");
+                        bl=false;
                         break;
                     }else if(data[4]==(byte)0x21){
                         //指纹录入中
-                        sendZWZT(String.valueOf(i));
+                        if(i>0){
+                            sendZWZT(String.valueOf(i));
+                        }
+
                     }
 
+                }else if(i<=-2){
+                    sendZWZT("fail");
+                    bl=false;
+                    break;
                 }
                 i=i-1;
                 Thread.sleep(1000);
@@ -546,6 +591,7 @@ public class HCProtocol {
             i=-1;
             logger.error("添加指纹出错",e);
         }finally {
+            Cache.zwlrNow=false;
             myLock.unlock();
         }
     }
