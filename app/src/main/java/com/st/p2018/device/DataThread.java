@@ -383,6 +383,7 @@ public class DataThread extends Thread {
                 //关闭盘存进度
                 closeJD();
                 Set<String> pr=map.keySet();
+                logger.info("获取标签个数："+map.size());
                 for(String p : pr){
                     System.out.println("标签："+p+",位置："+map.get(p));
                 }

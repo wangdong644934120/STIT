@@ -24,9 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -39,13 +36,11 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
-import com.st.p2018.device.DataTypeChange;
 import com.st.p2018.device.DeviceCom;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
@@ -117,7 +112,6 @@ public class MainActivity extends Activity {
         initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
-        initGX1();
         new DeviceCom().start();
     }
 
@@ -136,7 +130,7 @@ public class MainActivity extends Activity {
 //        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
         initHandler();
-        initGX();
+        initGXQT();
 
     }
 
@@ -238,36 +232,66 @@ public class MainActivity extends Activity {
                         if(bundle.get("wz").toString().equals("1")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-//                                ivh1.setImageResource(R.drawable.hongwaichufa);
-                                ivh1.setVisibility(View.VISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh1.setImageResource(R.drawable.hongwaichufa1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh1.setImageResource(R.drawable.hongwaichufa2);
+                                }
+
+//                                ivh1.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-//                                ivh1.setImageResource(R.drawable.hongwaizhengchang);
-                                ivh1.setVisibility(View.INVISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh1.setImageResource(R.drawable.hongwaizhengchang1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh1.setImageResource(R.drawable.hongwaizhengchang2);
+                                }
+
+//                                ivh1.setVisibility(View.INVISIBLE);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("2")){
                             if(bundle.get("zt").toString().equals("1")){
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh2.setImageResource(R.drawable.hongwaichufa1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh2.setImageResource(R.drawable.hongwaichufa2);
+                                }
                                 //替换红外行程1触发图片
-//                                ivh2.setImageResource(R.drawable.hongwaichufa);
-                                ivh2.setVisibility(View.VISIBLE);
+
+//                                ivh2.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-//                                ivh2.setImageResource(R.drawable.hongwaizhengchang);
-                                ivh2.setVisibility(View.INVISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh2.setImageResource(R.drawable.hongwaizhengchang1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh2.setImageResource(R.drawable.hongwaizhengchang2);
+                                }
+
+//                                ivh2.setVisibility(View.INVISIBLE);
                             }
 
                         }
                         if(bundle.get("wz").toString().equals("3")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-//                                ivh3.setImageResource(R.drawable.hongwaichufa);
-                                ivh3.setVisibility(View.VISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh3.setImageResource(R.drawable.hongwaichufa1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh3.setImageResource(R.drawable.hongwaichufa2);
+                                }
+
+//                                ivh3.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-//                                ivh3.setImageResource(R.drawable.hongwaizhengchang);
-                                ivh3.setVisibility(View.INVISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh3.setImageResource(R.drawable.hongwaizhengchang1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh3.setImageResource(R.drawable.hongwaizhengchang2);
+                                }
+
+//                                ivh3.setVisibility(View.INVISIBLE);
                             }
 
 
@@ -275,12 +299,22 @@ public class MainActivity extends Activity {
                         if(bundle.get("wz").toString().equals("4")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-//                                ivh4.setImageResource(R.drawable.hongwaichufa);
-                                ivh4.setVisibility(View.VISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh4.setImageResource(R.drawable.hongwaichufa1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh4.setImageResource(R.drawable.hongwaichufa2);
+                                }
+
+//                                ivh4.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-//                                ivh4.setImageResource(R.drawable.hongwaizhengchang);
-                                ivh4.setVisibility(View.INVISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh4.setImageResource(R.drawable.hongwaizhengchang1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh4.setImageResource(R.drawable.hongwaizhengchang2);
+                                }
+
+//                                ivh4.setVisibility(View.INVISIBLE);
                             }
 
 
@@ -288,12 +322,22 @@ public class MainActivity extends Activity {
                         if(bundle.get("wz").toString().equals("5")){
                             if(bundle.get("zt").toString().equals("1")){
                                 //替换红外行程1触发图片
-//                                ivh5.setImageResource(R.drawable.hongwaichufa);
-                                ivh5.setVisibility(View.VISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh5.setImageResource(R.drawable.hongwaichufa1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh5.setImageResource(R.drawable.hongwaichufa2);
+                                }
+
+//                                ivh5.setVisibility(View.VISIBLE);
                             }else{
                                 //替换红外行程1不触发图片
-//                                ivh5.setImageResource(R.drawable.hongwaizhengchang);
-                                ivh5.setVisibility(View.INVISIBLE);
+                                if(Cache.gx.equals("Ⅰ型")){
+                                    ivh5.setImageResource(R.drawable.hongwaizhengchang1);
+                                }else if(Cache.gx.equals("Ⅱ型")){
+                                    ivh5.setImageResource(R.drawable.hongwaizhengchang2);
+                                }
+
+//                                ivh5.setVisibility(View.INVISIBLE);
                             }
 
                         }
@@ -301,11 +345,22 @@ public class MainActivity extends Activity {
                             if(!Cache.gx.equals("Ⅰ型")){
                                 if(bundle.get("zt").toString().equals("1")){
                                     //替换红外行程1触发图片
-//                                    ivh6.setImageResource(R.drawable.hongwaichufa);
-                                    ivh6.setVisibility(View.VISIBLE);
+                                    if(Cache.gx.equals("Ⅰ型")){
+                                        ivh6.setImageResource(R.drawable.hongwaichufa1);
+                                    }else if(Cache.gx.equals("Ⅱ型")){
+                                        ivh6.setImageResource(R.drawable.hongwaichufa2);
+                                    }
+
+//                                    ivh6.setVisibility(View.VISIBLE);
                                 }else{
                                     //替换红外行程1不触发图片
-                                    ivh6.setVisibility(View.INVISIBLE);
+                                    if(Cache.gx.equals("Ⅰ型")){
+                                        ivh6.setImageResource(R.drawable.hongwaizhengchang1);
+                                    }else if(Cache.gx.equals("Ⅱ型")){
+                                        ivh6.setImageResource(R.drawable.hongwaizhengchang2);
+                                    }
+
+//                                    ivh6.setVisibility(View.INVISIBLE);
                                 }
                             }
                         }
@@ -331,8 +386,10 @@ public class MainActivity extends Activity {
                     if(Cache.gx.equals("Ⅰ型")){
                         //I型柜
                         initGX1();
-                    }else{
+                    }else if(Cache.gx.equals("Ⅱ型")){
                         initGX2();
+                    }else{
+                        initNO();
                     }
                 }
                 if(bundle.getString("czy")!=null){
@@ -520,16 +577,12 @@ public class MainActivity extends Activity {
         entries.add(new PieEntry(1,  map.get("jxq").toString()));
         entries.add(new PieEntry(1,  map.get("yxq").toString()));
 
-
         PieDataSet dataSet = new PieDataSet(entries, "");
-
         dataSet.setDrawIcons(false);
-
         dataSet.setSliceSpace(3f);
         dataSet.setIconsOffset(new MPPointF(0, 40));
         dataSet.setSelectionShift(5f);
         dataSet.setValueTextSize(20f);
-
         // add a lot of colors
         dataSet.setColor(Color.GRAY);
 
@@ -554,28 +607,8 @@ public class MainActivity extends Activity {
         mChart.invalidate();
     }
 
-    private void initGX(){
-        RelativeLayout.LayoutParams params ;
-        //背景图片
-        params = new RelativeLayout.LayoutParams(390, 390);
-        params.setMargins(20, 20, 20, 20);
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundColor(Color.WHITE);
-        iv.setImageResource(R.drawable.qsh);
-        iv.setLayoutParams(params);
-        rl.addView(iv);
-
-        ImageView ivh5=new ImageView(this);
-        params = new RelativeLayout.LayoutParams(390, 390);
-        params.setMargins(20, 20, 20, 20);
-        ivh5.setLayoutParams(params);
-        rl.addView(ivh5);
-        RequestOptions options = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
-    }
-
-    private void initGX1(){
+    //显示柜型中其他内容
+    private void initGXQT(){
         rl.removeAllViews();
         RelativeLayout.LayoutParams params ;
         //操作员图片
@@ -645,55 +678,149 @@ public class MainActivity extends Activity {
         tvdeng.setTextSize(18);
         tvdeng.setLayoutParams(params);
         rl.addView(tvdeng);
+//        RelativeLayout.LayoutParams params ;
+//        //背景图片
+//        params = new RelativeLayout.LayoutParams(390, 390);
+//        params.setMargins(20, 20, 20, 20);
+//        ImageView iv = new ImageView(this);
+//        iv.setBackgroundColor(Color.WHITE);
+//        iv.setImageResource(R.drawable.qsh);
+//        iv.setLayoutParams(params);
+//        rl.addView(iv);
+//
+//        ImageView ivh5=new ImageView(this);
+//        params = new RelativeLayout.LayoutParams(390, 390);
+//        params.setMargins(20, 20, 20, 20);
+//        ivh5.setLayoutParams(params);
+//        rl.addView(ivh5);
+//        RequestOptions options = new RequestOptions()
+//                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+//        Glide.with(this).load(R.drawable.qsh).apply(options).into(ivh5);
+    }
+
+    private void initGX1(){
+//        rl.removeAllViews();
+        RelativeLayout.LayoutParams params ;
+//        //操作员图片
+//        params = new RelativeLayout.LayoutParams(82, 82);
+//        params.setMargins(40, 50, 0, 0);
+//        ImageView iv = new ImageView(this);
+//        iv.setImageResource(R.drawable.caozuoyuan);
+//        iv.setLayoutParams(params);
+//        rl.addView(iv);
+//
+//        params = new RelativeLayout.LayoutParams(150, 82);
+//        params.setMargins(30, 150, 0, 0);
+//        tvczy = new TextView(this);
+//        tvczy.setText("操作员：");
+//        tvczy.setTextColor(Color.WHITE);
+//        tvczy.setTextSize(18);
+//        tvczy.setLayoutParams(params);
+//        rl.addView(tvczy);
+//
+//        params = new RelativeLayout.LayoutParams(82, 82);
+//        params.setMargins(40, 200, 0, 0);
+//        ivmen = new ImageView(this);
+//        ivmen.setImageResource(R.drawable.menguan);
+//        ivmen.setLayoutParams(params);
+//        rl.addView(ivmen);
+//
+//        params = new RelativeLayout.LayoutParams(150, 82);
+//        params.setMargins(30, 300, 0, 0);
+//        tvmzt = new TextView(this);
+////        tvmzt.setText("");
+//        tvmzt.setText("门状态：…");
+//        tvmzt.setTextColor(Color.WHITE);
+//        tvmzt.setTextSize(18);
+//        tvmzt.setLayoutParams(params);
+//        rl.addView(tvmzt);
+//
+//        params = new RelativeLayout.LayoutParams(82, 82);
+//        params.setMargins(220, 50, 0, 0);
+//        ImageView ivsc = new ImageView(this);
+//        ivsc.setImageResource(R.drawable.shichang);
+//        ivsc.setLayoutParams(params);
+//        rl.addView(ivsc);
+//
+//        params = new RelativeLayout.LayoutParams(250, 82);
+//        params.setMargins(190, 150, 0, 0);
+//        tvczsc = new TextView(this);
+////        tvczsc.setText("");
+//        tvczsc.setText("操作时长：00:00");
+//        tvczsc.setTextColor(Color.WHITE);
+//        tvczsc.setTextSize(18);
+//        tvczsc.setLayoutParams(params);
+//        rl.addView(tvczsc);
+//
+//        params = new RelativeLayout.LayoutParams(82, 82);
+//        params.setMargins(220, 200, 0, 0);
+//        ivdeng = new ImageView(this);
+//        ivdeng.setImageResource(R.drawable.dengguan);
+//        ivdeng.setLayoutParams(params);
+//        rl.addView(ivdeng);
+//
+//        params = new RelativeLayout.LayoutParams(150, 82);
+//        params.setMargins(200, 300, 0, 0);
+//        tvdeng = new TextView(this);
+////        tvdeng.setText("");
+//        tvdeng.setText("灯状态：…");
+//        tvdeng.setTextColor(Color.WHITE);
+//        tvdeng.setTextSize(18);
+//        tvdeng.setLayoutParams(params);
+//        rl.addView(tvdeng);
 
         params = new RelativeLayout.LayoutParams(126, 256);
         params.setMargins(400, 40, 0, 0);
         ImageView ivguizi = new ImageView(this);
-        ivguizi.setImageResource(R.drawable.guizi);
+        ivguizi.setImageResource(R.drawable.guiziyuanshi1);
         ivguizi.setLayoutParams(params);
         rl.addView(ivguizi);
 
         ivh1=new ImageView(this);
-        //ivh1.setImageResource(R.drawable.hongwaizhengchang);
-        ivh1.setImageResource(R.drawable.hongwaichufa);
+        ivh1.setImageResource(R.drawable.hongwaizhengchang1);
+//        ivh1.setImageResource(R.drawable.hongwaichufa);
         params = new RelativeLayout.LayoutParams(100, 40);
-        params.setMargins(410, 70, 0, 0);
+        params.setMargins(413, 70, 0, 0);
         ivh1.setLayoutParams(params);
         rl.addView(ivh1);
-        ivh1.setVisibility(View.INVISIBLE);
+//        ivh1.setVisibility(View.INVISIBLE);
 
         ivh2=new ImageView(this);
-        ivh2.setImageResource(R.drawable.hongwaichufa);
+//        ivh2.setImageResource(R.drawable.hongwaichufa);
+        ivh2.setImageResource(R.drawable.hongwaizhengchang1);
         params = new RelativeLayout.LayoutParams(100, 40);
-        params.setMargins(410, 110, 0, 0);
+        params.setMargins(413, 110, 0, 0);
         ivh2.setLayoutParams(params);
         rl.addView(ivh2);
-        ivh2.setVisibility(View.INVISIBLE);
+//        ivh2.setVisibility(View.INVISIBLE);
 
         ivh3=new ImageView(this);
-        ivh3.setImageResource(R.drawable.hongwaichufa);
+//        ivh3.setImageResource(R.drawable.hongwaichufa);
+        ivh3.setImageResource(R.drawable.hongwaizhengchang1);
         params = new RelativeLayout.LayoutParams(100, 40);
-        params.setMargins(410, 150, 0, 0);
+        params.setMargins(413, 150, 0, 0);
         ivh3.setLayoutParams(params);
         rl.addView(ivh3);
-        ivh3.setVisibility(View.INVISIBLE);
+//        ivh3.setVisibility(View.INVISIBLE);
 
 
         ivh4=new ImageView(this);
-        ivh4.setImageResource(R.drawable.hongwaichufa);
+//        ivh4.setImageResource(R.drawable.hongwaichufa);
+        ivh4.setImageResource(R.drawable.hongwaizhengchang1);
         params = new RelativeLayout.LayoutParams(100, 40);
-        params.setMargins(410, 190, 0, 0);
+        params.setMargins(413, 190, 0, 0);
         ivh4.setLayoutParams(params);
         rl.addView(ivh4);
-        ivh4.setVisibility(View.INVISIBLE);
+//        ivh4.setVisibility(View.INVISIBLE);
 
         ivh5=new ImageView(this);
-        ivh5.setImageResource(R.drawable.hongwaichufa);
+//        ivh5.setImageResource(R.drawable.hongwaichufa);
+        ivh5.setImageResource(R.drawable.hongwaizhengchang1);
         params = new RelativeLayout.LayoutParams(100, 40);
-        params.setMargins(410, 230, 0, 0);
+        params.setMargins(413, 230, 0, 0);
         ivh5.setLayoutParams(params);
         rl.addView(ivh5);
-        ivh5.setVisibility(View.INVISIBLE);
+//        ivh5.setVisibility(View.INVISIBLE);
 
 //
 //
@@ -817,14 +944,75 @@ public class MainActivity extends Activity {
 
     private void initGX2(){
         RelativeLayout.LayoutParams params ;
+        params = new RelativeLayout.LayoutParams(126, 256);
+        params.setMargins(400, 40, 0, 0);
+        ImageView ivguizi = new ImageView(this);
+        ivguizi.setImageResource(R.drawable.guiziyuanshi2);
+        ivguizi.setLayoutParams(params);
+        rl.addView(ivguizi);
+
+        ivh1=new ImageView(this);
+        ivh1.setImageResource(R.drawable.hongwaizhengchang2);
+//        ivh1.setImageResource(R.drawable.hongwaichufa);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(410, 63, 0, 0);
+        ivh1.setLayoutParams(params);
+        rl.addView(ivh1);
+//        ivh1.setVisibility(View.INVISIBLE);
+
+        ivh2=new ImageView(this);
+//        ivh2.setImageResource(R.drawable.hongwaichufa);
+        ivh2.setImageResource(R.drawable.hongwaizhengchang2);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(428, 63, 0, 0);
+        ivh2.setLayoutParams(params);
+        rl.addView(ivh2);
+//        ivh2.setVisibility(View.INVISIBLE);
+
+        ivh3=new ImageView(this);
+//        ivh3.setImageResource(R.drawable.hongwaichufa);
+        ivh3.setImageResource(R.drawable.hongwaizhengchang2);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(446, 63, 0, 0);
+        ivh3.setLayoutParams(params);
+        rl.addView(ivh3);
+//        ivh3.setVisibility(View.INVISIBLE);
+
+
+        ivh4=new ImageView(this);
+//        ivh4.setImageResource(R.drawable.hongwaichufa);
+        ivh4.setImageResource(R.drawable.hongwaizhengchang2);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(464, 63, 0, 0);
+        ivh4.setLayoutParams(params);
+        rl.addView(ivh4);
+//        ivh4.setVisibility(View.INVISIBLE);
+
+        ivh5=new ImageView(this);
+//        ivh5.setImageResource(R.drawable.hongwaichufa);
+        ivh5.setImageResource(R.drawable.hongwaizhengchang2);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(482, 63, 0, 0);
+        ivh5.setLayoutParams(params);
+        rl.addView(ivh5);
+//        ivh5.setVisibility(View.INVISIBLE);
+
+        ivh6=new ImageView(this);
+//        ivh5.setImageResource(R.drawable.hongwaichufa);
+        ivh6.setImageResource(R.drawable.hongwaizhengchang2);
+        params = new RelativeLayout.LayoutParams(16, 214);
+        params.setMargins(500, 63, 0, 0);
+        ivh6.setLayoutParams(params);
+        rl.addView(ivh6);
+
         //背景图片
-        params = new RelativeLayout.LayoutParams(390, 390);
-        params.setMargins(20, 20, 20, 20);
-        ImageView iv = new ImageView(this);
-        iv.setBackgroundColor(Color.BLUE);
-        //iv.setImageResource(R.drawable.wsbj1);
-        iv.setLayoutParams(params);
-        rl.addView(iv);
+//        params = new RelativeLayout.LayoutParams(390, 390);
+//        params.setMargins(20, 20, 20, 20);
+//        ImageView iv = new ImageView(this);
+//        iv.setBackgroundColor(Color.BLUE);
+//        //iv.setImageResource(R.drawable.wsbj1);
+//        iv.setLayoutParams(params);
+//        rl.addView(iv);
 
 
 //        d1=new TextView(this);
@@ -959,6 +1147,15 @@ public class MainActivity extends Activity {
 //        rl.addView(ivh6);
     }
 
+    private void initNO(){
+        RelativeLayout.LayoutParams params ;
+        params = new RelativeLayout.LayoutParams(126, 256);
+        params.setMargins(400, 40, 0, 0);
+        ImageView ivguizi = new ImageView(this);
+        ivguizi.setImageResource(R.drawable.guizibukeyong);
+        ivguizi.setLayoutParams(params);
+        rl.addView(ivguizi);
+    }
     private SpannableString generateCenterSpannableText(String value) {
 
         SpannableString s = new SpannableString(value);

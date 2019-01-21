@@ -68,6 +68,10 @@ public class DeviceCom extends Thread{
                 gx="Ⅱ型";
                 Cache.gx=gx;
             }
+            //--
+//            gx="Ⅱ型";
+//            Cache.gx=gx;
+            //---
             map.put("gx",gx);
             map.put("gc1","0");
             map.put("gc2","0");
