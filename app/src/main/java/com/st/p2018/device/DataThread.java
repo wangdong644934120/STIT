@@ -92,10 +92,15 @@ public class DataThread extends Thread {
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
-                HCProtocol.ST_OpenDoor();
-                Cache.code=list.get(0).get("code");
-                sendCZY(list.get(0).get("name"));
-                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                if(HCProtocol.ST_OpenDoor()){
+                    logger.info("下发开门成功");
+                    Cache.code=list.get(0).get("code");
+                    sendCZY(list.get(0).get("name"));
+                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                }else{
+                    logger.info("下发开门失败");
+                }
+
 
             }else{
                 sendCZY("");
@@ -130,10 +135,15 @@ public class DataThread extends Thread {
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
-                HCProtocol.ST_OpenDoor();
-                Cache.code=list.get(0).get("code");
-                sendCZY(list.get(0).get("name"));
-                MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                if(HCProtocol.ST_OpenDoor()){
+                    logger.info("下发开门成功");
+                    Cache.code=list.get(0).get("code");
+                    sendCZY(list.get(0).get("name"));
+                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                }else{
+                    logger.info("下发开门失败");
+                }
+
             }else{
 //                sendCZY("");
 //                MyTextToSpeech.getInstance().speak("此指纹无开门权限");

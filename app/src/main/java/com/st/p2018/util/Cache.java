@@ -29,14 +29,14 @@ public class Cache {
     public static String code;
     public static int mztcgq=2;//门状态传感器  1--开，0--关
     public static int zmdztcs=2; //照明灯状态初始
-    public static boolean hwxc1=false;
+    public static boolean hwxc1=false;  //界面红外触发状态
     public static boolean hwxc2=false;
     public static boolean hwxc3=false;
     public static boolean hwxc4=false;
     public static boolean hwxc5=false;
     public static boolean hwxc6=false;
 
-    public static boolean gcqy1=false;
+    public static boolean gcqy1=false;  //柜层启用状态
     public static boolean gcqy2=false;
     public static boolean gcqy3=false;
     public static boolean gcqy4=false;

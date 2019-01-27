@@ -205,11 +205,11 @@ public class HCProtocol {
      * 配置设备信息
      * @return
      */
-    public static boolean  ST_SetDeviceInfo(byte bydata){
+    public static boolean  ST_SetDeviceInfo(byte[] bydata){
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x03 };
+            byte[] length = new byte[] { 0x11 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x05};
             byte[] before=new byte[]{};
@@ -221,7 +221,7 @@ public class HCProtocol {
             byte jyData=getJYData(before);
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            byte[] data=sp.sendAndGet(send);
+            byte[] data=sp.sendAndGetFor2Seconds(send);
             if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
                     && data[3] == (byte) 0x05 && data[4] == (byte) 0x00 ) {
                 return true;
@@ -246,7 +246,7 @@ public class HCProtocol {
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
-            byte[] length = new byte[] { 0x08 };
+            byte[] length = new byte[] { 0x09 };
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x06};
             byte[] bydata=new byte[6];
@@ -301,7 +301,7 @@ public class HCProtocol {
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
             byte[] data=sp.sendAndGet(send);
-            if (data!=null && data.length>=8 && data[0] == (byte) 0x3A && data[1] == (byte) 0x08
+            if (data!=null && data.length>=8 && data[0] == (byte) 0x3A && data[1] == (byte) 0x09
                     && data[3] == (byte) 0x06  ) {
                 Cache.zmd=data[4];
                 Cache.pc=data[5];
@@ -512,11 +512,32 @@ public class HCProtocol {
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x21};
             byte[] bydata=null;
+
             if(flag==0){
                 bydata=new byte[3];
+                StringBuffer s = new StringBuffer();
+                String str;
+                char[] b = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+                while(code != 0){
+                    s = s.append(b[code%16]);
+                    code = code/16;
+                }
+                str = s.reverse().toString();
+                if(str.length()==3){
+                    str="0"+str;
+                }else if(str.length()==2){
+                    str="00"+str;
+                }else  if(str.length()==1){
+                    str="000"+str;
+                }
+                byte[] bytes = new byte[str.length() / 2];
+                for(int i = 0; i < str.length() / 2; i++) {
+                    String subStr = str.substring(i * 2, i * 2 + 2);
+                    bytes[i] = (byte) Integer.parseInt(subStr, 16);
+                }
                 bydata[0]=0;
-                bydata[1]=0x01;
-                bydata[2]=0x02;
+                bydata[1]=bytes[0];
+                bydata[2]=bytes[1];
             }else{
                 bydata=new byte[1];
                 bydata[0]=1;
@@ -526,20 +547,21 @@ public class HCProtocol {
             before=DataTypeChange.byteAddToByte(before,length);
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
-            if(flag==0){
-                before=DataTypeChange.byteAddToByte(before,bydata);
-            }
+            before=DataTypeChange.byteAddToByte(before,bydata);
+
 
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            byte[] data=sp.sendAndGet(send);
+            byte[] data=sp.sendAndGetFor2Seconds(send);
 
             if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
                     && data[3] == (byte) 0x21 && data[4] == (byte) 0x00) {
+                logger.info("设备中指纹删除成功：flag："+flag+" code:"+code);
                 return true;
             }else{
+                logger.info("设备中指纹删除失败：flag："+flag+" code:"+code);
                 return false;
             }
         }catch (Exception e){

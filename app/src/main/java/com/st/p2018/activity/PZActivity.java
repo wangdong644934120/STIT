@@ -74,6 +74,21 @@ public class PZActivity extends Activity {
         JXDevice(byDevice);
         boolean bl = HCProtocol.ST_GetWorkModel();
         if (bl) {
+            if(bl){
+                String zmd="";
+                if(Cache.zmd==0){
+                    zmd="灯自动";
+                }else if(Cache.zmd==1){
+                    zmd="灯常开";
+                }else if(Cache.zmd==2){
+                    zmd="灯常关";
+                }
+                logger.info("状态:照明灯:"+zmd);
+                logger.info("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
+                logger.info("状态:盘存次数:"+Cache.pccs);
+            }else{
+                logger.info("报警:获取工作模式失败");
+            }
         }else{
             Toast.makeText(this, "获取工作模式失败", Toast.LENGTH_SHORT).show();
             MyTextToSpeech.getInstance().speak("获取工作模式失败");
@@ -104,12 +119,14 @@ public class PZActivity extends Activity {
 
 //            00000111
             String qygc= DataTypeChange.getBit(data[13]);
-            Cache.hwxc1=qygc.substring(7,8).equals("1")?true:false;
-            Cache.hwxc2=qygc.substring(6,7).equals("1")?true:false;
-            Cache.hwxc3=qygc.substring(5,6).equals("1")?true:false;
-            Cache.hwxc4=qygc.substring(4,5).equals("1")?true:false;
-            Cache.hwxc5=qygc.substring(3,4).equals("1")?true:false;
-            Cache.hwxc6=qygc.substring(2,3).equals("1")?true:false;
+            Cache.gcqy1=(qygc.substring(7,8).equals("1"))?true:false;
+            Cache.gcqy2=(qygc.substring(6,7).equals("1"))?true:false;
+            Cache.gcqy3=(qygc.substring(5,6).equals("1"))?true:false;
+            Cache.gcqy4=(qygc.substring(4,5).equals("1"))?true:false;
+            Cache.gcqy5=(qygc.substring(3,4).equals("1"))?true:false;
+            Cache.gcqy6=(qygc.substring(2,3).equals("1"))?true:false;
+            logger.info("状态:柜体型号："+gx);
+            logger.info("状态:柜层启用(最后为第一层抽)："+qygc);
 
         }else{
             Toast.makeText(this, "获取设备信息失败", Toast.LENGTH_SHORT).show();
@@ -246,7 +263,8 @@ public class PZActivity extends Activity {
                     bydata[8]=bygjbbh[0];
                     String str="00"+(gc6.isChecked()?"1":"0")+(gc5.isChecked()?"1":"0")+(gc4.isChecked()?"1":"0")+(gc3.isChecked()?"1":"0")+(gc2.isChecked()?"1":"0")+(gc1.isChecked()?"1":"0");
                     int da=Integer.parseInt(str,2);
-                    boolean bl2=HCProtocol.ST_SetDeviceInfo((byte)da);
+                    bydata[9]=(byte)da;
+                    boolean bl2=HCProtocol.ST_SetDeviceInfo(bydata);
                     if(bl2){
                         logger.info("下发设备信息成功");
                     }else{

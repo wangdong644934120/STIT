@@ -44,11 +44,11 @@ public class DeviceCom extends Thread{
             }else if(Cache.zmd==2){
                 zmd="灯常关";
             }
-            sendData("状态:照明灯:"+zmd);
-            sendData("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
-            sendData("状态:盘存次数:"+Cache.pccs);
+            logger.info("状态:照明灯:"+zmd);
+            logger.info("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
+            logger.info("状态:盘存次数:"+Cache.pccs);
         }else{
-            sendData("报警:获取工作模式失败");
+            logger.info("报警:获取工作模式失败");
         }
         //new HeartThread().start();
         //new TimeThread().start();
@@ -72,33 +72,33 @@ public class DeviceCom extends Thread{
 //            gx="Ⅱ型";
 //            Cache.gx=gx;
             //---
-            map.put("gx",gx);
-            map.put("gc1","0");
-            map.put("gc2","0");
-            map.put("gc3","0");
-            map.put("gc4","0");
-            map.put("gc5","0");
-            map.put("gc6","0");
+//            map.put("gx",gx);
+//            map.put("gc1","0");
+//            map.put("gc2","0");
+//            map.put("gc3","0");
+//            map.put("gc4","0");
+//            map.put("gc5","0");
+//            map.put("gc6","0");
 //            00000111
             String qygc=DataTypeChange.getBit(data[13]);
-            map.put("gc1",qygc.substring(7,8));
-            map.put("gc2",qygc.substring(6,7));
-            map.put("gc3",qygc.substring(5,6));
-            map.put("gc4",qygc.substring(4,5));
-            map.put("gc5",qygc.substring(3,4));
-            map.put("gc6",qygc.substring(2,3));
+//            map.put("gc1",qygc.substring(7,8));
+//            map.put("gc2",qygc.substring(6,7));
+//            map.put("gc3",qygc.substring(5,6));
+//            map.put("gc4",qygc.substring(4,5));
+//            map.put("gc5",qygc.substring(3,4));
+//            map.put("gc6",qygc.substring(2,3));
 
 //            PZDao pzDao=new PZDao();
 //            pzDao.updatePZByDevice(map);
             logger.info("获取设备信息完成");
-            Cache.hwxc1=(map.get("gc1").equals("1"))?true:false;
-            Cache.hwxc2=(map.get("gc2").equals("1"))?true:false;
-            Cache.hwxc3=(map.get("gc3").equals("1"))?true:false;
-            Cache.hwxc4=(map.get("gc4").equals("1"))?true:false;
-            Cache.hwxc5=(map.get("gc5").equals("1"))?true:false;
-            Cache.hwxc6=(map.get("gc6").equals("1"))?true:false;
-            sendData("状态:柜体型号："+gx);
-            sendData("状态:柜层启用："+map.get("gc1")+map.get("gc2")+map.get("gc3")+map.get("gc4")+map.get("gc5")+map.get("gc6"));
+            Cache.gcqy1=(qygc.substring(7,8).equals("1"))?true:false;
+            Cache.gcqy2=(qygc.substring(6,7).equals("1"))?true:false;
+            Cache.gcqy3=(qygc.substring(5,6).equals("1"))?true:false;
+            Cache.gcqy4=(qygc.substring(4,5).equals("1"))?true:false;
+            Cache.gcqy5=(qygc.substring(3,4).equals("1"))?true:false;
+            Cache.gcqy6=(qygc.substring(2,3).equals("1"))?true:false;
+            logger.info("状态:柜体型号："+gx);
+            logger.info("状态:柜层启用(最后为第一层抽)："+qygc);
         }else{
             sendData("报警:获取设备信息失败");
         }
