@@ -53,7 +53,7 @@ public class DataThread extends Thread {
                        alaDKS(map.get("dks").toString());
                     }
                     if (map.get("hwxckg") != null ) {
-                    alaHWXCKG(map.get("hwxckg").toString());
+                        alaHWXCKG(map.get("hwxckg").toString());
                     }
                     if (map.get("zmd") != null ) {
                        alaZMD(map.get("zmd").toString());
@@ -79,11 +79,16 @@ public class DataThread extends Thread {
     private void alaSKQ(String skq){
         skq = skq.substring(7, 8);
         if (skq.equals("1")) {
-            System.out.println("刷卡器有动作："+skq);
+            logger.info("刷卡器有动作："+skq);
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(0);
             card=card.toUpperCase();
             logger.info("获取到卡号:"+card);
+            //判断是否发送到第三方平台
+            String sendValue="{\"order\":\"power\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            if(sendExternal(sendValue)){
+                return;
+            }
             if(Cache.getPersonCard){
                 logger.info("人员管理界面要卡号，不进行权限判断");
                 sendKH(card);
@@ -125,13 +130,18 @@ public class DataThread extends Thread {
         }
         //应该为11
         if (zwcgq.equals("01")) {
-            System.out.println("指纹模块有动作："+zwcgq);
+            logger.info("指纹模块有动作："+zwcgq);
             //指纹匹配成功，下发获取指纹编号
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(1);
             logger.info("获取到指纹编号十六进制："+card);
             card=String.valueOf(Long.parseLong(card,  16));
             logger.info("指纹编号转十进制结果："+card);
+            //判断是否发送到第三方平台
+            String sendValue="{\"order\":\"power\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            if(sendExternal(sendValue)){
+                return;
+            }
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
@@ -226,7 +236,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc1){
             //原红外触发状态，现红外关闭状态
             if(hwxc1.equals("0")){
-                System.out.println("设置红外1未触发");
+                logger.info("设置红外1未触发");
                 updateUI("hwxc","1","0");
                 Cache.hwxc1=false;
             }
@@ -234,7 +244,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc1.equals("1")){
                 Cache.cfpdcs.add("1");
-                System.out.println("设置红外1触发");
+                logger.info("设置红外1触发");
                 updateUI("hwxc","1","1");
                 Cache.hwxc1=true;
             }
@@ -242,7 +252,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc2){
             //原红外触发状态，现红外关闭状态
             if(hwxc2.equals("0")){
-                System.out.println("设置红外2未触发");
+                logger.info("设置红外2未触发");
                 updateUI("hwxc","2","0");
                 Cache.hwxc2=false;
             }
@@ -250,7 +260,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc2.equals("1")){
                 Cache.cfpdcs.add("2");
-                System.out.println("设置红外2触发");
+                logger.info("设置红外2触发");
                 updateUI("hwxc","2","1");
                 Cache.hwxc2=true;
             }
@@ -258,7 +268,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc3){
             //原红外触发状态，现红外关闭状态
             if(hwxc3.equals("0")){
-                System.out.println("设置红外3未触发");
+                logger.info("设置红外3未触发");
                 updateUI("hwxc","3","0");
                 Cache.hwxc3=false;
             }
@@ -266,7 +276,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc3.equals("1")){
                 Cache.cfpdcs.add("3");
-                System.out.println("设置红外3触发");
+                logger.info("设置红外3触发");
                 updateUI("hwxc","3","1");
                 Cache.hwxc3=true;
             }
@@ -274,7 +284,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc4){
             //原红外触发状态，现红外关闭状态
             if(hwxc4.equals("0")){
-                System.out.println("设置红外4未触发");
+                logger.info("设置红外4未触发");
                 updateUI("hwxc","4","0");
                 Cache.hwxc4=false;
             }
@@ -282,7 +292,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc4.equals("1")){
                 Cache.cfpdcs.add("4");
-                System.out.println("设置红外4触发");
+                logger.info("设置红外4触发");
                 updateUI("hwxc","4","1");
                 Cache.hwxc4=true;
             }
@@ -290,7 +300,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc5){
             //原红外触发状态，现红外关闭状态
             if(hwxc5.equals("0")){
-                System.out.println("设置红外5未触发");
+                logger.info("设置红外5未触发");
                 updateUI("hwxc","5","0");
                 Cache.hwxc5=false;
             }
@@ -298,7 +308,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc5.equals("1")){
                 Cache.cfpdcs.add("5");
-                System.out.println("设置红外5触发");
+                logger.info("设置红外5触发");
                 updateUI("hwxc","5","1");
                 Cache.hwxc5=true;
             }
@@ -306,7 +316,7 @@ public class DataThread extends Thread {
         if(Cache.hwxc6){
             //原红外触发状态，现红外关闭状态
             if(hwxc6.equals("0")){
-                System.out.println("设置红外6未触发");
+                logger.info("设置红外6未触发");
                 updateUI("hwxc","6","0");
                 Cache.hwxc6=false;
             }
@@ -314,7 +324,7 @@ public class DataThread extends Thread {
             //元红外关闭状态，现红外触发状态
             if(hwxc6.equals("1")){
                 Cache.cfpdcs.add("6");
-                System.out.println("设置红外6触发");
+                logger.info("设置红外6触发");
                 updateUI("hwxc","6","1");
                 Cache.hwxc6=true;
             }
@@ -341,14 +351,14 @@ public class DataThread extends Thread {
         if(zmd.contains("1")){
             //设置灯开
             if(!Cache.zmdzt){
-                System.out.println("设置灯开");
+                logger.info("设置灯开");
                 updateUI("deng","","1");
                 Cache.zmdzt=true;
             }
         }else if(zmd.equals("00")){
             //设置灯关
             if(Cache.zmdzt){
-                System.out.println("设置灯关");
+                logger.info("设置灯关");
                 updateUI("deng","","0");
                 Cache.zmdzt=false;
             }
@@ -395,7 +405,7 @@ public class DataThread extends Thread {
                 Set<String> pr=map.keySet();
                 logger.info("获取标签个数："+map.size());
                 for(String p : pr){
-                    System.out.println("标签："+p+",位置："+map.get(p));
+                    logger.info("标签："+p+",位置："+map.get(p));
                 }
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
@@ -660,5 +670,17 @@ public class DataThread extends Thread {
         data.putString("cshc","1");
         message.setData(data);
         Cache.myHandleHCCS.sendMessage(message);
+    }
+
+    private boolean sendExternal(String sendValue){
+        boolean bl=false;
+        if(Cache.external){
+            bl=true;
+            //发送数据到第三方平台
+            if(Cache.socketClient!=null){
+                Cache.socketClient.send(sendValue);
+            }
+        }
+        return bl;
     }
 }

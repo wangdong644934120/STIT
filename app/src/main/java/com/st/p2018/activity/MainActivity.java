@@ -127,13 +127,15 @@ public class MainActivity extends Activity {
         tvD=(Button)findViewById(R.id.dian);
         tvD.setOnClickListener(new onClickListener());
         mChart = (PieChart) findViewById(R.id.chart);
-//        tvTS=(TextView)findViewById(R.id.ts);
         initPieChart();
         initHandler();
         initGXQT();
 
     }
 
+    private void initExternal(){
+
+    }
     private void initHandler(){
 
         Cache.myHandle = new Handler() {
@@ -437,18 +439,6 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
-
-
-
-//                    StringBuffer s = new StringBuffer();
-//                    String a;
-//                    char []b = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-//                    while(n != 0){
-//                        s = s.append(b[n%16]);
-//                        n = n/16;
-//                    }
-//                    a = s.reverse().toString();
-//                    System.out.println("aaaaaaaa:"+a);
                     if(Cache.zmdzt){
                         boolean bl=HCProtocol.ST_CloseLight();
                         if(bl){

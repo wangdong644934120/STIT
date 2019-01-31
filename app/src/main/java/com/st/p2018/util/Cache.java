@@ -7,6 +7,7 @@ import android.os.Handler;
 import com.st.p2018.entity.Event;
 import com.st.p2018.entity.ProductBar;
 import com.st.p2018.entity.ProductRecord;
+import com.st.p2018.external.SocketClient;
 import com.st.p2018.view.PercentCircle;
 
 import java.util.ArrayList;
@@ -51,5 +52,8 @@ public class Cache {
     public static String sdpdcs="0";    //手动盘点层数
     public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
     public static boolean zwlrNow=false;   //正在录入指纹
+    public static SocketClient socketClient=null;
+    public static boolean external=false;
+    public static String ipmac;
 
 }
