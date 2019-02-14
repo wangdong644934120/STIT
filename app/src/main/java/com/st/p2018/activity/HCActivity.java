@@ -130,9 +130,9 @@ public class HCActivity extends Activity {
                         Toast.makeText(HCActivity.this, "未找到1.xls", Toast.LENGTH_SHORT).show();
                         return;
                     }else{
-                        boolean bl=ExpportDataBeExcel.ImportExcelData(file);
-                        if(bl){
-                            Toast.makeText(HCActivity.this, "上传耗材库成功", Toast.LENGTH_SHORT).show();
+                        int count=ExpportDataBeExcel.ImportExcelData(file);
+                        if(count>=0){
+                            Toast.makeText(HCActivity.this, "上传耗材库完成，个数："+count, Toast.LENGTH_SHORT).show();
                         }else{
                             Toast.makeText(HCActivity.this, "上传耗材库失败", Toast.LENGTH_SHORT).show();
                         }

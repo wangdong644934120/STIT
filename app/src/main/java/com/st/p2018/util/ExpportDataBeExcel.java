@@ -33,10 +33,11 @@ public  class ExpportDataBeExcel {
 
     private static Logger logger = Logger.getLogger(ExpportDataBeExcel.class);
 
-    public static  boolean ImportExcelData(File file) {
+    public static  int ImportExcelData(File file) {
+        int count=-1;
         ProductDao pd = new ProductDao();
         //先将库中信息全部清空
-        pd.clearAll_AllProduct();;
+        pd.clearAll_AllProduct();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         FileInputStream inFile = null;
@@ -46,7 +47,7 @@ public  class ExpportDataBeExcel {
             HSSFSheet sheet = book.getSheetAt(0);
             int row = sheet.getLastRowNum();
             if (row <= 1) {
-                return false;
+                return -1;
             }
             List<ProductBar> list = new ArrayList<ProductBar>();
             for (int i = 1; i <= row; i++) {
@@ -75,8 +76,9 @@ public  class ExpportDataBeExcel {
             }
 
             pd.addMutil_AllProduct(list);
+            count=list.size();
             logger.info("上传耗材库成功，个数："+list.size());
-            return true;
+            return list.size();
 
         } catch (Exception ex) {
         logger.error("解析excel出错",ex);
@@ -89,7 +91,7 @@ public  class ExpportDataBeExcel {
 
                 }
             }
-            return true;
+           return count;
         }
 
     }

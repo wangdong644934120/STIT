@@ -105,8 +105,6 @@ public class DataThread extends Thread {
                 }else{
                     logger.info("下发开门失败");
                 }
-
-
             }else{
                 sendCZY("");
                 MyTextToSpeech.getInstance().speak("此卡无开门权限");
@@ -407,6 +405,42 @@ public class DataThread extends Thread {
                 for(String p : pr){
                     logger.info("标签："+p+",位置："+map.get(p));
                 }
+                //如果连接第三方平台
+                if(Cache.external){
+                    //发送数据到第三方平台
+                    if(Cache.socketClient!=null){
+                        HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>();
+                        for(String p : pr){
+                            if(mapJSON.get(map.get(p))==null){
+                                List<String> listP = new ArrayList<String>();
+                                listP.add(p);
+                                mapJSON.put(map.get(p),listP);
+                            }else{
+                                mapJSON.get(map.get(p)).add(p);
+                            }
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("{\"order\":\"product\",\"number\":\"");
+                        sb.append(UUID.randomUUID().toString()).append("\",\"data\":[");
+                        Set<String> location = mapJSON.keySet();
+                        for(String loa : location){
+                            sb.append("{\"location\":\"").append(loa).append("\",");
+                            sb.append("\"data\":[");
+                            List<String> listCard= mapJSON.get(loa);
+                            for(String card : listCard){
+                                sb.append("\"").append(card).append("\",");
+                            }
+                            sb.deleteCharAt(sb.length()-1).append("]},");
+                        }
+                        if(!location.isEmpty()){
+                            sb.deleteCharAt(sb.length()-1);
+                        }
+                        sb.append("]}");
+                        String sendValue=sb.toString();
+                        Cache.socketClient.send(sendValue);
+                    }
+                    return;
+                }
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
                     //耗材初始化要数据
@@ -465,7 +499,7 @@ public class DataThread extends Thread {
             sendOpenPD("openpd");
             pdstart=System.currentTimeMillis();
             openPDFlag=1;
-            MyTextToSpeech.getInstance().speak("正在盘点请稍候");
+            MyTextToSpeech.getInstance().speak("正在读取请稍候");
         }
     }
     //关闭盘存进度
@@ -473,7 +507,7 @@ public class DataThread extends Thread {
         if(openPDFlag==1){
             sendPD("closedpd");
             openPDFlag=0;
-            MyTextToSpeech.getInstance().speak("盘点结束");
+            MyTextToSpeech.getInstance().speak("读取结束");
         }
     }
 

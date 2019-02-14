@@ -42,7 +42,7 @@ public class RecordActivity extends Activity {
         setContentView(R.layout.activity_record);
         Intent intent = getIntent();
         initView();
-        this.setTitle("存放记录");
+        this.setTitle("存放记录("+Cache.listPR.size()+"个)");
 
         Column<String> column1 = new Column<>("品牌", "pp");
         Column<String> column2 = new Column<>("种类", "type");

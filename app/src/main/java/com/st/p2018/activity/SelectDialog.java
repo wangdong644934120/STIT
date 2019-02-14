@@ -21,7 +21,12 @@ public class SelectDialog extends AlertDialog {
     private Button btnKZ;
     private Button btnPZ;
     private Button btnSBXX;
+    private Button btnTCCX;
 
+    public SelectDialog(){
+        super(null);
+
+    }
     public SelectDialog(Context context, int theme) {
         super(context, theme);
     }
@@ -48,6 +53,8 @@ public class SelectDialog extends AlertDialog {
         btnPZ.setOnClickListener(new onClickListener());
         btnSBXX=(Button)findViewById(R.id.btnSBXX);
         btnSBXX.setOnClickListener(new onClickListener());
+        btnTCCX=(Button)findViewById(R.id.btnTCCX);
+        btnTCCX.setOnClickListener(new onClickListener());
 
     }
 
@@ -77,6 +84,9 @@ public class SelectDialog extends AlertDialog {
                     break;
                 case R.id.btnSBXX:
                     openui("sbxx");
+                    break;
+                case R.id.btnTCCX:
+                    openui("tccx");
                     break;
                 default:
                     break;

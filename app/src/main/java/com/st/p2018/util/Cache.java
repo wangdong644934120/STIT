@@ -53,7 +53,7 @@ public class Cache {
     public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
     public static boolean zwlrNow=false;   //正在录入指纹
     public static SocketClient socketClient=null;
-    public static boolean external=false;
+    public static boolean external=false;  //是否挂接第三方平台
     public static String ipmac;
 
 }

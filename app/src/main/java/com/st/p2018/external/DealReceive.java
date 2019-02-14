@@ -54,7 +54,11 @@ public class DealReceive extends Thread{
                     }
                     break;
                 case "product":
-
+                    if(HCProtocol.ST_GetAllCard()){
+                        logger.info("下发盘点成功");
+                    }else{
+                        logger.info("下发盘点失败");
+                    }
                     break;
                 case "deviceinfo":
                     //获取设备信息
