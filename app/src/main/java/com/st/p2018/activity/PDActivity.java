@@ -122,6 +122,7 @@ public class PDActivity extends Activity {
                 yxcs=6;
             }
             //更新界面显示
+            int titleShow=0;
             for(int i=1;i<=yxcs;i++){
                 rl=(RelativeLayout)findViewById(R.id.layoutpd);
                 RelativeLayout.LayoutParams params ;
@@ -187,6 +188,7 @@ public class PDActivity extends Activity {
                 params.setMargins(500, 150+i*100, 0, 0);
                 TextView tv4y = new TextView(this);
                 String all=String.valueOf(Integer.valueOf(v1)+Integer.valueOf(v2)+Integer.valueOf(v3));
+                titleShow=titleShow+Integer.valueOf(all);
                 tv4y.setText(all);
                 tv4y.setGravity(Gravity.CENTER);
                 tv4y.setTextColor(Color.BLACK);
@@ -194,7 +196,7 @@ public class PDActivity extends Activity {
                 tv4y.setLayoutParams(params);
                 rl.addView(tv4y);
             }
-
+            tvtitle.setText("盘点结果 ("+titleShow+"个)");
             //数据库更新内容
             Set<String> updatesKey=mapSave.keySet();
             for(String key : updatesKey){

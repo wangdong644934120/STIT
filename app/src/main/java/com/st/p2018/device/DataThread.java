@@ -386,7 +386,7 @@ public class DataThread extends Thread {
                 getCard();
             }
             //更新进度
-            updateJD(jd);
+            updateJD(jd,true);
 
         }else if(zt.equals("00")){
             if(dealFlag){
@@ -397,14 +397,14 @@ public class DataThread extends Thread {
                 openJD();
                 logger.info("标签盘存结束，耗时："+(System.currentTimeMillis()-pdstart));
                 //更新进度
-                updateJD(jd);
+                updateJD(jd,false);
                 //关闭盘存进度
                 closeJD();
                 Set<String> pr=map.keySet();
                 logger.info("获取标签个数："+map.size());
-                for(String p : pr){
+               /* for(String p : pr){
                     logger.info("标签："+p+",位置："+map.get(p));
-                }
+                }*/
                 //如果连接第三方平台
                 if(Cache.external){
                     //发送数据到第三方平台
@@ -482,14 +482,23 @@ public class DataThread extends Thread {
      * 更新盘存进度
      * @param jd
      */
-    private void updateJD(String jd){
+    private void updateJD(String jd,boolean isJ10){
+
         //更新进度
         BigInteger bi = new BigInteger(jd, 2);
         int dqcs =Integer.parseInt(bi.toString());
         int zcs=Cache.pccs;
         int zjd=(int)((double)dqcs/(double)zcs*100);
+        if(isJ10){
+            if(zjd>=99){
+                zjd=99;
+            }
+        }else{
+            zjd=100;
+        }
         if(!String.valueOf(zjd).equals(pcjd)){
             pcjd=String.valueOf(zjd);
+            logger.info("开始更新进度:"+pcjd);
             sendPD(pcjd);
         }
     }
@@ -505,6 +514,7 @@ public class DataThread extends Thread {
     //关闭盘存进度
     private void closeJD(){
         if(openPDFlag==1){
+            logger.info("关闭进度条");
             sendPD("closedpd");
             openPDFlag=0;
             MyTextToSpeech.getInstance().speak("读取结束");
