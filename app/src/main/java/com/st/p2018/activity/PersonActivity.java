@@ -291,6 +291,14 @@ public class PersonActivity extends Activity {
             MyTextToSpeech.getInstance().speak("工号重复");
             return;
         }
+        if(!cardp.equals("")){
+            List<HashMap<String,String>> listCA = pd.getSameCodeForAdd(cardp);
+            if(!listCA.isEmpty()){
+                Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("卡号重复");
+                return;
+            }
+        }
         PersonInfo pi = new PersonInfo();
         pi.setId(UUID.randomUUID().toString());
         pi.setCode(codep);
@@ -329,6 +337,14 @@ public class PersonActivity extends Activity {
             Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
             MyTextToSpeech.getInstance().speak("工号重复");
             return;
+        }
+        if(!cardp.equals("")){
+            List<HashMap<String,String>> listCA = pd.getSameCardForModify(id,cardp);
+            if(!listCA.isEmpty()){
+                Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("卡号重复");
+                return;
+            }
         }
         PersonInfo pi = new PersonInfo();
         pi.setId(id);
@@ -381,11 +397,48 @@ public class PersonActivity extends Activity {
             MyTextToSpeech.getInstance().speak("请先输入工号");
             Toast.makeText(this, "请先输入工号", Toast.LENGTH_SHORT).show();
             return;
-        }else if(Integer.valueOf(code.getText().toString())>700){
+        }
+        try{
+            int codeNum=Integer.valueOf(code.getText().toString());
+        }catch (Exception e){
+            MyTextToSpeech.getInstance().speak("工号必须为数字");
+            Toast.makeText(this, "工号必须为数字", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(Integer.valueOf(code.getText().toString())>700){
             MyTextToSpeech.getInstance().speak("工号不能超过700");
             Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
             return;
         }
+        //根据工号判断用户是添加还是修改指纹
+        if(selecItem==-1){
+            //添加指纹，判断工号是否重复，不重复则删除原有指纹
+            if(!addZW()){
+                return;
+            }
+        }else{
+            String id=mQueryData.get(selecItem).get("id").toString();
+            String codeS=mQueryData.get(selecItem).get("code").toString();
+            if(codeS.equals(code.getText().toString().trim())){
+                //修改指纹，先将原有指纹删除
+                boolean blD=HCProtocol.ST_DeleteZW(0,Integer.valueOf(code.getText().toString()));
+                if(!blD){
+                    MyTextToSpeech.getInstance().speak("删除原有指纹失败");
+                    Toast.makeText(this, "删除原有指纹失败", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }else{
+                //添加指纹，判断报工号是否重复，不重复则删除原有指纹
+                if(!addZW()){
+                    return;
+                }
+            }
+        }
+
+        //先将指纹模块中该人员编号指纹删除
+
+
+
         MyTextToSpeech.getInstance().speak("请录入指纹");
         Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
         boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
@@ -397,6 +450,17 @@ public class PersonActivity extends Activity {
         }
 
     }
+
+    private boolean addZW(){
+        List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(code.getText().toString().trim());
+        if(!listCF.isEmpty()){
+            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+            MyTextToSpeech.getInstance().speak("工号重复");
+            return false;
+        }
+        return true;
+    }
+
     private void getKH(){
         Cache.getPersonCard=true;
         MyTextToSpeech.getInstance().speak("请刷卡");

@@ -38,12 +38,27 @@ public class PersonDao {
         return list;
     }
 
+    public List<HashMap<String,String>>  getSameCardForAdd(String card){
+        String sql = "select id,code,name,card,tzz from stit_t_person where card=?";
+        String[] args = new String[]{card};
+        List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,args);
+        return list;
+    }
+
     public List<HashMap<String,String>>  getSameCodeForModify(String id,String code){
         String sql = "select id,code,name,card,tzz from stit_t_person where id!=? and code=?";
         String[] args = new String[]{id,code};
         List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,args);
         return list;
     }
+
+    public List<HashMap<String,String>>  getSameCardForModify(String id,String card){
+        String sql = "select id,code,name,card,tzz from stit_t_person where id!=? and card=?";
+        String[] args = new String[]{id,card};
+        List<HashMap<String,String>> list=DataBaseExec.execQueryForMap(sql,args);
+        return list;
+    }
+
     public boolean modifyPerson(PersonInfo pi){
         String sql="update stit_t_person set code=?,name=?,card=?,tzz=? where id=?";
         String[] args = new String[]{pi.getCode(),pi.getName(),pi.getCard(),pi.getTzz(),pi.getId()};
