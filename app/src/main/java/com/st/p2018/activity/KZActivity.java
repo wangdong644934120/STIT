@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.st.p2018.dao.PersonDao;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.MyTextToSpeech;
@@ -95,6 +96,9 @@ public class KZActivity extends Activity {
                     bl=HCProtocol.ST_DeleteZW(1,0);
                     btnSCSYZW.setPressed(false);
                     if(bl){
+                        //将人员表数据库中的所有指纹清空
+                        PersonDao pd = new PersonDao();
+                        pd.deleteAllZW();
                         sendTS("删除所有指纹成功");
                     }else{
                         sendTS("删除所有指纹失败");

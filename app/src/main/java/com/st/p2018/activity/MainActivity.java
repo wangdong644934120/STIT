@@ -41,6 +41,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.st.p2018.dao.PZDao;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
@@ -83,6 +84,8 @@ public class MainActivity extends Activity {
     private TextView tvczsc;
     private TextView tvmzt;
     private TextView tvdeng;
+    private TextView tvtj;
+    private TextView tvappTitle;
 
     private Button btnKD;
     private Button btnPD;
@@ -109,6 +112,7 @@ public class MainActivity extends Activity {
         Logger logger =Logger.getLogger(this.getClass());
         initView();
         initDataBase();
+        initAppName();
         initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
@@ -117,7 +121,7 @@ public class MainActivity extends Activity {
 
 
     private void initView() {
-
+        tvappTitle=(TextView)findViewById(R.id.apptitle);
         btnKD=(Button)findViewById(R.id.kaideng);
         btnKD.setOnClickListener(new onClickListener());
         btnPD=(Button)findViewById(R.id.pandian);
@@ -374,6 +378,9 @@ public class MainActivity extends Activity {
                         //显示盘点结果
                         pdshow();
                     }
+                    if(bundle.getString("appname")!=null){
+                        tvappTitle.setText(bundle.getString("appname").toString());
+                    }
                 }catch(Exception e){
 
                 }
@@ -420,6 +427,9 @@ public class MainActivity extends Activity {
                             Toast.makeText(MainActivity.this, "关灯失败", Toast.LENGTH_SHORT).show();
                         }
                     }else{
+                        String app =getResources().getText(R.string.app_name).toString();
+
+                        int a=0;
                         boolean bl=HCProtocol.ST_OpenLight();
                         if(bl){
                             MyTextToSpeech.getInstance().speak("开灯成功");
@@ -494,7 +504,7 @@ public class MainActivity extends Activity {
 
         mChart.setDragDecelerationFrictionCoef(0.95f);
 
-        mChart.setCenterText(generateCenterSpannableText("效期图示"));
+        mChart.setCenterText(generateCenterSpannableText("11"));
 
         mChart.setDrawHoleEnabled(true);
         mChart.setHoleColor(Color.WHITE);
@@ -648,6 +658,15 @@ public class MainActivity extends Activity {
         tvdeng.setTextSize(18);
         tvdeng.setLayoutParams(params);
         rl.addView(tvdeng);
+
+        params = new RelativeLayout.LayoutParams(150, 82);
+        params.setMargins(405, 300, 0, 0);
+        tvtj = new TextView(this);
+        tvtj.setText("数量统计：...");
+        tvtj.setTextColor(Color.WHITE);
+        tvtj.setTextSize(18);
+        tvtj.setLayoutParams(params);
+        rl.addView(tvtj);
 
     }
 
@@ -971,12 +990,25 @@ public class MainActivity extends Activity {
         ivguizi.setLayoutParams(params);
         rl.addView(ivguizi);
     }
+
+    private void initAppName(){
+        PZDao pzDao= new PZDao();
+        List<HashMap<String,String>> listPZ = pzDao.getPZ();
+        if(listPZ==null || listPZ.isEmpty()){
+            tvappTitle.setText("高值耗材柜");
+        }else{
+            tvappTitle.setText(listPZ.get(0).get("appname")==null?"高值耗材柜":listPZ.get(0).get("appname").toString());
+        }
+
+    }
     private SpannableString generateCenterSpannableText(String value) {
 
         SpannableString s = new SpannableString(value);
-        s.setSpan(new RelativeSizeSpan(1.7f), 0, value.length(), 0);
-        s.setSpan(new StyleSpan(Typeface.NORMAL), 0, value.length(), 0);
-        s.setSpan(new ForegroundColorSpan(Color.GRAY), 0, value.length(), 0);
+        s.setSpan(new RelativeSizeSpan(10f), 0, value.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.BOLD), 0, value.length(), 0);
+        s.setSpan(new ForegroundColorSpan(Color.argb(255,0x45,0x8b,0x00)), 0, value.length(), 0);
+
+        //Typeface.NORMAL  #458B00
 //        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
 //        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
 //        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
@@ -1091,7 +1123,7 @@ public class MainActivity extends Activity {
     }
 
     private void initJXQData(){
-        mChart.setCenterText(generateCenterSpannableText("效期图示"));
+        mChart.setCenterText(generateCenterSpannableText("11"));
         ProductDao productDao= new ProductDao();
         List<HashMap<String,String>> list = productDao.getProductByJXQ();
         int ygq=0;
@@ -1117,6 +1149,8 @@ public class MainActivity extends Activity {
         map.put("jxq","近效期("+jxq+"个)");
         map.put("yxq","远效期("+yxq+"个)");
         setData(map);
+        tvtj.setText("数量统计："+(ygq+jxq+yxq)+"个");
+
 
     }
 

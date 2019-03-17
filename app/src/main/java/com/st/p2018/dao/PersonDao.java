@@ -75,4 +75,9 @@ public class PersonDao {
         List<HashMap<String,String>> list = DataBaseExec.execQueryForMap(sql,args);
         return list;
     }
+
+    public boolean deleteAllZW(){
+        String sql="update stit_t_person set tzz=''";
+        return DataBaseExec.execOther(sql,null);
+    }
 }

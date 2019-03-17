@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Message;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.DataTypeChange;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
@@ -24,6 +26,7 @@ import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 
 
 public class PZActivity extends Activity {
@@ -42,6 +45,7 @@ public class PZActivity extends Activity {
     private EditText edpdcs;
     private TextView tvfh;
     private TextView tvtitle;
+    private TextView tvxtmc;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -140,6 +144,7 @@ public class PZActivity extends Activity {
         tvtitle=(TextView)findViewById(R.id.title);
         tvtitle.setText("配置管理");
         sb=(SeekBar) findViewById(R.id.sb);
+        tvxtmc=(TextView)findViewById(R.id.xtmc);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -185,6 +190,14 @@ public class PZActivity extends Activity {
         gc4.setChecked(Cache.gcqy4);
         gc5.setChecked(Cache.gcqy5);
         gc6.setChecked(Cache.gcqy6);
+
+        PZDao pzDao= new PZDao();
+        List<HashMap<String,String>> listPZ = pzDao.getPZ();
+        if(listPZ==null || listPZ.isEmpty()){
+            tvxtmc.setText("");
+        }else{
+            tvxtmc.setText(listPZ.get(0).get("appname")==null?"":listPZ.get(0).get("appname").toString());
+        }
     }
     /**
      * 设置屏幕的亮度
@@ -284,6 +297,10 @@ public class PZActivity extends Activity {
                         MyTextToSpeech.getInstance().speak("下传配置失败");
                         logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                     }
+                    PZDao pzDao= new PZDao();
+                    pzDao.updateAppName(tvxtmc.getText().toString());
+                    sendAPPName(tvxtmc.getText().toString());
+
                     break;
                 case R.id.fh:
                     PZActivity.this.finish();
@@ -295,4 +312,11 @@ public class PZActivity extends Activity {
 
     }
 
+    private  void sendAPPName(String value){
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        data.putString("appname",value);
+        message.setData(data);
+        Cache.myHandle.sendMessage(message);
+    }
 }
