@@ -157,7 +157,7 @@ public class PZActivity extends Activity {
         tvxtmc=(TextView)findViewById(R.id.xtmc);
         tvxtbh=(TextView)findViewById(R.id.xtbh);
         tvpdjg=(EditText)findViewById(R.id.pdjg);
-        tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
+        //tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -280,6 +280,11 @@ public class PZActivity extends Activity {
                             pdjg=Integer.valueOf(tvpdjg.getText().toString());
                         }catch (Exception e){
 
+                        }
+                        if(pdjg<5 || pdjg>255){
+                            Toast.makeText(PZActivity.this, "盘点间隔为5到255", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("盘点间隔为5到255");
+                            return;
                         }
                         boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs,pdjg);
                         if(bl1){

@@ -148,7 +148,7 @@
                 android:gravity="right"
                 android:textSize="20dp"
                 android:textColor="@color/black"
-                android:text="盘存间隔：" />
+                android:text="盘点间隔：" />
 
             <EditText
                 android:id="@+id/pdjg"
