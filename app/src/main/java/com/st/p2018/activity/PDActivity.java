@@ -157,7 +157,8 @@ public class PDActivity extends Activity {
                 params = new RelativeLayout.LayoutParams(130, 80);
                 params.setMargins(240, 150+i*100, 0, 0);
                 TextView tv2y = new TextView(this);
-                tv2y.setBackgroundColor(Color.YELLOW);
+                //tv2y.setBackgroundColor(Color.YELLOW);
+                tv2y.setBackgroundColor(Color.argb(255,238,242,14));
                 String v2="0";
                 if(mapPD.get(String.valueOf(i))!=null){
                     v2=String.valueOf(mapPD.get(String.valueOf(i)).getJxq());
@@ -172,7 +173,8 @@ public class PDActivity extends Activity {
                 params = new RelativeLayout.LayoutParams(130, 80);
                 params.setMargins(370, 150+i*100, 0, 0);
                 TextView tv3y = new TextView(this);
-                tv3y.setBackgroundColor(Color.BLUE);
+                //tv3y.setBackgroundColor(Color.BLUE);
+                tv3y.setBackgroundColor(Color.argb(255,135,162,86));
                 tv3y.setGravity(Gravity.CENTER);
                 String v3="0";
                 if(mapPD.get(String.valueOf(i))!=null){

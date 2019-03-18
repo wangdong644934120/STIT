@@ -61,6 +61,7 @@ public class HCActivity extends Activity {
         super.onDestroy();
     }
     private void initView(){
+
         tvfh=(TextView)findViewById(R.id.fh);
         tvfh.setOnClickListener(new onClickListener());
         tvtitle=(TextView)findViewById(R.id.title);

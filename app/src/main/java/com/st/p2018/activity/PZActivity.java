@@ -46,6 +46,7 @@ public class PZActivity extends Activity {
     private TextView tvfh;
     private TextView tvtitle;
     private TextView tvxtmc;
+    private TextView tvxtbh;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -68,35 +69,40 @@ public class PZActivity extends Activity {
     }
 
     private void getDataFromDevice() {
-        byte[] byDevice = HCProtocol.ST_GetDeviceInfo();
-        if (byDevice.length == 0) {
-            logger.info("打开配置界面时获取设备信息无返回数据");
-            Toast.makeText(this, "获取设备信息失败", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("获取设备信息失败");
-            return;
-        }
-        JXDevice(byDevice);
-        boolean bl = HCProtocol.ST_GetWorkModel();
-        if (bl) {
-            if(bl){
-                String zmd="";
-                if(Cache.zmd==0){
-                    zmd="灯自动";
-                }else if(Cache.zmd==1){
-                    zmd="灯常开";
-                }else if(Cache.zmd==2){
-                    zmd="灯常关";
-                }
-                logger.info("状态:照明灯:"+zmd);
-                logger.info("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
-                logger.info("状态:盘存次数:"+Cache.pccs);
-            }else{
-                logger.info("报警:获取工作模式失败");
+        try{
+            byte[] byDevice = HCProtocol.ST_GetDeviceInfo();
+            if (byDevice.length == 0) {
+                logger.info("打开配置界面时获取设备信息无返回数据");
+                Toast.makeText(this, "获取设备信息失败", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("获取设备信息失败");
+                return;
             }
-        }else{
-            Toast.makeText(this, "获取工作模式失败", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("获取工作模式失败");
+            JXDevice(byDevice);
+            boolean bl = HCProtocol.ST_GetWorkModel();
+            if (bl) {
+                if(bl){
+                    String zmd="";
+                    if(Cache.zmd==0){
+                        zmd="灯自动";
+                    }else if(Cache.zmd==1){
+                        zmd="灯常开";
+                    }else if(Cache.zmd==2){
+                        zmd="灯常关";
+                    }
+                    logger.info("状态:照明灯:"+zmd);
+                    logger.info("状态:盘存方式:"+(Cache.pc==0?"全部盘存":"触发盘存"));
+                    logger.info("状态:盘存次数:"+Cache.pccs);
+                }else{
+                    logger.info("报警:获取工作模式失败");
+                }
+            }else{
+                Toast.makeText(this, "获取工作模式失败", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("获取工作模式失败");
+            }
+        }catch (Exception e){
+            logger.error("从设备获取数据出错",e);
         }
+
     }
     private void JXDevice(byte[] data){
         if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
@@ -138,6 +144,7 @@ public class PZActivity extends Activity {
         }
 
     }
+
     private void initView(){
         tvfh=(TextView)findViewById(R.id.fh);
         tvfh.setOnClickListener(new onClickListener());
@@ -145,6 +152,7 @@ public class PZActivity extends Activity {
         tvtitle.setText("配置管理");
         sb=(SeekBar) findViewById(R.id.sb);
         tvxtmc=(TextView)findViewById(R.id.xtmc);
+        tvxtbh=(TextView)findViewById(R.id.xtbh);
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -195,8 +203,10 @@ public class PZActivity extends Activity {
         List<HashMap<String,String>> listPZ = pzDao.getPZ();
         if(listPZ==null || listPZ.isEmpty()){
             tvxtmc.setText("");
+            tvxtbh.setText("");
         }else{
             tvxtmc.setText(listPZ.get(0).get("appname")==null?"":listPZ.get(0).get("appname").toString());
+            tvxtbh.setText(listPZ.get(0).get("appcode")==null?"":listPZ.get(0).get("appcode").toString());
         }
     }
     /**
@@ -239,67 +249,73 @@ public class PZActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btnok:
                     btnOK.setPressed(true);
-                    int lightModel=0;
-                    if(spDK.getSelectedItem().toString().equals("灯自动")){
-                        lightModel=0;
-                    }else if(spDK.getSelectedItem().toString().equals("灯常开")){
-                        lightModel=1;
-                    }else if(spDK.getSelectedItem().toString().equals("灯常关")){
-                        lightModel=2;
-                    }
-                    int pc=0;
-                    if(spPD.getSelectedItem().toString().equals("全部盘存")){
-                        pc=0;
-                    }else if(spPD.getSelectedItem().toString().equals("触发盘存")){
-                        pc=1;
-                    }
-                    int pccs=1;
                     try{
-                        pccs=Integer.valueOf(edpdcs.getText().toString());
-                    }catch (Exception e){
-                    }
-                    boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
-                    if(bl1){
-                       logger.info("下发工作模式成功");
-                    }else{
-                        logger.info("下发工作模式失败");
-                    }
-                    byte[] bydata=new byte[14];
-                    bydata[0]=bysblx[0];
-                    bydata[1]=bycpxlh[0];
-                    bydata[2]=bycpxlh[1];
-                    bydata[3]=bycpxlh[2];
-                    bydata[4]=bycpxlh[3];
-                    bydata[5]=bycpxlh[4];
-                    bydata[6]=bycpxlh[5];
-                    bydata[7]=byyjbbh[0];
-                    bydata[8]=bygjbbh[0];
-                    String str="00"+(gc6.isChecked()?"1":"0")+(gc5.isChecked()?"1":"0")+(gc4.isChecked()?"1":"0")+(gc3.isChecked()?"1":"0")+(gc2.isChecked()?"1":"0")+(gc1.isChecked()?"1":"0");
-                    int da=Integer.parseInt(str,2);
-                    bydata[9]=(byte)da;
-                    boolean bl2=HCProtocol.ST_SetDeviceInfo(bydata);
-                    if(bl2){
-                        logger.info("下发设备信息成功");
-                    }else{
-                        logger.info("下发设备信息失败");
-                    }
-                    btnOK.setPressed(false);
-                    if(bl1 && bl2){
-                        Cache.zmd=lightModel;
-                        Cache.pc=pc;
-                        Cache.pccs=pccs;
-                        Toast.makeText(PZActivity.this, "下传配置成功", Toast.LENGTH_LONG).show();
-                        MyTextToSpeech.getInstance().speak("下传配置成功");
+                        int lightModel=0;
+                        if(spDK.getSelectedItem().toString().equals("灯自动")){
+                            lightModel=0;
+                        }else if(spDK.getSelectedItem().toString().equals("灯常开")){
+                            lightModel=1;
+                        }else if(spDK.getSelectedItem().toString().equals("灯常关")){
+                            lightModel=2;
+                        }
+                        int pc=0;
+                        if(spPD.getSelectedItem().toString().equals("全部盘存")){
+                            pc=0;
+                        }else if(spPD.getSelectedItem().toString().equals("触发盘存")){
+                            pc=1;
+                        }
+                        int pccs=1;
+                        try{
+                            pccs=Integer.valueOf(edpdcs.getText().toString());
+                        }catch (Exception e){
+                        }
+                        boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
+                        if(bl1){
+                            logger.info("下发工作模式成功");
+                        }else{
+                            logger.info("下发工作模式失败");
+                        }
+                        byte[] bydata=new byte[14];
+                        bydata[0]=bysblx[0];
+                        bydata[1]=bycpxlh[0];
+                        bydata[2]=bycpxlh[1];
+                        bydata[3]=bycpxlh[2];
+                        bydata[4]=bycpxlh[3];
+                        bydata[5]=bycpxlh[4];
+                        bydata[6]=bycpxlh[5];
+                        bydata[7]=byyjbbh[0];
+                        bydata[8]=bygjbbh[0];
+                        String str="00"+(gc6.isChecked()?"1":"0")+(gc5.isChecked()?"1":"0")+(gc4.isChecked()?"1":"0")+(gc3.isChecked()?"1":"0")+(gc2.isChecked()?"1":"0")+(gc1.isChecked()?"1":"0");
+                        int da=Integer.parseInt(str,2);
+                        bydata[9]=(byte)da;
+                        boolean bl2=HCProtocol.ST_SetDeviceInfo(bydata);
+                        if(bl2){
+                            logger.info("下发设备信息成功");
+                        }else{
+                            logger.info("下发设备信息失败");
+                        }
+                        btnOK.setPressed(false);
+                        if(bl1 && bl2){
+                            Cache.zmd=lightModel;
+                            Cache.pc=pc;
+                            Cache.pccs=pccs;
+                            Toast.makeText(PZActivity.this, "下传配置成功", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("下传配置成功");
 
-                        logger.info("下传配置成功："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
-                    }else{
-                        Toast.makeText(PZActivity.this, "下传配置失败", Toast.LENGTH_LONG).show();
-                        MyTextToSpeech.getInstance().speak("下传配置失败");
-                        logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
+                            logger.info("下传配置成功："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
+                        }else{
+                            Toast.makeText(PZActivity.this, "下传配置失败", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("下传配置失败");
+                            logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
+                        }
+                        PZDao pzDao= new PZDao();
+                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString());
+                        sendAPPName(tvxtmc.getText().toString());
+                        Cache.appname=tvxtmc.getText().toString();
+                        Cache.appcode=tvxtbh.getText().toString();
+                    }catch (Exception e){
+                        logger.error("保存出错",e);
                     }
-                    PZDao pzDao= new PZDao();
-                    pzDao.updateAppName(tvxtmc.getText().toString());
-                    sendAPPName(tvxtmc.getText().toString());
 
                     break;
                 case R.id.fh:
@@ -312,10 +328,10 @@ public class PZActivity extends Activity {
 
     }
 
-    private  void sendAPPName(String value){
+    private  void sendAPPName(String appname){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-        data.putString("appname",value);
+        data.putString("appname",appname);
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }

@@ -88,87 +88,102 @@ public class PersonActivity extends Activity {
      * 初始化view，设置event listener
      */
     public void initView() {
-        tvfh=(TextView)findViewById(R.id.fh);
-        tvfh.setOnClickListener(new onClickListener());
-        tvtitle=(TextView)findViewById(R.id.title);
-        tvtitle.setText("人员管理");
-        code=(EditText)findViewById(R.id.code);
-        name=(EditText)findViewById(R.id.name);
-        btntzz=(Button)findViewById(R.id.btntzz);
-        btntzz.setOnClickListener(new onClickListener());
-        btnkh=(Button)findViewById(R.id.btnkh);
-        btnkh.setOnClickListener(new onClickListener());
-        tzz=(EditText)findViewById(R.id.tzz);
-        kh=(EditText)findViewById(R.id.kh);
-        listHeaders = (ListView) findViewById(R.id.listHeaders);
-        listResults = (ListView) findViewById(R.id.listResults);
-        listResults.setOnItemClickListener(new OnLvItemClickListener());
+        try{
+            tvfh=(TextView)findViewById(R.id.fh);
+            tvfh.setOnClickListener(new onClickListener());
+            tvtitle=(TextView)findViewById(R.id.title);
+            tvtitle.setText("人员管理");
+            code=(EditText)findViewById(R.id.code);
+            name=(EditText)findViewById(R.id.name);
+            btntzz=(Button)findViewById(R.id.btntzz);
+            btntzz.setOnClickListener(new onClickListener());
+            btnkh=(Button)findViewById(R.id.btnkh);
+            btnkh.setOnClickListener(new onClickListener());
+            tzz=(EditText)findViewById(R.id.tzz);
+            kh=(EditText)findViewById(R.id.kh);
+            listHeaders = (ListView) findViewById(R.id.listHeaders);
+            listResults = (ListView) findViewById(R.id.listResults);
+            listResults.setOnItemClickListener(new OnLvItemClickListener());
 
-        add=(Button)findViewById(R.id.add);
-        modify=(Button)findViewById(R.id.modify);
-        delete=(Button)findViewById(R.id.delete);
-        add.setOnClickListener(new onClickListener());
-        modify.setOnClickListener(new onClickListener());
-        delete.setOnClickListener(new onClickListener());
+            add=(Button)findViewById(R.id.add);
+            modify=(Button)findViewById(R.id.modify);
+            delete=(Button)findViewById(R.id.delete);
+            add.setOnClickListener(new onClickListener());
+            modify.setOnClickListener(new onClickListener());
+            delete.setOnClickListener(new onClickListener());
 
-        Cache.myHandleKH = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
-                //提示信息
-                if (bundle.getString("kh") != null) {
-                    kh.setText(bundle.getString("kh"));
-                    Cache.getPersonCard=false;
-                    MyTextToSpeech.getInstance().speak("刷卡成功");
-                    Toast.makeText(PersonActivity.this, "刷卡成功", Toast.LENGTH_SHORT).show();
-                }
-                if (bundle.getString("zw") != null) {
-                    if(bundle.getString("zw").toString().equals("ok")){
-                        tzz.setText("AE1849231A5C3487A234DF232");
-                        btntzz.setText("录入");
-                        MyTextToSpeech.getInstance().speak("指纹录入成功");
-                        Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
-                    }else if(bundle.getString("zw").toString().equals("fail")){
-                        tzz.setText("");
-                        btntzz.setText("1秒");
-                        btntzz.setText("录入");
-                        MyTextToSpeech.getInstance().speak("指纹录入失败");
-                        Toast.makeText(PersonActivity.this, "指纹录入失败", Toast.LENGTH_SHORT).show();
-                    }else{
-                        btntzz.setText(bundle.getString("zw").toString()+"秒");
+            Cache.myHandleKH = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    //提示信息
+                    if (bundle.getString("kh") != null) {
+                        kh.setText(bundle.getString("kh"));
+                        Cache.getPersonCard=false;
+                        MyTextToSpeech.getInstance().speak("刷卡成功");
+                        Toast.makeText(PersonActivity.this, "刷卡成功", Toast.LENGTH_SHORT).show();
+                    }
+                    if (bundle.getString("zw") != null) {
+                        if(bundle.getString("zw").toString().equals("ok")){
+                            tzz.setText("AE1849231A5C3487A234DF232");
+                            btntzz.setText("录入");
+                            MyTextToSpeech.getInstance().speak("指纹录入成功");
+                            Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
+                        }else if(bundle.getString("zw").toString().equals("fail")){
+                            tzz.setText("");
+                            btntzz.setText("1秒");
+                            btntzz.setText("录入");
+                            MyTextToSpeech.getInstance().speak("指纹录入失败");
+                            Toast.makeText(PersonActivity.this, "指纹录入失败", Toast.LENGTH_SHORT).show();
+                        }else{
+                            btntzz.setText(bundle.getString("zw").toString()+"秒");
+                        }
+
                     }
 
                 }
+            };
+        }catch (Exception e){
+            logger.error("初始化view出错",e);
+        }
 
-            }
-        };
     }
 
     /**
      * 初始化表头
      */
     private void initGridHeader() {
-        List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
-        HashMap<String, String> map = new HashMap<String, String>();
-        map.put("id", "id");
-        map.put("name", "姓名");
-        map.put("code", "工号");
-        map.put("card","卡号");
-        map.put("tzz", "指纹特征值");
+        try{
+            List<HashMap<String, String>> data = new ArrayList<HashMap<String, String>>();
+            HashMap<String, String> map = new HashMap<String, String>();
+            map.put("id", "id");
+            map.put("name", "姓名");
+            map.put("code", "工号");
+            map.put("card","卡号");
+            map.put("tzz", "指纹特征值");
 
-        data.add(map);
-        PersonAdapter adapter = new PersonAdapter(PersonActivity.this, data);
-        listHeaders.setAdapter(adapter);
+            data.add(map);
+            PersonAdapter adapter = new PersonAdapter(PersonActivity.this, data);
+            listHeaders.setAdapter(adapter);
+        }catch (Exception e){
+            logger.error("初始化表头出错",e);
+        }
+
     }
 
     /**
      * 初始查询结果表格
      */
     private void initQueryGrid() {
-        getdata();
-        PersonAdapter adapter = new PersonAdapter(PersonActivity.this, mQueryData);
-        listResults.setAdapter(adapter);
+        try{
+            getdata();
+            PersonAdapter adapter = new PersonAdapter(PersonActivity.this, mQueryData);
+            listResults.setAdapter(adapter);
+        }catch (Exception e){
+            logger.error("初始化表格结果出错",e);
+        }
+
 
     }
 
@@ -179,25 +194,30 @@ public class PersonActivity extends Activity {
      */
     private void getdata() {
 
-        List<HashMap<String,String>> list = pd.getPerson();
-        if(list==null || list.isEmpty()){
-            //删除所有指纹
-            boolean bl=HCProtocol.ST_DeleteZW(1,0);
-            if(bl){
-                logger.info("表格中查询人员为空，清空设备所有指纹成功");
-            }else{
-                logger.info("表格中查询人员为空，清空设备所有指纹失败");
+        try{
+            List<HashMap<String,String>> list = pd.getPerson();
+            if(list==null || list.isEmpty()){
+                //删除所有指纹
+                boolean bl=HCProtocol.ST_DeleteZW(1,0);
+                if(bl){
+                    logger.info("表格中查询人员为空，清空设备所有指纹成功");
+                }else{
+                    logger.info("表格中查询人员为空，清空设备所有指纹失败");
+                }
             }
+            mQueryData.clear();
+            for(HashMap map : list){
+                map.put("id",map.get("id").toString());
+                map.put("code",map.get("code").toString());
+                map.put("name",map.get("name").toString());
+                map.put("card",map.get("card")==null?"":map.get("card").toString());
+                map.put("tzz",map.get("tzz")==null?"":map.get("tzz").toString());
+                mQueryData.add(map);
+            }
+        }catch (Exception e){
+            logger.error("从数据库查询数据出错",e);
         }
-        mQueryData.clear();
-        for(HashMap map : list){
-            map.put("id",map.get("id").toString());
-            map.put("code",map.get("code").toString());
-            map.put("name",map.get("name").toString());
-            map.put("card",map.get("card")==null?"":map.get("card").toString());
-            map.put("tzz",map.get("tzz")==null?"":map.get("tzz").toString());
-            mQueryData.add(map);
-        }
+
 
     }
 
@@ -276,208 +296,263 @@ public class PersonActivity extends Activity {
 
     private void add(){
 
-        String codep = code.getText().toString();
-        String namep=name.getText().toString();
-        String tzzp=tzz.getText().toString();
-        String cardp=kh.getText().toString();
-        if(check(codep,namep)){
-            Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
-            return;
-        }
-        List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(codep);
-        if(!listCF.isEmpty()){
-            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("工号重复");
-            return;
-        }
-        if(!cardp.equals("")){
-            List<HashMap<String,String>> listCA = pd.getSameCodeForAdd(cardp);
-            if(!listCA.isEmpty()){
-                Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
-                MyTextToSpeech.getInstance().speak("卡号重复");
+        try{
+            String codep = code.getText().toString();
+            String namep=name.getText().toString();
+            String tzzp=tzz.getText().toString();
+            String cardp=kh.getText().toString();
+            if(check(codep,namep)){
+                Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
                 return;
             }
-        }
-        PersonInfo pi = new PersonInfo();
-        pi.setId(UUID.randomUUID().toString());
-        pi.setCode(codep);
-        pi.setName(namep);
-        pi.setCard(cardp);
-        pi.setTzz(tzzp);
-        if(pd.addPerson(pi)){
-            initQueryGrid();
-            Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("添加成功");
+            List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(codep);
+            if(!listCF.isEmpty()){
+                Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("工号重复");
+                return;
+            }
+            if(!cardp.equals("")){
+                List<HashMap<String,String>> listCA = pd.getSameCardForAdd(cardp);
+                if(!listCA.isEmpty()){
+                    Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
+                    MyTextToSpeech.getInstance().speak("卡号重复");
+                    return;
+                }
+            }
+            PersonInfo pi = new PersonInfo();
+            pi.setId(UUID.randomUUID().toString());
+            pi.setCode(codep);
+            pi.setName(namep);
+            pi.setCard(cardp);
+            pi.setTzz(tzzp);
+            if(pd.addPerson(pi)){
+                initQueryGrid();
+                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("添加成功");
+            }
+        }catch (Exception e){
+            logger.error("添加人员数据出错",e);
         }
 
+
     }
+
     private void modify(){
-        if(selecItem<0){
-            Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请选择一条记录");
-            return;
-        }
-        String id=mQueryData.get(selecItem).get("id").toString();
-        String codep = code.getText().toString();
-        String namep=name.getText().toString();
-        String cardp=kh.getText().toString();
-        String tzzp=tzz.getText().toString();
+        try{
+            if(selecItem<0){
+                Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("请选择一条记录");
+                return;
+            }
+            String id=mQueryData.get(selecItem).get("id").toString();
+            String codep = code.getText().toString();
+            String namep=name.getText().toString();
+            String cardp=kh.getText().toString();
+            String tzzp=tzz.getText().toString();
 //        String iszwp="否";
 //        if(!tzz.equals("")){
 //            iszwp="是";
 //        }
-        if(check(codep,namep)){
-            Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
-            return;
-        }
-        List<HashMap<String,String>> listCF = pd.getSameCodeForModify(id,codep);
-        if(!listCF.isEmpty()){
-            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("工号重复");
-            return;
-        }
-        if(!cardp.equals("")){
-            List<HashMap<String,String>> listCA = pd.getSameCardForModify(id,cardp);
-            if(!listCA.isEmpty()){
-                Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
-                MyTextToSpeech.getInstance().speak("卡号重复");
+            if(check(codep,namep)){
+                Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
                 return;
             }
-        }
-        PersonInfo pi = new PersonInfo();
-        pi.setId(id);
-        pi.setCode(codep);
-        pi.setName(namep);
-        pi.setCard(cardp);
-        pi.setTzz(tzzp);
-        if(pd.modifyPerson(pi)){
-            initQueryGrid();
-            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("修改成功");
+            List<HashMap<String,String>> listCF = pd.getSameCodeForModify(id,codep);
+            if(!listCF.isEmpty()){
+                Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("工号重复");
+                return;
+            }
+            if(!cardp.equals("")){
+                List<HashMap<String,String>> listCA = pd.getSameCardForModify(id,cardp);
+                if(!listCA.isEmpty()){
+                    Toast.makeText(this, "卡号重复", Toast.LENGTH_SHORT).show();
+                    MyTextToSpeech.getInstance().speak("卡号重复");
+                    return;
+                }
+            }
+            PersonInfo pi = new PersonInfo();
+            pi.setId(id);
+            pi.setCode(codep);
+            pi.setName(namep);
+            pi.setCard(cardp);
+            pi.setTzz(tzzp);
+            if(pd.modifyPerson(pi)){
+                initQueryGrid();
+                Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("修改成功");
+            }
+        }catch (Exception e){
+            logger.error("修改人员数据出错",e);
         }
 
+
     }
+
     private void delete(){
-        if(selecItem<0){
-            Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("请选择一条记录");
-            return;
-        }
-        String id=mQueryData.get(selecItem).get("id").toString();
-        HCProtocol.ST_DeleteZW(0,Integer.valueOf(mQueryData.get(selecItem).get("code").toString()));
-        if(pd.deletePerson(id)){
-            initQueryGrid();
-            Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("删除成功");
-            code.setText("");
-            name.setText("");
-            tzz.setText("");
-            kh.setText("");
+        try{
+            if(selecItem<0){
+                Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("请选择一条记录");
+                return;
+            }
+            String id=mQueryData.get(selecItem).get("id").toString();
+            HCProtocol.ST_DeleteZW(0,Integer.valueOf(mQueryData.get(selecItem).get("code").toString()));
+            if(pd.deletePerson(id)){
+                initQueryGrid();
+                Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("删除成功");
+                code.setText("");
+                name.setText("");
+                tzz.setText("");
+                kh.setText("");
+                selecItem=-1;
 //            if(mQueryData.isEmpty()){
 //                HCProtocol.ST_DeleteZW(1,0);
 //            }
+            }
+        }catch (Exception e){
+            logger.error("删除人员数据出错",e);
         }
+
     }
 
     private void showMessage(){
-        HashMap<String,String> map = mQueryData.get(selecItem);
-        code.setText(map.get("code").toString());
-        name.setText(map.get("name").toString());
-        tzz.setText(map.get("tzz")==null?"":map.get("tzz").toString());
-        kh.setText(map.get("card")==null?"":map.get("card").toString());
+        try{
+            HashMap<String,String> map = mQueryData.get(selecItem);
+            code.setText(map.get("code").toString());
+            name.setText(map.get("name").toString());
+            tzz.setText(map.get("tzz")==null?"":map.get("tzz").toString());
+            kh.setText(map.get("card")==null?"":map.get("card").toString());
+        }catch (Exception e){
+            logger.error("人员管理显示信息出错",e);
+        }
+
     }
 
     private void getZW(){
-        if(Cache.zwlrNow){
-            return;
-        }
-        if(code.getText().toString().trim().equals("")){
-            MyTextToSpeech.getInstance().speak("请先输入工号");
-            Toast.makeText(this, "请先输入工号", Toast.LENGTH_SHORT).show();
-            return;
-        }
         try{
-            int codeNum=Integer.valueOf(code.getText().toString());
-        }catch (Exception e){
-            MyTextToSpeech.getInstance().speak("工号必须为数字");
-            Toast.makeText(this, "工号必须为数字", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(Integer.valueOf(code.getText().toString())>700){
-            MyTextToSpeech.getInstance().speak("工号不能超过700");
-            Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        //根据工号判断用户是添加还是修改指纹
-        if(selecItem==-1){
-            //添加指纹，判断工号是否重复，不重复则删除原有指纹
-            if(!addZW()){
+            if(Cache.zwlrNow){
                 return;
             }
-        }else{
-            String id=mQueryData.get(selecItem).get("id").toString();
-            String codeS=mQueryData.get(selecItem).get("code").toString();
-            if(codeS.equals(code.getText().toString().trim())){
-                //修改指纹，先将原有指纹删除
-                boolean blD=HCProtocol.ST_DeleteZW(0,Integer.valueOf(code.getText().toString()));
-                if(!blD){
-                    MyTextToSpeech.getInstance().speak("删除原有指纹失败");
-                    Toast.makeText(this, "删除原有指纹失败", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }else{
-                //添加指纹，判断报工号是否重复，不重复则删除原有指纹
+            if(code.getText().toString().trim().equals("")){
+                MyTextToSpeech.getInstance().speak("请先输入工号");
+                Toast.makeText(this, "请先输入工号", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            try{
+                int codeNum=Integer.valueOf(code.getText().toString());
+            }catch (Exception e){
+                MyTextToSpeech.getInstance().speak("工号必须为数字");
+                Toast.makeText(this, "工号必须为数字", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(Integer.valueOf(code.getText().toString())>700){
+                MyTextToSpeech.getInstance().speak("工号不能超过700");
+                Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            //根据工号判断用户是添加还是修改指纹
+            if(selecItem==-1){
+                //添加指纹，判断工号是否重复，不重复则删除原有指纹
                 if(!addZW()){
                     return;
                 }
+            }else{
+                String id=mQueryData.get(selecItem).get("id").toString();
+                String codeS=mQueryData.get(selecItem).get("code").toString();
+                String zwS=mQueryData.get(selecItem).get("tzz").toString();
+                if(codeS.equals(code.getText().toString().trim())){
+                    if(!zwS.equals("")){
+                        //修改指纹，先将原有指纹删除
+                        boolean blD=HCProtocol.ST_DeleteZW(0,Integer.valueOf(code.getText().toString()));
+                        if(!blD){
+                            MyTextToSpeech.getInstance().speak("删除原有指纹失败");
+                            Toast.makeText(this, "删除原有指纹失败", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+
+                }else{
+                    //添加指纹，判断报工号是否重复，不重复则删除原有指纹
+                    if(!addZW()){
+                        return;
+                    }
+                }
             }
+
+            //先将指纹模块中该人员编号指纹删除
+            MyTextToSpeech.getInstance().speak("请录入指纹");
+            Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
+            boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
+            if(bl){
+                new ZWLR().start();
+            }else{
+                MyTextToSpeech.getInstance().speak("指纹录入失败");
+                Toast.makeText(this, "指纹录入失败", Toast.LENGTH_SHORT).show();
+            }
+        }catch (Exception e){
+            logger.error("获取指纹出错",e);
         }
 
-        //先将指纹模块中该人员编号指纹删除
-
-
-
-        MyTextToSpeech.getInstance().speak("请录入指纹");
-        Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
-        boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
-        if(bl){
-            new ZWLR().start();
-        }else{
-            MyTextToSpeech.getInstance().speak("指纹录入失败");
-            Toast.makeText(this, "指纹录入失败", Toast.LENGTH_SHORT).show();
-        }
 
     }
 
     private boolean addZW(){
-        List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(code.getText().toString().trim());
-        if(!listCF.isEmpty()){
-            Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("工号重复");
-            return false;
+        boolean bl=false;
+        try{
+            List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(code.getText().toString().trim());
+            if(!listCF.isEmpty()){
+                Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("工号重复");
+                bl=false;
+                return false;
+            }
+            bl=true;
+            return true;
+        }catch (Exception e){
+            logger.error("",e);
         }
-        return true;
+       return  bl;
     }
 
     private void getKH(){
-        Cache.getPersonCard=true;
-        MyTextToSpeech.getInstance().speak("请刷卡");
-        Toast.makeText(this, "请刷卡", Toast.LENGTH_SHORT).show();
+        try{
+            Cache.getPersonCard=true;
+            MyTextToSpeech.getInstance().speak("请刷卡");
+            Toast.makeText(this, "请刷卡", Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            logger.error("获取卡号出错",e);
+        }
+
 
     }
     private boolean check(String code,String name){
-        if(code.trim().equals("") || name.trim().equals("")){
-            return  true;
+        boolean bl=false;
+        try{
+            if(code.trim().equals("") || name.trim().equals("")){
+                bl=true;
+                return  true;
+            }
+            bl= false;
+            return bl;
+        }catch (Exception e){
+            logger.error("编号姓名检测出错",e);
         }
-        return false;
+       return bl;
     }
 
     class ZWLR extends Thread{
         public void run(){
-            Cache.zwlrNow=true;
-            HCProtocol.ST_GetZWZT();
+            try{
+                Cache.zwlrNow=true;
+                HCProtocol.ST_GetZWZT();
+            }catch (Exception e){
+                logger.error("指纹录入出错",e);
+            }
+
         }
     }
 

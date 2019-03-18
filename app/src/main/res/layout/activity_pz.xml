@@ -236,6 +236,36 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="50dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="设备编号：" />
+
+            <EditText
+                android:id="@+id/xtbh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="150dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
             <Button
                 android:id="@+id/btnok"
                 android:layout_width="match_parent"
