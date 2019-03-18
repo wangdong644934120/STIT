@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
+import android.text.InputFilter;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -22,6 +23,7 @@ import com.st.p2018.device.DataTypeChange;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
+import com.st.p2018.util.InputFilterMinMa;
 import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 
@@ -47,6 +49,7 @@ public class PZActivity extends Activity {
     private TextView tvtitle;
     private TextView tvxtmc;
     private TextView tvxtbh;
+    private EditText tvpdjg;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -153,6 +156,8 @@ public class PZActivity extends Activity {
         sb=(SeekBar) findViewById(R.id.sb);
         tvxtmc=(TextView)findViewById(R.id.xtmc);
         tvxtbh=(TextView)findViewById(R.id.xtbh);
+        tvpdjg=(EditText)findViewById(R.id.pdjg);
+        tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -192,6 +197,7 @@ public class PZActivity extends Activity {
         spDK.setSelection(Cache.zmd);
         spPD.setSelection(Cache.pc);
         edpdcs.setText(String.valueOf(Cache.pccs));
+        tvpdjg.setText(String.valueOf(Cache.pcjg));
         gc1.setChecked(Cache.gcqy1);
         gc2.setChecked(Cache.gcqy2);
         gc3.setChecked(Cache.gcqy3);
@@ -269,7 +275,13 @@ public class PZActivity extends Activity {
                             pccs=Integer.valueOf(edpdcs.getText().toString());
                         }catch (Exception e){
                         }
-                        boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs);
+                        int pdjg=5;
+                        try{
+                            pdjg=Integer.valueOf(tvpdjg.getText().toString());
+                        }catch (Exception e){
+
+                        }
+                        boolean bl1=HCProtocol.ST_SetWorkModel(lightModel,pc,pccs,pdjg);
                         if(bl1){
                             logger.info("下发工作模式成功");
                         }else{
@@ -335,4 +347,7 @@ public class PZActivity extends Activity {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
+
+
+
 }

@@ -242,7 +242,7 @@ public class HCProtocol {
      * @param cardModel 标签模式
      * @return
      */
-    public static boolean ST_SetWorkModel(int lightModel,int cardModel,int cardTime){
+    public static boolean ST_SetWorkModel(int lightModel,int cardModel,int cardTime,int cardJGSJ){
         try{
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
@@ -253,6 +253,7 @@ public class HCProtocol {
             bydata[0]=(byte)lightModel;
             bydata[1]=(byte)cardModel;
             bydata[2]=(byte)cardTime;
+            bydata[3]=(byte)cardJGSJ;
 
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
@@ -264,7 +265,8 @@ public class HCProtocol {
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            byte[] data=sp.sendAndGet(send);
+            //byte[] data=sp.sendAndGet(send);
+            byte[] data=sp.sendAndGetFor1Seconds(send);
             if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
                     && data[3] == (byte) 0x06 && data[4] == (byte) 0x00 ) {
                 return true;
@@ -306,6 +308,7 @@ public class HCProtocol {
                 Cache.zmd=data[4];
                 Cache.pc=data[5];
                 Cache.pccs=data[6];
+                Cache.pcjg=data[7];
                 return true;
             }else{
                 return false;
@@ -617,6 +620,7 @@ public class HCProtocol {
             myLock.unlock();
         }
     }
+
     public static boolean ST_AddSaveZW(int code){
         try{
             myLock.lock();

@@ -118,6 +118,38 @@ public class SerialPort {
 			mylock.unlock();
 		}
 	}
+	//发送数据等1秒重回读结果
+	public byte[] sendAndGetFor1Seconds(byte[] cmd){
+		byte[] data;
+		try {
+			mylock.lock();
+			mFileOutputStream.write(cmd);
+			Thread.sleep(2000);
+			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
+			long TickCount = System.currentTimeMillis();
+			int recvlen = 0;
+
+			while (mFileInputStream.available()>0){
+				byte[] buf=new byte[1024];
+				int size = mFileInputStream.read(buf);
+				if (size > 0) {
+					mRecvData.put(buf, recvlen, size);
+					recvlen+=size;
+				}
+				Thread.sleep(10);//必须要休眠一下，，，，，，，确保数据都返回了！！！！！！
+			}
+			data=new byte[recvlen];
+			if(recvlen>0){
+				System.arraycopy(mRecvData.array(), 0, data, 0, recvlen);
+			}
+			return data;
+		} catch (Exception ex) {
+			logger.error("串口读写出错",ex);
+			return null;
+		}finally{
+			mylock.unlock();
+		}
+	}
 
 	//发送数据等2秒重回读结果
 	public byte[] sendAndGetFor2Seconds(byte[] cmd){
