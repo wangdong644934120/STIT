@@ -47,6 +47,7 @@ import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
 import com.st.p2018.device.HCProtocol;
+import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.LogUtil;
@@ -898,6 +899,13 @@ public class MainActivity extends Activity {
             }else{
                 tvappTitle.setText(listPZ.get(0).get("appname")==null?"高值耗材柜":listPZ.get(0).get("appname").toString());
                 Cache.appcode=listPZ.get(0).get("appcode")==null?"0":listPZ.get(0).get("appcode").toString();
+                Cache.ServerIP=listPZ.get(0).get("serverip")==null?"0":listPZ.get(0).get("serverip").toString();
+                Cache.ServerPort=Integer.valueOf(listPZ.get(0).get("serverport")==null?"0":listPZ.get(0).get("serverport").toString());
+            }
+            if(!Cache.ServerIP.equals("") && Cache.ServerPort!=0){
+                logger.info("配置了第三方平台");
+                Cache.external=true;
+                new SocketClient().start();
             }
         }catch (Exception e){
             logger.error("初始化app名称及编号出错",e);

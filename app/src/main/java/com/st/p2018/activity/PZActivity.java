@@ -29,6 +29,8 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class PZActivity extends Activity {
@@ -42,6 +44,7 @@ public class PZActivity extends Activity {
     private SeekBar sb;
     private Spinner spDK;
     private Button btnOK;
+    private Button btnSave;
     private int dl;
     private Spinner spPD;
     private EditText edpdcs;
@@ -50,6 +53,8 @@ public class PZActivity extends Activity {
     private TextView tvxtmc;
     private TextView tvxtbh;
     private EditText tvpdjg;
+    private EditText edfwqdz;
+    private EditText edfwqdkh;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -157,6 +162,8 @@ public class PZActivity extends Activity {
         tvxtmc=(TextView)findViewById(R.id.xtmc);
         tvxtbh=(TextView)findViewById(R.id.xtbh);
         tvpdjg=(EditText)findViewById(R.id.pdjg);
+        edfwqdz=(EditText)findViewById(R.id.fwqdz);
+        edfwqdkh=(EditText)findViewById(R.id.fwqdkh);
         //tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -177,6 +184,8 @@ public class PZActivity extends Activity {
         spDK=(Spinner)findViewById(R.id.spdk);
         btnOK=(Button)findViewById(R.id.btnok);
         btnOK.setOnClickListener(new onClickListener());
+        btnSave=(Button)findViewById(R.id.btnsave);
+        btnSave.setOnClickListener(new onClickListener());
         spPD=(Spinner)findViewById(R.id.sppd);
         edpdcs=(EditText)findViewById(R.id.pdcs);
 
@@ -210,9 +219,13 @@ public class PZActivity extends Activity {
         if(listPZ==null || listPZ.isEmpty()){
             tvxtmc.setText("");
             tvxtbh.setText("");
+            edfwqdz.setText("");
+            edfwqdkh.setText("");
         }else{
             tvxtmc.setText(listPZ.get(0).get("appname")==null?"":listPZ.get(0).get("appname").toString());
             tvxtbh.setText(listPZ.get(0).get("appcode")==null?"":listPZ.get(0).get("appcode").toString());
+            edfwqdz.setText(listPZ.get(0).get("serverip")==null?"":listPZ.get(0).get("serverip").toString());
+            edfwqdkh.setText(listPZ.get(0).get("serverport")==null?"":listPZ.get(0).get("serverport").toString());
         }
     }
     /**
@@ -325,15 +338,36 @@ public class PZActivity extends Activity {
                             MyTextToSpeech.getInstance().speak("下传配置失败");
                             logger.info("下传配置失败："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                         }
-                        PZDao pzDao= new PZDao();
-                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString());
-                        sendAPPName(tvxtmc.getText().toString());
-                        Cache.appname=tvxtmc.getText().toString();
-                        Cache.appcode=tvxtbh.getText().toString();
+
                     }catch (Exception e){
                         logger.error("保存出错",e);
                     }
 
+                    break;
+                case R.id.btnsave:
+                    try{
+                        if(!edfwqdz.getText().toString().equals("") && !isIP(edfwqdz.getText().toString())){
+                            Toast.makeText(PZActivity.this, "IP地址不合法", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("IP地址不合法");
+                            return;
+                        }
+                        if(!edfwqdkh.getText().toString().equals("") && !isPort(edfwqdkh.getText().toString())){
+                            Toast.makeText(PZActivity.this, "端口号不合法", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("端口号不合法");
+                            return;
+                        }
+                        PZDao pzDao= new PZDao();
+                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString(),edfwqdz.getText().toString(),edfwqdkh.getText().toString());
+                        sendAPPName(tvxtmc.getText().toString());
+                        Cache.appname=tvxtmc.getText().toString();
+                        Cache.appcode=tvxtbh.getText().toString();
+                        Cache.ServerIP=edfwqdz.getText().toString();
+                        Cache.ServerPort=Integer.valueOf(edfwqdkh.getText().toString().equals("")?"0":edfwqdkh.getText().toString());
+                        Toast.makeText(PZActivity.this, "保存配置成功", Toast.LENGTH_LONG).show();
+                        MyTextToSpeech.getInstance().speak("保存配置成功");
+                    }catch (Exception e){
+                        logger.error("保存APP名称等信息出错",e);
+                    }
                     break;
                 case R.id.fh:
                     PZActivity.this.finish();
@@ -353,6 +387,50 @@ public class PZActivity extends Activity {
         Cache.myHandle.sendMessage(message);
     }
 
+    public boolean isIP(String addr) {
+        if (addr.length() < 7 || addr.length() > 15 || "".equals(addr)) {
+            return false;
+        }
+        /**
+    * 判断IP格式和范围
+    */
+        String rexp = "([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}";
+        Pattern pat = Pattern.compile(rexp);
+        Matcher mat = pat.matcher(addr);
+        boolean ipAddress = mat.find();
+
+        //============对之前的ip判断的bug在进行判断
+        if (ipAddress == true) {
+            String ips[] = addr.split("\\.");
+
+            if (ips.length == 4) {
+                try {
+                    for (String ip : ips) {
+                        if (Integer.parseInt(ip) < 0 || Integer.parseInt(ip) > 255) {
+                            return false;
+                        }
+                    }
+                } catch (Exception e) {
+                    return false;
+                }
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return ipAddress;
+    }
+
+    public static boolean isPort(String portStr) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        Matcher isNum = pattern.matcher(portStr);
+        if (isNum.matches() && portStr.length() < 6 && Integer.valueOf(portStr) >= 1
+                && Integer.valueOf(portStr) <= 65535) {
+            return true;
+        }
+        return false;
+    }
 
 
 }

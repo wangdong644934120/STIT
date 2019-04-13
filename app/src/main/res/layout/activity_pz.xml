@@ -22,7 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
                 android:textSize="20dp"
                 android:gravity="right"
@@ -36,7 +36,7 @@
                 android:entries="@array/dk"
                 android:spinnerMode="dropdown"
                 android:gravity="left"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="150dp"
                 android:textSize="20dp"
                 android:popupBackground="@color/gray"
@@ -49,38 +49,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="50dp"
-                android:textSize="20dp"
-                android:gravity="right"
-                android:textColor="@color/black"
-                android:text="屏幕亮度：" />
-            <SeekBar
-                android:id="@+id/sb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:layout_marginRight="150dp"
-                android:max="255"
-                android:layout_weight="1" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
                 android:gravity="right"
                 android:textColor="@color/black"
@@ -93,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:entries="@array/pd"
                 android:spinnerMode="dropdown"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="150dp"
                 android:gravity="left"
                 android:textSize="20dp"
@@ -113,23 +87,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
                 android:gravity="right"
                 android:textSize="20dp"
                 android:textColor="@color/black"
                 android:text="盘存次数：" />
 
-           <EditText
-               android:id="@+id/pdcs"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_weight="1"
-               android:layout_marginTop="50dp"
-               android:layout_marginRight="150dp"
-               android:gravity="left"
-               android:textSize="20dp"
-               android:textColor="@color/black"/>
+            <EditText
+                android:id="@+id/pdcs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="150dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 
@@ -143,7 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
                 android:gravity="right"
                 android:textSize="20dp"
@@ -155,142 +129,107 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginRight="150dp"
                 android:gravity="left"
                 android:textSize="20dp"
                 android:digits="0123456789"
                 android:maxLength="3"
                 android:textColor="@color/black"/>
-
         </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="50dp"
+                    android:gravity="right"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="柜层启用：" />
+
+                <CheckBox
+                    android:id="@+id/cb1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="1" />
+                <CheckBox
+                    android:id="@+id/cb2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="2" />
+                <CheckBox
+                    android:id="@+id/cb3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="3" />
+                <CheckBox
+                    android:id="@+id/cb4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="4" />
+                <CheckBox
+                    android:id="@+id/cb5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="5" />
+                <CheckBox
+                    android:id="@+id/cb6"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="6" />
+
+            </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="horizontal">
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginLeft="50dp"
+                android:textSize="20dp"
                 android:gravity="right"
-                android:textSize="20dp"
                 android:textColor="@color/black"
-                android:text="柜层启用：" />
-
-            <CheckBox
-                android:id="@+id/cb1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="1" />
-            <CheckBox
-                android:id="@+id/cb2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="2" />
-            <CheckBox
-                android:id="@+id/cb3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="3" />
-            <CheckBox
-                android:id="@+id/cb4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="4" />
-            <CheckBox
-                android:id="@+id/cb5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="5" />
-            <CheckBox
-                android:id="@+id/cb6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="6" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
+                android:text="屏幕亮度：" />
+            <SeekBar
+                android:id="@+id/sb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="50dp"
-                android:gravity="right"
+                android:layout_marginTop="20dp"
                 android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="系统名称：" />
-
-            <EditText
-                android:id="@+id/xtmc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="50dp"
                 android:layout_marginRight="150dp"
-                android:gravity="left"
-                android:textSize="20dp"
-                android:textColor="@color/black"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="50dp"
-                android:gravity="right"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:text="设备编号：" />
-
-            <EditText
-                android:id="@+id/xtbh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="50dp"
-                android:layout_marginRight="150dp"
-                android:gravity="left"
-                android:textSize="20dp"
-                android:textColor="@color/black"/>
-
+                android:max="255"
+                android:layout_weight="1" />
         </LinearLayout>
 
         <LinearLayout
@@ -305,10 +244,155 @@
                 android:layout_marginLeft="50dp"
                 android:layout_marginRight="50dp"
                 android:layout_marginTop="20dp"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="20dp"
                 android:textSize="20dp"
                 android:background="@drawable/button_selector"
                 android:text="保存并下传配置"
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:layout_marginTop="50dp"
+            android:background="#a7aba9" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="系统名称：" />
+
+            <EditText
+                android:id="@+id/xtmc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="设备编号：" />
+
+            <EditText
+                android:id="@+id/xtbh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="服务器地址：" />
+
+            <EditText
+                android:id="@+id/fwqdz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="50dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="服务器端口号：" />
+
+            <EditText
+                android:id="@+id/fwqdkh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="100dp"
+                android:gravity="left"
+                android:textSize="20dp"
+                android:textColor="@color/black"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/btnsave"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginRight="50dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="50dp"
+                android:textSize="20dp"
+                android:background="@drawable/button_selector"
+                android:text="保存配置"
                 android:textColor="@color/colorWhite" />
         </LinearLayout>
 

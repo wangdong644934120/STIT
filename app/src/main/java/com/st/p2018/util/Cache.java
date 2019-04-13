@@ -55,8 +55,10 @@ public class Cache {
     public static boolean zwlrNow=false;   //正在录入指纹
     public static SocketClient socketClient=null;
     public static boolean external=false;  //是否挂接第三方平台
-    public static String ipmac;
+    public static String ipmac="ip+mac";
     public static String appname;   //app名称
     public static String appcode="0";   //app编号
+    public static String ServerIP="";  //连接服务器地址
+    public static int ServerPort=0;   //连接服务器端口号
 
 }

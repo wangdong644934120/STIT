@@ -1,5 +1,7 @@
 package com.st.p2018.external;
 
+import com.st.p2018.util.Cache;
+
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -13,9 +15,9 @@ import java.net.Socket;
  */
 
 public class SocketClient extends Thread {
-    private static Socket socket = null;
-    private static OutputStream outStream = null;
-    private static InputStream inStream = null;
+    public static Socket socket = null;
+    public static OutputStream outStream = null;
+    public static InputStream inStream = null;
     private static Logger logger = Logger.getLogger(SocketClient.class);
 
 
@@ -27,7 +29,7 @@ public class SocketClient extends Thread {
         }
     }
 
-    private static void closeSocket() {
+    public static void closeSocket() {
         try {
             if (inStream != null) {
                 inStream.close();
@@ -69,7 +71,35 @@ public class SocketClient extends Thread {
 
     }
 
-    class ReadThread extends Thread{
+    class SHThread extends Thread{
+        public void run() {
+            while(true) {
+                try {
+                    if (socket == null || socket.isClosed()) {
+                        socket = new Socket(Cache.ServerIP, Cache.ServerPort);
+                        logger.info("连接第三方平台成功：ip"+Cache.ServerIP+" 端口号："+Cache.ServerPort);
+                        inStream = socket.getInputStream();
+                        outStream = socket.getOutputStream();
+                        //数据接收线程
+                        new ReadThread().start();
+                        //心跳发送线程
+                        new HeartThread().start();
+
+                    }
+
+                }catch(Exception e) {
+                    logger.info("连接第三方平台失败");
+                }
+                try {
+                    Thread.sleep(3000);
+                }catch(Exception e) {
+
+                }
+            }
+        }
+    }
+
+   /* class ReadThread extends Thread{
         public void run() {
             String jg="";
             while(true) {
@@ -96,32 +126,12 @@ public class SocketClient extends Thread {
                     closeSocket();
                     break;
                 }
+                try{
+                    Thread.sleep(10);
+                }catch (Exception e){
+                }
 
             }
         }
-    }
-
-    class SHThread extends Thread{
-        public void run() {
-            while(true) {
-                try {
-                    if (socket == null || socket.isClosed()) {
-                        socket = new Socket("127.0.0.1", 5000);
-                        logger.info("连接成功");
-                        inStream = socket.getInputStream();
-                        outStream = socket.getOutputStream();
-                        new ReadThread().start();
-                    }
-
-                }catch(Exception e) {
-                    logger.info("连接第三方平台失败");
-                }
-                try {
-                    Thread.sleep(3000);
-                }catch(Exception e) {
-
-                }
-            }
-        }
-    }
+    }*/
 }

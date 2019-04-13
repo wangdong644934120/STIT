@@ -23,6 +23,7 @@ public class DealReceive extends Thread{
     }
     public void run(){
         try{
+            logger.info("接收到服务器返回数据："+value);
             JSONObject jsonData = new JSONObject(value);
             String order =jsonData.get("order")==null?"":jsonData.get("order").toString();
             String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
@@ -30,8 +31,8 @@ public class DealReceive extends Thread{
             switch(order){
                 case "heart":
                     //心跳
-                    String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+Cache.ipmac+"\"}";
-                    Cache.socketClient.send(sendValue);
+                   /* String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+Cache.ipmac+"\"}";
+                    Cache.socketClient.send(sendValue);*/
                     break;
                 case "person":
                     String type=jsonData.get("type")==null?"":jsonData.get("type").toString();
