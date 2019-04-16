@@ -31,6 +31,7 @@ public class DealReceive extends Thread{
             switch(order){
                 case "heart":
                     //心跳
+                    CacheSend.removeSend(number);
                    /* String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+Cache.ipmac+"\"}";
                     Cache.socketClient.send(sendValue);*/
                     break;

@@ -14,22 +14,28 @@ import java.util.UUID;
 public class HeartThread extends Thread {
 
     private Logger logger = Logger.getLogger(this.getClass());
-    int failTime=0;
+
+    String id;
+
+    public HeartThread(String id){
+        this.id=id;
+    }
 
     public void run(){
         while(true){
+            if(!Cache.threadFlag.equals(id)){
+                logger.info("退出心跳线程");
+                break;
+            }
             try{
                 String number= UUID.randomUUID().toString();
                 String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+ Cache.ipmac+"\"}";
+                CacheSend.addSend(number,sendValue,SendMessage.HEART);
                 Cache.socketClient.send(sendValue);
             }catch (Exception e){
-                failTime=failTime+1;
+                logger.info("心跳发送失败");
             }
-            if(failTime>=3){
-                logger.info("心跳连续发送三次失败，重新连接服务器");
-                SocketClient.closeSocket();
-                break;
-            }
+
             try{
                 Thread.sleep(10000);
             }catch (Exception e){

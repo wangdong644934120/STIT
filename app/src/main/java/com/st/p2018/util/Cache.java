@@ -60,5 +60,6 @@ public class Cache {
     public static String appcode="0";   //app编号
     public static String ServerIP="";  //连接服务器地址
     public static int ServerPort=0;   //连接服务器端口号
+    public static String threadFlag="";    //与第三方平台通讯线程标志
 
 }

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.UUID;
 
 
 /**
@@ -24,6 +25,7 @@ public class SocketClient extends Thread {
     public void run() {
         try {
             new SHThread().start();
+            new SendAgainThread().start();
         } catch (Exception e) {
             logger.error("socket通信出错",e);
         }
@@ -31,6 +33,7 @@ public class SocketClient extends Thread {
 
     public static void closeSocket() {
         try {
+            Cache.threadFlag="";
             if (inStream != null) {
                 inStream.close();
                 inStream=null;
@@ -81,9 +84,11 @@ public class SocketClient extends Thread {
                         inStream = socket.getInputStream();
                         outStream = socket.getOutputStream();
                         //数据接收线程
-                        new ReadThread().start();
+                        String id= UUID.randomUUID().toString();
+                        Cache.threadFlag=id;
+                        new ReadThread(id).start();
                         //心跳发送线程
-                        new HeartThread().start();
+                        new HeartThread(id).start();
 
                     }
 
@@ -99,39 +104,4 @@ public class SocketClient extends Thread {
         }
     }
 
-   /* class ReadThread extends Thread{
-        public void run() {
-            String jg="";
-            while(true) {
-                try {
-                    byte[] bydata = new byte[1024];
-                    int r=inStream.read(bydata);
-                    if(r>-1) {
-                        String str=new String(bydata).trim();
-                        if(str.contains("%end%")) {
-                            String value =str.substring(0,str.indexOf("%end%"));
-                            jg=jg+value;
-                            jg=jg.replaceAll("%start%", "");
-                            //处理结果数据
-                            new DealReceive(new String(jg)).start();
-                            value=str.substring(str.indexOf("%end%")+5, str.length());
-                            jg=value;
-                        }else {
-                            jg=jg+str;
-                        }
-                    }
-
-                }catch(Exception e) {
-                    logger.error("读取流出错",e);
-                    closeSocket();
-                    break;
-                }
-                try{
-                    Thread.sleep(10);
-                }catch (Exception e){
-                }
-
-            }
-        }
-    }*/
 }
