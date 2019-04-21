@@ -389,6 +389,7 @@ public class MainActivity extends Activity {
                         if(bundle.getString("appname")!=null){
                             tvappTitle.setText(bundle.getString("appname").toString());
                             mChart.setCenterText(generateCenterSpannableText(Cache.appcode));
+                            initJXQData();
                         }
                     }catch(Exception ex){
                         logger.error("handler内显示出错",ex);

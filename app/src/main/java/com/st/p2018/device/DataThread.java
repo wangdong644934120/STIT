@@ -85,7 +85,7 @@ public class DataThread extends Thread {
             card=card.toUpperCase();
             logger.info("获取到卡号:"+card);
             //判断是否发送到第三方平台
-            String sendValue="{\"order\":\"power\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }
@@ -136,7 +136,7 @@ public class DataThread extends Thread {
             card=String.valueOf(Long.parseLong(card,  16));
             logger.info("指纹编号转十进制结果："+card);
             //判断是否发送到第三方平台
-            String sendValue="{\"order\":\"power\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }

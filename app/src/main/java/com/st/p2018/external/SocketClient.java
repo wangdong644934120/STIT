@@ -60,9 +60,10 @@ public class SocketClient extends Thread {
         value="%start%"+value+"%end%";
         try {
             if(socket!=null && !socket.isClosed()) {
+                logger.info("客户端发送数据:"+value);
                 outStream.write(value.getBytes());
                 outStream.flush();
-                logger.info("发送成功:"+value);
+
             }else {
                logger.info("连接失败，不发送数据了:"+value);
                 closeSocket();
