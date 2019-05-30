@@ -29,9 +29,9 @@ public class HeartThread extends Thread {
             }
             try{
                 String number= UUID.randomUUID().toString();
-                String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+ Cache.ipmac+"\"}";
+                String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+ Cache.appcode+"\"}";
                 CacheSend.addSend(number,sendValue,SendMessage.HEART);
-                Cache.socketClient.send(sendValue);
+                SocketClient.send(sendValue);
             }catch (Exception e){
                 logger.info("心跳发送失败");
             }

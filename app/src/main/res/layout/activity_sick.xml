@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:addStatesFromChildren="true"
+    tools:context="com.st.p2018.activity.SickActivity">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:addStatesFromChildren="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:addStatesFromChildren="true"
+            android:layout_width="match_parent"
+            android:layout_height="800px">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/contact_list"
+                android:addStatesFromChildren="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.st.p2018.addbook.LetterView
+                android:id="@+id/letter_view"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="170px"
+            android:background="@color/colorWhite"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/sickok"
+                android:layout_width="match_parent"
+                android:layout_height="80px"
+                android:layout_weight="1"
+                android:background="#0c61a2"
+                android:text="确认"
+                android:textColor="@color/colorWhite"
+                android:layout_marginBottom="10dp"
+                android:textSize="30dp" />
+
+            <Button
+                android:id="@+id/sickcancle"
+                android:layout_width="match_parent"
+                android:layout_height="80px"
+                android:layout_weight="1"
+                android:background="#0c61a2"
+                android:text="取消"
+                android:textColor="@color/colorWhite"
+                android:layout_marginBottom="0dp"
+                android:textSize="30dp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

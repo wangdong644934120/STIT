@@ -8,6 +8,7 @@ import com.st.p2018.dao.PersonDao;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.Event;
 import com.st.p2018.entity.ProductRecord;
+import com.st.p2018.external.SocketClient;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
 
@@ -85,7 +86,7 @@ public class DataThread extends Thread {
             card=card.toUpperCase();
             logger.info("获取到卡号:"+card);
             //判断是否发送到第三方平台
-            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"code\":\""+Cache.appcode+"\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }
@@ -136,7 +137,7 @@ public class DataThread extends Thread {
             card=String.valueOf(Long.parseLong(card,  16));
             logger.info("指纹编号转十进制结果："+card);
             //判断是否发送到第三方平台
-            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }
@@ -408,7 +409,7 @@ public class DataThread extends Thread {
                 //如果连接第三方平台
                 if(Cache.external){
                     //发送数据到第三方平台
-                    if(Cache.socketClient!=null){
+                    if(SocketClient.socket!=null){
                         HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>();
                         for(String p : pr){
                             if(mapJSON.get(map.get(p))==null){
@@ -437,7 +438,7 @@ public class DataThread extends Thread {
                         }
                         sb.append("]}");
                         String sendValue=sb.toString();
-                        Cache.socketClient.send(sendValue);
+                        SocketClient.send(sendValue);
                     }
                     return;
                 }
@@ -721,9 +722,12 @@ public class DataThread extends Thread {
         if(Cache.external){
             bl=true;
             //发送数据到第三方平台
-            if(Cache.socketClient!=null){
+           /* if(Cache.socketClient!=null){
                 Cache.socketClient.send(sendValue);
-            }
+            }*/
+           if(SocketClient.socket!=null){
+               SocketClient.send(sendValue);
+           }
         }
         return bl;
     }

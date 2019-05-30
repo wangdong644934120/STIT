@@ -54,6 +54,7 @@ import com.st.p2018.util.LogUtil;
 
 import com.st.p2018.util.MySpeechUtil;
 import com.st.p2018.util.MyTextToSpeech;
+import com.st.p2018.util.Utils;
 
 
 import org.apache.log4j.Logger;
@@ -119,6 +120,7 @@ public class MainActivity extends Activity {
         Cache.myContext = this;
         initJXQData();
         new DeviceCom().start();
+        Utils.getPingYin("张");
     }
 
 
@@ -146,7 +148,41 @@ public class MainActivity extends Activity {
     private void initExternal(){
 
     }
+    private boolean initDataBase() {
 
+        try {
+            DatabaseManager.createDatabaseIfNone(MainActivity.this);// 检测数据库，若不存在则创建
+            // 数据库连接测试
+            SQLiteDatabase db = DatabaseManager.openReadWrite();
+            if (db != null && db.isDatabaseIntegrityOk()) {
+                //logger.info("打开数据库连接成功");
+                db.close();// 关闭数据库
+            } else {
+                return false;// 数据库打开失败或不可用
+            }
+            UpdateDB upDB = new UpdateDB(MainActivity.this);
+            upDB.updata();
+        } catch (Exception ex) {
+            //logger.error("初始化数据库出错", ex);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 初始TTS引擎
+     */
+    private void initSpeechPlug() {
+        try {
+            if (!MySpeechUtil.checkSpeechServiceInstall(MainActivity.this)) {
+                MySpeechUtil.processInstall(MainActivity.this,
+                        "SpeechService.apk");
+            }
+            MyTextToSpeech.getInstance().initial(MainActivity.this);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
     private void initHandler(){
         try{
             Cache.myHandle = new Handler() {
@@ -436,7 +472,9 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
-                    if(Cache.zmdzt){
+                    Intent  intent = new Intent(MainActivity.this,SickActivity.class);
+                    startActivity(intent);
+                    /*if(Cache.zmdzt){
                         boolean bl=HCProtocol.ST_CloseLight();
                         if(bl){
                             MyTextToSpeech.getInstance().speak("关灯成功");
@@ -457,7 +495,7 @@ public class MainActivity extends Activity {
                             MyTextToSpeech.getInstance().speak("开灯失败");
                             Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();
                         }
-                    }
+                    }*/
 
                     break;
                 case R.id.pandian:
@@ -476,7 +514,7 @@ public class MainActivity extends Activity {
 
     }
 
-    private boolean initDataBase() {
+/*    private boolean initDataBase() {
 
         try {
             DatabaseManager.createDatabaseIfNone(MainActivity.this);// 检测数据库，若不存在则创建
@@ -495,13 +533,13 @@ public class MainActivity extends Activity {
             return false;
         }
         return true;
-    }
+    }*/
 
 
 
-    /**
+/*    *//**
      * 初始TTS引擎
-     */
+     *//*
     private void initSpeechPlug() {
         try {
             if (!MySpeechUtil.checkSpeechServiceInstall(MainActivity.this)) {
@@ -512,7 +550,7 @@ public class MainActivity extends Activity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }*/
 
     private void initPieChart() {
         try{

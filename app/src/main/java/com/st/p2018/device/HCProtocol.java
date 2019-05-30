@@ -695,7 +695,9 @@ public class HCProtocol {
 
             byte[] deviceID = new byte[] { 0x00};
             byte[] order = new byte[] {0x28};
-            byte[] bytzz=tzz.getBytes();
+            byte[] bytzz=new byte[192];
+            byte[] bytcs=tzz.getBytes();
+            System.arraycopy(bytcs,0,bytzz,0,bytcs.length);
             byte[] bydata=new byte[1+bytzz.length];
             bydata[0]=(byte)code;
             System.arraycopy(bytzz,0,bydata,1,bytzz.length);

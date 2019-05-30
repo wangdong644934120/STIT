@@ -118,7 +118,9 @@
             android:label="正在读取请稍后..."
             android:theme="@style/prostyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
-        <activity android:name="com.st.p2018.activity.PDActivity"></activity>
+        <activity android:name="com.st.p2018.activity.PDActivity" />
+        <activity android:name="com.st.p2018.activity.LoadActivity" />
+        <activity android:name="com.st.p2018.activity.SickActivity"></activity>
     </application>
 
 </manifest>

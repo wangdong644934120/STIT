@@ -37,7 +37,7 @@ public class DealReceive extends Thread{
             }catch (Exception ex){
                 logger.error("解析服务器发送数据出错",ex);
                 String sendValue="{\"order\":\""+order+"\",\"number\":\""+number+"\",\"message\":\"2\"}";
-                Cache.socketClient.send(sendValue);
+                SocketClient.send(sendValue);
                 return;
             }
 
@@ -98,7 +98,7 @@ public class DealReceive extends Thread{
                     break;
                 default:
                     String sendValue="{\"order\":\""+order+"\",\"number\":\""+number+"\",\"message\":\"1\"}";
-                    Cache.socketClient.send(sendValue);
+                    SocketClient.send(sendValue);
                 break;
             }
 
@@ -141,7 +141,7 @@ public class DealReceive extends Thread{
         }
         String device="{\"type\":\""+(Cache.gx.equals("Ⅰ型")?"1":"2")+"\",\"using\":\""+gc+"\"}";
         String sendValue="{\"order\":\"deviceinfo\",\"number\":\""+number+"\",\"data\":"+device+",\"message\":\"0\"}";
-        Cache.socketClient.send(sendValue);
+        SocketClient.send(sendValue);
     }
 
     private void setDeviceConfig(String number,String data){
@@ -166,14 +166,14 @@ public class DealReceive extends Thread{
                 if(intervalI>=5 && intervalI<=255){
                 }else{
                     sendValue="{\"order\":\"config\",\"number\":\""+number+"\",\"message\":\"2\"}";
-                    Cache.socketClient.send(sendValue);
+                    SocketClient.send(sendValue);
                     return;
                 }
 
             }catch (Exception ex){
                 logger.error("解析设备配置参数出错",ex);
                 sendValue="{\"order\":\"config\",\"number\":\""+number+"\",\"message\":\"2\"}";
-                Cache.socketClient.send(sendValue);
+                SocketClient.send(sendValue);
                 return;
             }
 
@@ -187,7 +187,7 @@ public class DealReceive extends Thread{
             }
             //发送配置成功消息
 
-            Cache.socketClient.send(sendValue);
+            SocketClient.send(sendValue);
         }catch(Exception e){
 
         }
@@ -224,7 +224,7 @@ public class DealReceive extends Thread{
                 sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"3\"}";
             }
         }
-        Cache.socketClient.send(sendValue);
+        SocketClient.send(sendValue);
     }
 
     private void setGH(String number,String data){
@@ -240,7 +240,7 @@ public class DealReceive extends Thread{
             }catch (Exception ex){
                 logger.error("解析系统编号及名称data数据出错",ex);
                 sendValue="{\"order\":\"code\",\"number\":\""+number+"\",\"message\":\"2\"}";
-                Cache.socketClient.send(sendValue);
+                SocketClient.send(sendValue);
                 return;
             }
 
@@ -252,7 +252,7 @@ public class DealReceive extends Thread{
             logger.info("设置系统名称："+xtmc+",系统编号："+code);
             //发送配置成功消息
             sendValue="{\"order\":\"code\",\"number\":\""+number+"\",\"message\":\"0\"}";
-            Cache.socketClient.send(sendValue);
+            SocketClient.send(sendValue);
         }catch(Exception e){
 
         }
@@ -281,13 +281,13 @@ public class DealReceive extends Thread{
             if(HCProtocol.ST_OpenDoor()){
                 sendValue="{\"order\":\"door\",\"number\":\""+number+"\",\"message\":\"0\"}";
                 logger.info("下发开门成功");
-                MyTextToSpeech.getInstance().speak(data+"开门成功");
+                MyTextToSpeech.getInstance().speak("开门成功");
             }else{
                 sendValue="{\"order\":\"door\",\"number\":\""+number+"\",\"message\":\"3\"}";
                 logger.info("下发开门失败");
                 MyTextToSpeech.getInstance().speak("开门失败");
             }
-            Cache.socketClient.send(sendValue);
+            SocketClient.send(sendValue);
         }
     }
 
@@ -315,7 +315,7 @@ public class DealReceive extends Thread{
             }
         }
         if(!sendValue.equals("")){
-            Cache.socketClient.send(sendValue);
+            SocketClient.send(sendValue);
         }
 
     }

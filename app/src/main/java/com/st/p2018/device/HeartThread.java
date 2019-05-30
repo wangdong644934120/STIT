@@ -29,7 +29,7 @@ public class HeartThread extends Thread{
                 logger.error("发送心跳出错",e);
             }
             try{
-                Thread.sleep(10000);
+                Thread.sleep(30000);
             }catch (Exception e){
                 logger.error("线程等待出错",e);
             }

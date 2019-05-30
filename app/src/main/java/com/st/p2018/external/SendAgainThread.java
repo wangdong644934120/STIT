@@ -38,7 +38,7 @@ public class SendAgainThread extends Thread {
                         if(!Cache.threadFlag.equals("") && System.currentTimeMillis()-sm.getTime()>10000){
                             //10秒钟没有返回发送成功信息,再次发送数据
                             CacheSend.updateCount(sm.getNumber(),sm.getCount()+1);
-                            Cache.socketClient.send(sm.getMessage());
+                            SocketClient.send(sm.getMessage());
                         }
                     }
                 }catch (Exception e){
