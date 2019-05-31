@@ -24,6 +24,7 @@ public class Cache {
     public static Handler myHandleProgress;
     public static Handler myHandleKH;
     public static Handler myHandleHCCS;
+    public static Handler myHandleLockScreen;
     public static boolean getPersonCard;
     public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
@@ -61,5 +62,7 @@ public class Cache {
     public static String ServerIP="";  //连接服务器地址
     public static int ServerPort=0;   //连接服务器端口号
     public static String threadFlag="";    //与第三方平台通讯线程标志
+    public static String lockScreen="1";  //是否启用锁屏功能，0-不启用，1-启用
+    public static String chooseSick="1"; //是否启用选择患者功能，0-不启用，1-启用
 
 }

@@ -325,13 +325,36 @@ public class DealReceive extends Thread{
             MyTextToSpeech.getInstance().speak("无开门权限");
             return;
         }
-        if(HCProtocol.ST_OpenDoor()){
+        //关闭锁屏界面
+        if(Cache.lockScreen.equals("1")){
+            if(Cache.myHandleLockScreen==null){
+                logger.info("handle关闭锁屏发送失败");
+                return;
+            }
+            Message message = Message.obtain(Cache.myHandleLockScreen);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("close","ok");
+            message.setData(bund);
+            Cache.myHandleLockScreen.sendMessage(message);
+        }
+        if(Cache.chooseSick.equals("1")){
+            if(Cache.myHandle==null){
+                logger.info("handle打开患者选择界面发送失败");
+                return;
+            }
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("ui","sick");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+        }
+/*        if(HCProtocol.ST_OpenDoor()){
             logger.info("下发开门成功");
             sendCZY(data);
             MyTextToSpeech.getInstance().speak(data+"开门成功");
         }else{
             logger.info("下发开门失败");
             MyTextToSpeech.getInstance().speak("下发开门失败");
-        }
+        }*/
     }
 }

@@ -111,16 +111,17 @@ public class MainActivity extends Activity {
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        LogUtil.initLog();// 初始log
+        //LogUtil.initLog();// 初始log
         logger =Logger.getLogger(this.getClass());
         initView();
-        initDataBase();
-        initAppName();
-        initSpeechPlug();
+        //initDataBase();
+        //initAppName();
+        //initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
         new DeviceCom().start();
-        Utils.getPingYin("张");
+        Intent intent = new Intent(MainActivity.this, LockActivity.class);
+        startActivity(intent);
     }
 
 
@@ -211,6 +212,10 @@ public class MainActivity extends Activity {
                             }
                             if(bundle.getString("ui").toString().equals("sbxx")){
                                 Intent intent = new Intent(MainActivity.this, DeviceActivity.class);
+                                startActivity(intent);
+                            }
+                            if(bundle.getString("ui").toString().equals("sick")){
+                                Intent intent = new Intent(MainActivity.this, SickActivity.class);
                                 startActivity(intent);
                             }
                             if(bundle.getString("ui").toString().equals("tccx")){
@@ -472,9 +477,23 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
-                    Intent  intent = new Intent(MainActivity.this,SickActivity.class);
-                    startActivity(intent);
-                    /*if(Cache.zmdzt){
+                   /* String zuomu9="15,77,143,41,193,66,19,171,193,63,138,43,129,48,36,155,33,38,10,172,193,16,13,87,33,81,161,133,162,79,149,44,130,72,30,4,130,59,148,2,2,51,21,130,66,28,15,217,34,26,152,66,2,22,26,154,2,19,166,196,194,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+                    String zuoshi8="11,71,19,160,161,64,13,95,97,40,5,106,97,38,29,6,33,32,139,214,161,19,36,5,33,76,141,227,194,68,135,228,98,38,151,156,98,24,14,236,194,22,20,3,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
+                    boolean bl=HCProtocol.ST_AddZW(8,zuoshi8);*/
+
+                    /*  String[] bb=aa.split(",");
+                    byte[] by=new byte[192];
+                    for(int i=0;i<bb.length;i++){
+                        if(i>191){
+                            break;
+                        }
+                        int a=Integer.valueOf(bb[i]);
+                        by[i]=(byte)a;
+                    }*/
+
+
+
+                    if(Cache.zmdzt){
                         boolean bl=HCProtocol.ST_CloseLight();
                         if(bl){
                             MyTextToSpeech.getInstance().speak("关灯成功");
@@ -495,7 +514,7 @@ public class MainActivity extends Activity {
                             MyTextToSpeech.getInstance().speak("开灯失败");
                             Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();
                         }
-                    }*/
+                    }
 
                     break;
                 case R.id.pandian:

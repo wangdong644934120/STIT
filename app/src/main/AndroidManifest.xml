@@ -29,14 +29,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/titlestyle">
-        <activity android:name="com.st.p2018.activity.MainActivity">
-            le
+        <activity android:name="com.st.p2018.activity.LoadActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.st.p2018.activity.MainActivity"></activity>
 
         <receiver
             android:name="com.st.p2018.util.MyReceiver"
@@ -119,8 +119,8 @@
             android:theme="@style/prostyle"
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <activity android:name="com.st.p2018.activity.PDActivity" />
-        <activity android:name="com.st.p2018.activity.LoadActivity" />
-        <activity android:name="com.st.p2018.activity.SickActivity"></activity>
+        <activity android:name="com.st.p2018.activity.SickActivity" />
+        <activity android:name="com.st.p2018.activity.LockActivity"></activity>
     </application>
 
 </manifest>

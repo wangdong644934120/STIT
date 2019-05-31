@@ -692,29 +692,51 @@ public class HCProtocol {
             myLock.lock();
             byte[] head = new byte[] { 0x3A };
             byte[] length = new byte[1] ;
-
+            length[0]=(byte)198;
             byte[] deviceID = new byte[] { 0x00};
-            byte[] order = new byte[] {0x28};
-            byte[] bytzz=new byte[192];
-            byte[] bytcs=tzz.getBytes();
-            System.arraycopy(bytcs,0,bytzz,0,bytcs.length);
-            byte[] bydata=new byte[1+bytzz.length];
+            byte[] order = new byte[] {0x25};
+            byte[] bytzz=new byte[195];
+
+            String hex=intToHex(code);
+            if(hex.length()==1){
+                hex="000"+hex;
+            }else if(hex.length()==2){
+                hex="00"+hex;
+            }else if(hex.length()==3){
+                hex="0"+hex;
+            }
+            bytzz[0]=(byte) Integer.parseInt(hex.substring(0,2), 16);
+            bytzz[1]=(byte) Integer.parseInt(hex.substring(2,4), 16);
+
+
+            String[] bb=tzz.split(",");
+
+            for(int i=0;i<bb.length;i++){
+                if(i>192){
+                    break;
+                }
+                int a=Integer.valueOf(bb[i]);
+                bytzz[i+2]=(byte)a;
+            }
+
+            //System.arraycopy(bytzz,0,bytzz,0,bytzz.length);
+            /*byte[] bydata=new byte[1+bytzz.length];
             bydata[0]=(byte)code;
-            System.arraycopy(bytzz,0,bydata,1,bytzz.length);
+            System.arraycopy(bytzz,0,bydata,1,bytzz.length);*/
             byte[] before=new byte[]{};
             before=DataTypeChange.byteAddToByte(before,head);
             before=DataTypeChange.byteAddToByte(before,length);
             before=DataTypeChange.byteAddToByte(before,deviceID);
             before=DataTypeChange.byteAddToByte(before,order);
-            before=DataTypeChange.byteAddToByte(before,bydata);
+            before=DataTypeChange.byteAddToByte(before,bytzz);
 
             byte jyData=getJYData(before);
 
             byte[] send= DataTypeChange.byteAddToByte(before, jyData);
             //发送数据
-            byte[] data=sp.sendAndGet(send);
+            byte[] data=sp.sendAndGetFor2Seconds(send);
             if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-                    && data[3] == (byte) 0x28 && data[4] == (byte) 0x00) {
+                    && data[3] == (byte) 0x25 && data[4] == (byte) 0x00) {
                 return true;
             }else{
                 return false;

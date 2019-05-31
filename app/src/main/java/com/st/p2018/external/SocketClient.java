@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -20,6 +22,8 @@ public class SocketClient extends Thread {
     public static OutputStream outStream = null;
     public static InputStream inStream = null;
     private static Logger logger = Logger.getLogger(SocketClient.class);
+    private static Lock myLock=new ReentrantLock(true);
+
 
 
     public void run() {
@@ -57,21 +61,29 @@ public class SocketClient extends Thread {
      * @param value
      */
     public static void send(String value ) {
-        value="%start%"+value+"%end%";
-        try {
-            if(socket!=null && !socket.isClosed()) {
-                logger.info("客户端发送数据:"+value);
-                outStream.write(value.getBytes());
-                outStream.flush();
+        try{
+            myLock.lock();
+            value="%start%"+value+"%end%";
+            try {
+                if(socket!=null && !socket.isClosed()) {
+                    logger.info("客户端发送数据:"+value);
+                    outStream.write(value.getBytes());
+                    outStream.flush();
 
-            }else {
-               logger.info("连接失败，不发送数据了:"+value);
-                closeSocket();
+                }else {
+                    logger.info("连接失败，不发送数据了:"+value);
+                    closeSocket();
+                }
+
+            } catch (IOException e) {
+                logger.error("发送数据出错",e);
             }
-
-        } catch (IOException e) {
-           logger.error("发送数据出错",e);
+        }catch (Exception e){
+            logger.error("发送数据出错",e);
+        }finally {
+            myLock.unlock();
         }
+
 
     }
 
