@@ -25,6 +25,7 @@ public class Cache {
     public static Handler myHandleKH;
     public static Handler myHandleHCCS;
     public static Handler myHandleLockScreen;
+    public static Handler myHandleSick;
     public static boolean getPersonCard;
     public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz

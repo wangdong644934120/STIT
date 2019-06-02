@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context="com.st.p2018.activity.AccessConActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10px"
+            android:layout_height="50px"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="患者:"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/sickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text=""
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/btngg"
+                android:layout_width="80px"
+                android:layout_height="40px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/blue"
+                android:textColor="@color/colorWhite"
+                android:text="更改"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="412px"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/operasave"
+                android:layout_width="match_parent"
+                android:layout_height="52px"
+                android:gravity="center"
+                android:text="共存放3个"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <com.bin.david.form.core.SmartTable
+                android:id="@+id/tablesave"
+                android:layout_width="match_parent"
+                android:layout_height="360px"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="412px"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/operaout"
+                android:layout_width="match_parent"
+                android:layout_height="52px"
+                android:gravity="center"
+                android:text="共取出3个"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <com.bin.david.form.core.SmartTable
+                android:id="@+id/tableout"
+                android:layout_width="match_parent"
+                android:layout_height="360px"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="#a7aba9" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100px"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnzq"
+                android:layout_width="80px"
+                android:layout_height="60px"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:background="@color/blue"
+                android:layout_marginTop="10px"
+                android:textColor="@color/colorWhite"
+                android:text="正确"
+                android:layout_marginRight="1px"
+                android:textSize="15dp" />
+
+            <Button
+                android:id="@+id/btnyw"
+                android:layout_width="80px"
+                android:layout_height="60px"
+                android:background="@color/blue"
+                android:textColor="@color/colorWhite"
+                android:layout_weight="1"
+                android:layout_marginLeft="1px"
+                android:layout_marginTop="10px"
+                android:gravity="center"
+                android:text="有误"
+                android:textSize="15dp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

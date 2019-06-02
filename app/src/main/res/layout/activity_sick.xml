@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:addStatesFromChildren="true"
+    android:background="@color/colorWhite"
     tools:context="com.st.p2018.activity.SickActivity">
 
 
@@ -14,9 +15,28 @@
         android:addStatesFromChildren="true"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/loadsicktxl"
+            android:layout_width="match_parent"
+            android:layout_height="800px"
+            android:visibility="visible"
+            android:background="@color/colorWhite"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+             android:id="@+id/imageview1"
+             android:layout_width="300px"
+             android:layout_height="300px"/>
+
+        </LinearLayout>
+
+
         <RelativeLayout
+            android:id="@+id/relativeLayouttxl"
             android:addStatesFromChildren="true"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="800px">
 
             <android.support.v7.widget.RecyclerView

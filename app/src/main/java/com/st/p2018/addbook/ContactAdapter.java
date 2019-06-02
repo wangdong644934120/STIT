@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.st.p2018.stit.R;
+import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.Utils;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.Map;
 public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private LayoutInflater mLayoutInflater;
     private Context mContext;
-    private String[] mContactNames; // 联系人名称字符串数组
+    private List<String> mContactNames; // 联系人名称字符串数组
     private List<String> mContactList; // 联系人名称List（转换成拼音）
     private List<Contact> resultList; // 最终结果（包含分组的字母）
     private List<String> characterList; // 字母List
@@ -35,7 +36,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ITEM_TYPE_CONTACT
     }
 
-    public ContactAdapter(Context context, String[] contactNames) {
+    public ContactAdapter(Context context, List<String> contactNames) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         mContactNames = contactNames;
@@ -47,11 +48,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         mContactList = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
 
-        for (int i = 0; i < mContactNames.length; i++) {
+        for (int i = 0; i < mContactNames.size(); i++) {
 
-            String pinyin = Utils.getPingYin(mContactNames[i]);
+            String pinyin = Utils.getPingYin(mContactNames.get(i));
 
-            map.put(pinyin, mContactNames[i]);
+            map.put(pinyin, mContactNames.get(i));
             mContactList.add(pinyin);
         }
 
@@ -132,7 +133,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 public boolean onTouch(View v,MotionEvent event) {
                     if (event.getAction() == MotionEvent.ACTION_UP){
                         //System.out.println(mTextView.getText());
-                        System.out.println("a:"+mTextView.getText());
+                       CacheSick.sickChoose=mTextView.getText().toString();
                         v.setFocusableInTouchMode(true);
 
                     }

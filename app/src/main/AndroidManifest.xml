@@ -36,7 +36,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.st.p2018.activity.MainActivity"></activity>
+        <activity android:name="com.st.p2018.activity.MainActivity" />
 
         <receiver
             android:name="com.st.p2018.util.MyReceiver"
@@ -120,7 +120,8 @@
             android:windowSoftInputMode="stateHidden|adjustUnspecified" />
         <activity android:name="com.st.p2018.activity.PDActivity" />
         <activity android:name="com.st.p2018.activity.SickActivity" />
-        <activity android:name="com.st.p2018.activity.LockActivity"></activity>
+        <activity android:name="com.st.p2018.activity.LockActivity" />
+        <activity android:name="com.st.p2018.activity.AccessConActivity"></activity>
     </application>
 
 </manifest>

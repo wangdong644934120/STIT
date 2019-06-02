@@ -6,9 +6,11 @@ import android.os.Message;
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.util.Cache;
+import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.MyTextToSpeech;
 
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 
@@ -22,6 +24,7 @@ public class DealReceive extends Thread{
     public DealReceive(String value){
         this.value=value;
     }
+
     public void run(){
         try{
             logger.info("接收到服务器发送数据："+value);
@@ -62,11 +65,12 @@ public class DealReceive extends Thread{
                     getPower(number,data);
                     break;
                 case "product":
-                    if(HCProtocol.ST_GetAllCard()){
+
+                    /*if(HCProtocol.ST_GetAllCard()){
                         logger.info("下发盘点成功");
                     }else{
                         logger.info("下发盘点失败");
-                    }
+                    }*/
                     break;
                 case "deviceinfo":
                     //获取设备信息
@@ -95,6 +99,11 @@ public class DealReceive extends Thread{
                     number=jsonData.get("number")==null?"":jsonData.get("number").toString();
                     data=jsonData.get("data")==null?"":jsonData.get("data").toString();
                     openLight(number,data);
+                    break;
+                case "patient":
+                    number=jsonData.get("number")==null?"":jsonData.get("number").toString();
+                    data=jsonData.get("data")==null?"":jsonData.get("data").toString();
+                    dealSick(number,value);
                     break;
                 default:
                     String sendValue="{\"order\":\""+order+"\",\"number\":\""+number+"\",\"message\":\"1\"}";
@@ -325,6 +334,7 @@ public class DealReceive extends Thread{
             MyTextToSpeech.getInstance().speak("无开门权限");
             return;
         }
+
         //关闭锁屏界面
         if(Cache.lockScreen.equals("1")){
             if(Cache.myHandleLockScreen==null){
@@ -348,7 +358,9 @@ public class DealReceive extends Thread{
             message.setData(bund);
             Cache.myHandle.sendMessage(message);
         }
-/*        if(HCProtocol.ST_OpenDoor()){
+        sendCZY(data);
+        MyTextToSpeech.getInstance().speak(data+"核验成功");
+      /* if(HCProtocol.ST_OpenDoor()){
             logger.info("下发开门成功");
             sendCZY(data);
             MyTextToSpeech.getInstance().speak(data+"开门成功");
@@ -356,5 +368,41 @@ public class DealReceive extends Thread{
             logger.info("下发开门失败");
             MyTextToSpeech.getInstance().speak("下发开门失败");
         }*/
+    }
+
+    private void dealSick(String number,String value){
+        CacheSick.clear();
+        try{
+            JSONObject jsonObject=new JSONObject(value);
+            JSONArray jsonArray=jsonObject.getJSONArray("data");
+            for(int i=0;i<jsonArray.length();i++){
+                JSONObject obj=jsonArray.getJSONObject(i);
+                String time=obj.getString("time");
+                String name=obj.getString("name");
+                String code=obj.getString("code");
+                String dept=obj.getString("dept");
+                String operaid=obj.getString("operaid");
+                CacheSick.add(time,name,code,dept,operaid);
+            }
+            //通知患者选择界面显示数据
+            if(Cache.chooseSick.equals("1")){
+                if(Cache.myHandleSick==null){
+                    logger.info("handle打开患者选择界面发送失败");
+                    return;
+                }
+                Message message = Message.obtain(Cache.myHandleSick);
+                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                bund.putString("show","sick");
+                message.setData(bund);
+                Cache.myHandleSick.sendMessage(message);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+
+
     }
 }
