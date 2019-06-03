@@ -3,6 +3,8 @@ package com.st.p2018.activity;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,6 +21,9 @@ import com.bin.david.form.core.SmartTable;
 import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +46,7 @@ public class AccessConActivity extends Activity {
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
+
     }
 
     private void initView(){
@@ -50,6 +56,21 @@ public class AccessConActivity extends Activity {
         tvtitle.setText("存取确认");
         initSave();
         initOut();
+  /*      Cache.myHandleAccess= new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                //提示信息
+                if (bundle.getString("opera") != null) {
+                    initSave();
+                    initOut();
+                }
+
+
+            }
+        };*/
+
     }
 
     private void initSave(){
@@ -59,7 +80,7 @@ public class AccessConActivity extends Activity {
         Column<String> column4 = new Column<>("剩余天数", "yxrq");
         Column<String> column5 = new Column<>("所在位置", "szwz");
 
-        List<Product> list =new ArrayList<Product>();
+        /*List<Product> list =new ArrayList<Product>();
         for(int i=0;i<3;i++){
             Product product=new Product();
             product.setMc("导管");
@@ -69,9 +90,9 @@ public class AccessConActivity extends Activity {
             product.setSzwz("1");
             list.add(product);
 
-        }
+        }*/
         //表格数据 datas是需要填充的数据
-        TableData<Product> tableData = new TableData<Product>("", list, column1, column2, column3, column4, column5);
+        TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column4, column5);
         //设置数据
         tableSave = findViewById(R.id.tablesave);
         tableSave.setTableData(tableData);
@@ -90,7 +111,7 @@ public class AccessConActivity extends Activity {
         Column<String> column4 = new Column<>("剩余天数", "yxrq");
         Column<String> column5 = new Column<>("所在位置", "szwz");
 
-        List<Product> list =new ArrayList<Product>();
+      /*  List<Product> list =new ArrayList<Product>();
         for(int i=0;i<150;i++){
             Product product=new Product();
             product.setMc("导管");
@@ -100,9 +121,9 @@ public class AccessConActivity extends Activity {
             product.setSzwz("1");
             list.add(product);
 
-        }
+        }*/
         //表格数据 datas是需要填充的数据
-        TableData<Product> tableData = new TableData<Product>("", list, column1, column2, column3, column4, column5);
+        TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3, column4, column5);
         //设置数据
         tableOut = findViewById(R.id.tableout);
         tableOut.setTableData(tableData);

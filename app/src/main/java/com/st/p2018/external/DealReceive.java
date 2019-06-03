@@ -5,6 +5,7 @@ import android.os.Message;
 
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
+import com.st.p2018.entity.Product;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.MyTextToSpeech;
@@ -12,6 +13,9 @@ import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -65,7 +69,7 @@ public class DealReceive extends Thread{
                     getPower(number,data);
                     break;
                 case "product":
-
+                    dealPorduct(number,value);
                     /*if(HCProtocol.ST_GetAllCard()){
                         logger.info("下发盘点成功");
                     }else{
@@ -396,6 +400,105 @@ public class DealReceive extends Thread{
                 message.setData(bund);
                 Cache.myHandleSick.sendMessage(message);
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+
+
+
+    }
+
+    private void dealPorduct(String number,String value){
+        long start=System.currentTimeMillis();
+        try{
+            JSONObject jsonObject=new JSONObject(value);
+            String data=jsonObject.getString("data");
+            JSONObject jsonData=new JSONObject(data);
+            JSONArray jsonArrayAction=jsonData.getJSONArray("action");
+            JSONArray jsonArrayTotal=jsonData.getJSONArray("total");
+            Cache.listOperaOut.clear();
+            Cache.listOperaSave.clear();
+            for(int i=0;i<jsonArrayAction.length();i++){
+                JSONObject obj=jsonArrayAction.getJSONObject(i);
+                String pp=obj.getString("pp");
+                String mc=obj.getString("mc");
+                String xqpc=obj.getString("xqpc");
+                String yxrq=obj.getString("yxrq");
+                String syts=obj.getString("syts");
+                String szwz=obj.getString("szwz");
+                String epc=obj.getString("epc");
+                String operation=obj.getString("operation");
+                Product product=new Product();
+                product.setPp(pp);
+                product.setMc(mc);
+                product.setXqpc(xqpc);
+                product.setYxrq(yxrq);
+                product.setSyts(syts);
+                product.setSzwz(szwz);
+                product.setEpc(epc);
+                product.setOperation(operation);
+                if(operation.equals("存")){
+                    Cache.listOperaSave.add(product);
+                }else if(operation.equals("取")){
+                    Cache.listOperaOut.add(product);
+                }
+            }
+            System.out.println("耗时1:"+(System.currentTimeMillis()-start));
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("ui","access");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+
+
+            start=System.currentTimeMillis();
+            Cache.mapTotal.put("jxq",new ArrayList<Product>());
+            Cache.mapTotal.put("yxq",new ArrayList<Product>());
+            Cache.mapTotal.put("ygq",new ArrayList<Product>());
+
+            for(int i=0;i<jsonArrayTotal.length();i++){
+                JSONObject objXQ=jsonArrayTotal.getJSONObject(i);
+                String xq=objXQ.getString("xq");
+                JSONArray jsonTotalXQ=objXQ.getJSONArray("data");
+                List<Product> listProductXQ=new ArrayList<Product>();
+                for(int j=0;j<jsonTotalXQ.length();j++){
+                    JSONObject obj=jsonArrayAction.getJSONObject(i);
+                    String pp=obj.getString("pp");
+                    String mc=obj.getString("mc");
+                    String xqpc=obj.getString("xqpc");
+                    String yxrq=obj.getString("yxrq");
+                    String syts=obj.getString("syts");
+                    String szwz=obj.getString("szwz");
+                    String epc=obj.getString("epc");
+                    String operation=obj.getString("operation");
+                    Product product=new Product();
+                    product.setPp(pp);
+                    product.setMc(mc);
+                    product.setXqpc(xqpc);
+                    product.setYxrq(yxrq);
+                    product.setSyts(syts);
+                    product.setSzwz(szwz);
+                    product.setEpc(epc);
+                    product.setOperation(operation);
+                    if(xq.equals("近效期")){
+                        Cache.mapTotal.get("jxq").add(product);
+                    }else if(xq.equals("远效期")){
+                        Cache.mapTotal.get("yxq").add(product);
+                    }else if(xq.equals("已过期")){
+                        Cache.mapTotal.get("ygq").add(product);
+                    }
+                }
+
+            }
+
+            System.out.println("耗时2:"+(System.currentTimeMillis()-start));
+            Message messageInitXQ = Message.obtain(Cache.myHandle);
+            Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bundInitXQ.putString("initJXQExternal","1");
+            messageInitXQ.setData(bundInitXQ);
+            Cache.myHandle.sendMessage(messageInitXQ);
 
         }catch (Exception e){
             e.printStackTrace();

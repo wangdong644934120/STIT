@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.st.p2018.entity.Event;
+import com.st.p2018.entity.Product;
 import com.st.p2018.entity.ProductBar;
 import com.st.p2018.entity.ProductRecord;
 import com.st.p2018.external.SocketClient;
@@ -26,6 +27,7 @@ public class Cache {
     public static Handler myHandleHCCS;
     public static Handler myHandleLockScreen;
     public static Handler myHandleSick;
+    public static Handler myHandleAccess;//患者确认
     public static boolean getPersonCard;
     public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
@@ -65,5 +67,8 @@ public class Cache {
     public static String threadFlag="";    //与第三方平台通讯线程标志
     public static String lockScreen="1";  //是否启用锁屏功能，0-不启用，1-启用
     public static String chooseSick="1"; //是否启用选择患者功能，0-不启用，1-启用
+    public static List<Product> listOperaSave=new ArrayList<Product>();  //护士存操作缓存
+    public static List<Product> listOperaOut=new ArrayList<Product>();  //护士取操作缓存
+    public static HashMap<String,List<Product>> mapTotal=new HashMap<String,List<Product>>(); //第三方平台获取到的效期统计信息
 
 }

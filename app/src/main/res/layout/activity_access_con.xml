@@ -46,6 +46,7 @@
                 android:background="@color/blue"
                 android:textColor="@color/colorWhite"
                 android:text="更改"
+                android:layout_marginRight="10px"
                 android:textSize="15dp" />
         </LinearLayout>
 

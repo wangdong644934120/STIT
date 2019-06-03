@@ -220,6 +220,10 @@ public class MainActivity extends Activity {
                                 Intent intent = new Intent(MainActivity.this, SickActivity.class);
                                 startActivity(intent);
                             }
+                            if(bundle.getString("ui").toString().equals("access")){
+                                Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
+                                startActivity(intent);
+                            }
                             if(bundle.getString("ui").toString().equals("tccx")){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                 builder.setIcon(android.R.drawable.ic_dialog_info);
@@ -401,6 +405,10 @@ public class MainActivity extends Activity {
                             initJXQData();
                             mChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
+                        if(bundle.getString("initJXQExternal")!=null){
+                            setData(new HashMap<String, String>());
+                            mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+                        }
                         if(bundle.getString("record")!=null){
                             Intent intent = new Intent(MainActivity.this, RecordActivity.class);
                             startActivity(intent);
@@ -479,11 +487,14 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
-                    Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
-                    startActivity(intent);
-                   /* String json="{\"order\":\"patient\",\"number\":\"111\",\"data\":[{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"},{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"}]}";
+                    /*Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
+                    startActivity(intent);*/
+                  //String json="{\"order\":\"patient\",\"number\":\"111\",\"data\":[{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"},{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"}]}";
                     String product="{\"order\":\"product\",\"number\":\"123456\",\"code\":\"321\"}";
-                    SocketClient.send(product);*/
+                    SocketClient.send(product);
+                    if(1==1){
+                        return;
+                    }
 
                    /* String zuomu9="15,77,143,41,193,66,19,171,193,63,138,43,129,48,36,155,33,38,10,172,193,16,13,87,33,81,161,133,162,79,149,44,130,72,30,4,130,59,148,2,2,51,21,130,66,28,15,217,34,26,152,66,2,22,26,154,2,19,166,196,194,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
                     String zuoshi8="11,71,19,160,161,64,13,95,97,40,5,106,97,38,29,6,33,32,139,214,161,19,36,5,33,76,141,227,194,68,135,228,98,38,151,156,98,24,14,236,194,22,20,3,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
@@ -638,6 +649,14 @@ public class MainActivity extends Activity {
 
     private void setData(HashMap<String,String> map) {
         try{
+            if(Cache.external){
+                String ygq=Cache.mapTotal.get("ygq")==null?"0":String.valueOf(Cache.mapTotal.get("ygq").size());
+                String jxq=Cache.mapTotal.get("jxq")==null?"0":String.valueOf(Cache.mapTotal.get("jxq").size());
+                String yxq=Cache.mapTotal.get("yxq")==null?"0":String.valueOf(Cache.mapTotal.get("yxq").size());
+                map.put("ygq","已过期("+ygq+"个)");
+                map.put("jxq","近效期("+jxq+"个)");
+                map.put("yxq","远效期("+yxq+"个)");
+            }
             entries.clear();
             entries.add(new PieEntry(1, map.get("ygq").toString()));
             entries.add(new PieEntry(1,  map.get("jxq").toString()));
@@ -676,6 +695,7 @@ public class MainActivity extends Activity {
         }
 
     }
+
 
     //显示柜型中其他内容
     private void initGXQT(){
@@ -955,28 +975,6 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void initAppName(){
-        try{
-            PZDao pzDao= new PZDao();
-            List<HashMap<String,String>> listPZ = pzDao.getPZ();
-            if(listPZ==null || listPZ.isEmpty()){
-                tvappTitle.setText("高值耗材柜");
-                Cache.appcode="0";
-            }else{
-                tvappTitle.setText(listPZ.get(0).get("appname")==null?"高值耗材柜":listPZ.get(0).get("appname").toString());
-                Cache.appcode=listPZ.get(0).get("appcode")==null?"0":listPZ.get(0).get("appcode").toString();
-                Cache.ServerIP=listPZ.get(0).get("serverip")==null?"0":listPZ.get(0).get("serverip").toString();
-                Cache.ServerPort=Integer.valueOf(listPZ.get(0).get("serverport")==null?"0":listPZ.get(0).get("serverport").toString());
-            }
-            if(!Cache.ServerIP.equals("") && Cache.ServerPort!=0){
-                logger.info("配置了第三方平台");
-                Cache.external=true;
-                new SocketClient().start();
-            }
-        }catch (Exception e){
-            logger.error("初始化app名称及编号出错",e);
-        }
-    }
 
     private SpannableString generateCenterSpannableText(String value) {
 

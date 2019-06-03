@@ -1,18 +1,25 @@
 package com.st.p2018.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Administrator on 2019/6/2.
  */
 
-public class Product implements Serializable{
+public class Product implements Serializable {
+
     private String pp; //品牌
     private String mc; //名称
     private String xqpc; //效期批次
     private String yxrq; //有效日期
     private String syts; //剩余天数
+    private String epc; //耗材epc
     private String szwz; //所在位置
+    private String operation; //操作
+
 
     public String getPp() {
         return pp;
@@ -60,5 +67,21 @@ public class Product implements Serializable{
 
     public void setSzwz(String szwz) {
         this.szwz = szwz;
+    }
+
+    public String getEpc() {
+        return epc;
+    }
+
+    public void setEpc(String epc) {
+        this.epc = epc;
+    }
+
+    public String getOperation() {
+        return operation;
+    }
+
+    public void setOperation(String operation) {
+        this.operation = operation;
     }
 }
