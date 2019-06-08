@@ -16,6 +16,8 @@ import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.MyTextToSpeech;
 
+import org.apache.log4j.Logger;
+
 import java.util.UUID;
 
 public class LockActivity extends Activity {
@@ -24,6 +26,7 @@ public class LockActivity extends Activity {
     private EditText mima;
     private Button btnlogin;
     private Button btnreset;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,23 +38,28 @@ public class LockActivity extends Activity {
         initView();
     }
     private void initView(){
-        zhanghao=(EditText)findViewById(R.id.zhanghao);
-        mima=(EditText)findViewById(R.id.mima);
-        btnlogin=(Button)findViewById(R.id.login);
-        btnreset=(Button)findViewById(R.id.reset);
-        btnlogin.setOnClickListener(new onClickListener());
-        btnreset.setOnClickListener(new onClickListener());
-        Cache.myHandleLockScreen = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
-                //提示信息
-                if (bundle.getString("close") != null) {
-                    closeActivity();
+        try{
+            zhanghao=(EditText)findViewById(R.id.zhanghao);
+            mima=(EditText)findViewById(R.id.mima);
+            btnlogin=(Button)findViewById(R.id.login);
+            btnreset=(Button)findViewById(R.id.reset);
+            btnlogin.setOnClickListener(new onClickListener());
+            btnreset.setOnClickListener(new onClickListener());
+            Cache.myHandleLockScreen = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    //提示信息
+                    if (bundle.getString("close") != null) {
+                        closeActivity();
+                    }
                 }
-            }
-        };
+            };
+        }catch (Exception e){
+            logger.error("初始化view出错",e);
+        }
+
     }
 
     /**
@@ -89,16 +97,21 @@ public class LockActivity extends Activity {
      * 登录验证
      */
     private void login(){
-        if(zhanghao.getText().toString().trim().equals("") || mima.getText().toString().trim().equals("")){
-            Toast.makeText(this, "账号或密码不能为空", Toast.LENGTH_SHORT).show();
-            MyTextToSpeech.getInstance().speak("账号或密码不能为空");
-            return;
+        try{
+            if(zhanghao.getText().toString().trim().equals("") || mima.getText().toString().trim().equals("")){
+                Toast.makeText(this, "账号或密码不能为空", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("账号或密码不能为空");
+                return;
+            }
+            String data=zhanghao.getText().toString().trim()+"+"+mima.getText().toString().trim();
+            String sendValue="{\"order\":\"power\",\"type\":\"3\",\"code\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\",\"data\":\""+data+"\"}";
+            if(sendExternal(sendValue)){
+                return;
+            }
+        }catch (Exception e){
+            logger.error("登录验证出错",e);
         }
-        String data=zhanghao.getText().toString().trim()+"+"+mima.getText().toString().trim();
-        String sendValue="{\"order\":\"power\",\"type\":\"3\",\"code\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\",\"data\":\""+data+"\"}";
-        if(sendExternal(sendValue)){
-            return;
-        }
+
     }
 
     /**

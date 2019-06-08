@@ -70,21 +70,6 @@ public class LoadActivity extends Activity {
         return true;
     }
 
-    /**
-     * 初始TTS引擎
-     */
-    private void initSpeechPlug() {
-        try {
-            if (!MySpeechUtil.checkSpeechServiceInstall(LoadActivity.this)) {
-                MySpeechUtil.processInstall(LoadActivity.this,
-                        "SpeechService.apk");
-            }
-            MyTextToSpeech.getInstance().initial(LoadActivity.this);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     private void initAppName(){
         try{
             PZDao pzDao= new PZDao();
@@ -114,7 +99,6 @@ public class LoadActivity extends Activity {
                     Utils.getPingYin("张");
                     initDataBase();
                     initAppName();
-                    initSpeechPlug();
                     Intent intent = new Intent(LoadActivity.this, MainActivity.class);
                     startActivity(intent);
                     closeLoad();

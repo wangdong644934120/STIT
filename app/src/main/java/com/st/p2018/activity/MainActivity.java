@@ -116,14 +116,15 @@ public class MainActivity extends Activity {
         //LogUtil.initLog();// 初始log
         logger =Logger.getLogger(this.getClass());
         initView();
-        //initDataBase();
-        //initAppName();
-        //initSpeechPlug();
+        initSpeechPlug();
         Cache.myContext = this;
         initJXQData();
         new DeviceCom().start();
-        Intent intent = new Intent(MainActivity.this, LockActivity.class);
-        startActivity(intent);
+        if(Cache.lockScreen.equals("1")){
+            Intent intent = new Intent(MainActivity.this, LockActivity.class);
+            startActivity(intent);
+        }
+
     }
 
 
@@ -135,7 +136,6 @@ public class MainActivity extends Activity {
             btnPD=(Button)findViewById(R.id.pandian);
             btnPD.setOnClickListener(new onClickListener());
             rl=(RelativeLayout)findViewById(R.id.mylayout);
-
             tvD=(Button)findViewById(R.id.dian);
             tvD.setOnClickListener(new onClickListener());
             mChart = (PieChart) findViewById(R.id.chart);
@@ -146,30 +146,6 @@ public class MainActivity extends Activity {
             logger.error("显示view出错",e);
         }
 
-    }
-
-    private void initExternal(){
-
-    }
-    private boolean initDataBase() {
-
-        try {
-            DatabaseManager.createDatabaseIfNone(MainActivity.this);// 检测数据库，若不存在则创建
-            // 数据库连接测试
-            SQLiteDatabase db = DatabaseManager.openReadWrite();
-            if (db != null && db.isDatabaseIntegrityOk()) {
-                //logger.info("打开数据库连接成功");
-                db.close();// 关闭数据库
-            } else {
-                return false;// 数据库打开失败或不可用
-            }
-            UpdateDB upDB = new UpdateDB(MainActivity.this);
-            upDB.updata();
-        } catch (Exception ex) {
-            //logger.error("初始化数据库出错", ex);
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -186,6 +162,7 @@ public class MainActivity extends Activity {
             ex.printStackTrace();
         }
     }
+
     private void initHandler(){
         try{
             Cache.myHandle = new Handler() {
@@ -222,6 +199,14 @@ public class MainActivity extends Activity {
                             }
                             if(bundle.getString("ui").toString().equals("access")){
                                 Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
+                                startActivity(intent);
+                            }
+                            if(bundle.getString("ui").toString().equals("lock")){
+                                Intent intent = new Intent(MainActivity.this, LockActivity.class);
+                                startActivity(intent);
+                            }
+                            if(bundle.getString("ui").toString().equals("pd")){
+                                Intent intent = new Intent(MainActivity.this, PDActivity.class);
                                 startActivity(intent);
                             }
                             if(bundle.getString("ui").toString().equals("tccx")){
@@ -487,6 +472,7 @@ public class MainActivity extends Activity {
                     selectDialog.show();
                     break;
                 case R.id.kaideng:
+                    logger.info("点击开灯");
                     /*Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
                     startActivity(intent);*/
                   //String json="{\"order\":\"patient\",\"number\":\"111\",\"data\":[{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"},{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"}]}";
@@ -551,44 +537,6 @@ public class MainActivity extends Activity {
         }
 
     }
-
-/*    private boolean initDataBase() {
-
-        try {
-            DatabaseManager.createDatabaseIfNone(MainActivity.this);// 检测数据库，若不存在则创建
-            // 数据库连接测试
-            SQLiteDatabase db = DatabaseManager.openReadWrite();
-            if (db != null && db.isDatabaseIntegrityOk()) {
-                //logger.info("打开数据库连接成功");
-                db.close();// 关闭数据库
-            } else {
-                return false;// 数据库打开失败或不可用
-            }
-            UpdateDB upDB = new UpdateDB(MainActivity.this);
-            upDB.updata();
-        } catch (Exception ex) {
-            //logger.error("初始化数据库出错", ex);
-            return false;
-        }
-        return true;
-    }*/
-
-
-
-/*    *//**
-     * 初始TTS引擎
-     *//*
-    private void initSpeechPlug() {
-        try {
-            if (!MySpeechUtil.checkSpeechServiceInstall(MainActivity.this)) {
-                MySpeechUtil.processInstall(MainActivity.this,
-                        "SpeechService.apk");
-            }
-            MyTextToSpeech.getInstance().initial(MainActivity.this);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }*/
 
     private void initPieChart() {
         try{
@@ -695,7 +643,6 @@ public class MainActivity extends Activity {
         }
 
     }
-
 
     //显示柜型中其他内容
     private void initGXQT(){
@@ -975,7 +922,6 @@ public class MainActivity extends Activity {
         }
     }
 
-
     private SpannableString generateCenterSpannableText(String value) {
 
         SpannableString s = new SpannableString(value);
@@ -1012,7 +958,6 @@ public class MainActivity extends Activity {
             return String.valueOf((int) entry.getY());
         }
     }
-
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
@@ -1219,7 +1164,6 @@ public class MainActivity extends Activity {
     private void pdshow(){
         Intent intent = new Intent(MainActivity.this, PDActivity.class);
         startActivity(intent);
-
     }
 
 }

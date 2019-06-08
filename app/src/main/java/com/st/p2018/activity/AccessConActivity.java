@@ -1,6 +1,7 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +9,7 @@ import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.bin.david.form.data.Column;
@@ -15,18 +17,20 @@ import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.st.p2018.entity.Product;
 import com.st.p2018.entity.ProductRecord;
+import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.bin.david.form.core.SmartTable;
-import com.bin.david.form.data.Column;
-import com.bin.david.form.data.style.FontStyle;
-import com.bin.david.form.data.table.TableData;
+import com.st.p2018.util.CacheSick;
 
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 
 public class AccessConActivity extends Activity {
@@ -35,6 +39,13 @@ public class AccessConActivity extends Activity {
     private TextView tvtitle;
     private SmartTable tableSave;
     private SmartTable tableOut;
+    private TextView tvSick;
+    private TextView tvSaveCount;
+    private TextView tvOutCount;
+    private Button btnGG;
+    private Button btnZQ;
+    private Button btnYW;
+    private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,89 +61,97 @@ public class AccessConActivity extends Activity {
     }
 
     private void initView(){
-        tvfh=(TextView)findViewById(R.id.fh);
-        tvfh.setOnClickListener(new onClickListener());
-        tvtitle=(TextView)findViewById(R.id.title);
-        tvtitle.setText("存取确认");
-        initSave();
-        initOut();
-  /*      Cache.myHandleAccess= new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
-                //提示信息
-                if (bundle.getString("opera") != null) {
-                    initSave();
-                    initOut();
+        try{
+            tvfh=(TextView)findViewById(R.id.fh);
+            tvfh.setOnClickListener(new onClickListener());
+            tvtitle=(TextView)findViewById(R.id.title);
+            tvtitle.setText("存取确认");
+            btnGG=(Button)findViewById(R.id.btngg);
+            btnGG.setOnClickListener(new onClickListener());
+            tvSick=(TextView)findViewById(R.id.sickname);
+            tvSaveCount=(TextView)findViewById(R.id.savecount);
+            tvOutCount=(TextView)findViewById(R.id.outcount);
+            btnZQ=(Button)findViewById(R.id.btnzq);
+            btnZQ.setOnClickListener(new onClickListener());
+            btnYW=(Button)findViewById(R.id.btnyw);
+            btnYW.setOnClickListener(new onClickListener());
+            initSave();
+            initOut();
+            tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
+            tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
+            tvSick.setText(CacheSick.sickChoose);
+            Cache.myHandleAccess= new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    //提示信息
+                    if (bundle.getString("sickgg") != null) {
+                        tvSick.setText(CacheSick.sickChoose);
+                    }
+
+
                 }
-
-
-            }
-        };*/
-
+            };
+        }catch (Exception e){
+            logger.error("初始化view出错",e);
+        }
     }
 
+    /**
+     * 初始化存操作耗材
+     */
     private void initSave(){
-        Column<String> column1 = new Column<>("品牌", "pp");
-        Column<String> column2 = new Column<>("名称", "mc");
-        Column<String> column3 = new Column<>("效期批次", "xqpc");
-        Column<String> column4 = new Column<>("剩余天数", "yxrq");
-        Column<String> column5 = new Column<>("所在位置", "szwz");
+        try{
+            Column<String> column1 = new Column<>("品牌", "pp");
+            Column<String> column2 = new Column<>("名称", "mc");
+            Column<String> column3 = new Column<>("效期批次", "xqpc");
+            //Column<String> column4 = new Column<>("剩余天数", "yxrq");
+            Column<String> column5 = new Column<>("所在位置", "szwz");
 
-        /*List<Product> list =new ArrayList<Product>();
-        for(int i=0;i<3;i++){
-            Product product=new Product();
-            product.setMc("导管");
-            product.setPp("波士顿");
-            product.setYxrq("2020-10-10");
-            product.setXqpc("xiqoqipici123456");
-            product.setSzwz("1");
-            list.add(product);
+            //表格数据 datas是需要填充的数据
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3,  column5);
+            //设置数据
+            tableSave = findViewById(R.id.tablesave);
+            tableSave.setTableData(tableData);
+            tableSave.getConfig().setShowXSequence(false);
+            tableSave.getConfig().setShowYSequence(false);
+            tableSave.getConfig().setShowTableTitle(false);
+            tableSave.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
+            tableSave.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
+            tableSave.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
+        }catch (Exception e){
+            logger.error("初始化存操作耗材数据出错",e);
+        }
 
-        }*/
-        //表格数据 datas是需要填充的数据
-        TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column4, column5);
-        //设置数据
-        tableSave = findViewById(R.id.tablesave);
-        tableSave.setTableData(tableData);
-        tableSave.getConfig().setShowXSequence(false);
-        tableSave.getConfig().setShowYSequence(false);
-        tableSave.getConfig().setShowTableTitle(false);
-        tableSave.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
-        tableSave.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
-        tableSave.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
     }
 
+    /**
+     * 初始化取操作耗材
+     */
     private void initOut(){
-        Column<String> column1 = new Column<>("品牌", "pp");
-        Column<String> column2 = new Column<>("名称", "mc");
-        Column<String> column3 = new Column<>("效期批次", "xqpc");
-        Column<String> column4 = new Column<>("剩余天数", "yxrq");
-        Column<String> column5 = new Column<>("所在位置", "szwz");
+        try{
+            Column<String> column1 = new Column<>("品牌", "pp");
+            Column<String> column2 = new Column<>("名称", "mc");
+            Column<String> column3 = new Column<>("效期批次", "xqpc");
+            //Column<String> column4 = new Column<>("剩余天数", "yxrq");
+            Column<String> column5 = new Column<>("所在位置", "szwz");
 
-      /*  List<Product> list =new ArrayList<Product>();
-        for(int i=0;i<150;i++){
-            Product product=new Product();
-            product.setMc("导管");
-            product.setPp("波士顿");
-            product.setYxrq("2020-10-10");
-            product.setXqpc("xiqoqipici123456");
-            product.setSzwz("1");
-            list.add(product);
+            //表格数据 datas是需要填充的数据
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3,  column5);
+            //设置数据
+            tableOut = findViewById(R.id.tableout);
+            tableOut.setTableData(tableData);
+            tableOut.getConfig().setShowXSequence(false);
+            tableOut.getConfig().setShowYSequence(false);
+            tableOut.getConfig().setShowTableTitle(false);
+            tableOut.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
+            tableOut.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
+            tableOut.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
+        }catch (Exception e){
+            logger.error("初始化取操作耗材数据出错",e);
+        }
 
-        }*/
-        //表格数据 datas是需要填充的数据
-        TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3, column4, column5);
-        //设置数据
-        tableOut = findViewById(R.id.tableout);
-        tableOut.setTableData(tableData);
-        tableOut.getConfig().setShowXSequence(false);
-        tableOut.getConfig().setShowYSequence(false);
-        tableOut.getConfig().setShowTableTitle(false);
-        tableOut.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
-        tableOut.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
-        tableOut.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
     }
 
     /**
@@ -148,7 +167,21 @@ public class AccessConActivity extends Activity {
             if (v.isEnabled() == false)
                 return;
             switch (v.getId()) {
-
+                case R.id.btnzq:
+                    btnZQ.setPressed(true);
+                    sendQR("0");
+                    btnZQ.setPressed(false);
+                    break;
+                case R.id.btnyw:
+                    btnYW.setPressed(true);
+                    sendQR("-1");
+                    btnYW.setPressed(false);
+                    break;
+                case R.id.btngg:
+                    Intent intent = new Intent(AccessConActivity.this, SickActivity.class);
+                    intent.putExtra("sickgg",true);
+                    startActivity(intent);
+                    break;
                 case R.id.fh:
                     AccessConActivity.this.finish();
                     break;
@@ -158,4 +191,50 @@ public class AccessConActivity extends Activity {
         }
 
     }
+
+    /**
+     * 发送正确或有误数据
+     * @param zqoryw
+     */
+    private void sendQR(String zqoryw){
+        try{
+            String allproduct="";
+            for(Product p : Cache.listOperaSave){
+                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"operation\":\"存\"},";
+            }
+            for(Product p : Cache.listOperaOut){
+                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"operation\":\"取\"},";
+            }
+            if(allproduct.length()>1){
+                allproduct=allproduct.substring(0,allproduct.length()-1);
+            }
+            String sendValue="{\"order\":\"patientproduct\",\"number\":\""+ UUID.randomUUID().toString()+"\"," +
+                    "\"data\":{\"result\":\""+zqoryw+"\",\"patient\":\""+CacheSick.getSickMessAndID().get(CacheSick.sickChoose)+"\"," +
+                    "\"operator\":\""+Cache.operatorCode+"\",\"product\":["+allproduct+"]}}";
+            if(SocketClient.socket!=null){
+                SocketClient.send(sendValue);
+            }
+
+        }catch (Exception e){
+            logger.error("发送耗材数据出错",e);
+        }
+        try{
+            this.finish();
+            if(Cache.lockScreen.equals("1")){
+                Message message = Message.obtain(Cache.myHandle);
+                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                bund.putString("ui","lock");
+                message.setData(bund);
+                Cache.myHandle.sendMessage(message);
+            }
+        }catch (Exception e){
+            logger.error("关闭界面，打开锁屏界面出错",e);
+        }
+
+
+
+    }
+
+
+
 }

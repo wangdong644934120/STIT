@@ -15,6 +15,7 @@ import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.st.p2018.dao.ProductDao;
+import com.st.p2018.entity.Product;
 import com.st.p2018.entity.ProductQuery;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
@@ -52,23 +53,42 @@ public class OperationActivity extends Activity {
             initView();
 
             tvtitle.setText(title);
-            //https://github.com/huangyanbin/smartTable
-            //普通列
-            Column<String> column1 = new Column<>("品牌", "pp");
-            Column<String> column2 = new Column<>("种类", "type");
-            Column<String> column3 = new Column<>("规格", "gg");
-            Column<String> column4 = new Column<>("有效日期", "yxrq");
-            Column<String> column5 = new Column<>("剩余天数", "syts");
-            Column<String> column6 = new Column<>("位置(层/抽)", "wz");
 
-            List<ProductQuery> list =getdata(yxqFlag);
-            //表格数据 datas是需要填充的数据
-            TableData<ProductQuery> tableData = new TableData<ProductQuery>("", list, column1, column2, column3, column4, column5, column6);
-            //设置数据
-            table = findViewById(R.id.table);
+            if(Cache.external){
+                Column<String> column1 = new Column<>("品牌", "pp");
+                Column<String> column2 = new Column<>("名称", "mc");
+                Column<String> column3 = new Column<>("效期批次", "xqpc");
+                //Column<String> column4 = new Column<>("剩余天数", "yxrq");
+                Column<String> column5 = new Column<>("所在位置", "szwz");
+                if(yxqFlag.contains("已过期")){
+                   yxqFlag="ygq";
+                }else if(yxqFlag.contains("近效期")){
+                    yxqFlag="jxq";
+                }else if(yxqFlag.contains("远效期")){
+                   yxqFlag="yxq";
+                }
+                //表格数据 datas是需要填充的数据
+                TableData<Product> tableData = new TableData<Product>("", Cache.mapTotal.get(yxqFlag), column1, column2, column3,  column5);
+                //设置数据
+                table = findViewById(R.id.table);
+                table.setTableData(tableData);
+            }else{
+                //普通列
+                Column<String> column1 = new Column<>("品牌", "pp");
+                Column<String> column2 = new Column<>("种类", "type");
+                Column<String> column3 = new Column<>("规格", "gg");
+                Column<String> column4 = new Column<>("有效日期", "yxrq");
+                Column<String> column5 = new Column<>("剩余天数", "syts");
+                Column<String> column6 = new Column<>("位置(层/抽)", "wz");
 
-            //table.setZoom(true,3);是否缩放
-            table.setTableData(tableData);
+                List<ProductQuery> list =getdata(yxqFlag);
+                //表格数据 datas是需要填充的数据
+                TableData<ProductQuery> tableData = new TableData<ProductQuery>("", list, column1, column2, column3, column4, column5, column6);
+                //设置数据
+                table = findViewById(R.id.table);
+                table.setTableData(tableData);
+            }
+
             table.getConfig().setShowXSequence(false);
             table.getConfig().setShowYSequence(false);
             table.getConfig().setShowTableTitle(false);

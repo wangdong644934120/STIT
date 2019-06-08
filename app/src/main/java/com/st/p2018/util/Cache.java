@@ -4,7 +4,9 @@ import android.content.Context;
 
 import android.os.Handler;
 
+import com.st.p2018.activity.PDActivity;
 import com.st.p2018.entity.Event;
+import com.st.p2018.entity.PDEntity;
 import com.st.p2018.entity.Product;
 import com.st.p2018.entity.ProductBar;
 import com.st.p2018.entity.ProductRecord;
@@ -70,5 +72,7 @@ public class Cache {
     public static List<Product> listOperaSave=new ArrayList<Product>();  //护士存操作缓存
     public static List<Product> listOperaOut=new ArrayList<Product>();  //护士取操作缓存
     public static HashMap<String,List<Product>> mapTotal=new HashMap<String,List<Product>>(); //第三方平台获取到的效期统计信息
+    public static String operatorCode; //操作员编号
+    public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
 
 }

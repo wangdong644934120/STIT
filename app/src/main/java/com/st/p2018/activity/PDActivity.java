@@ -30,6 +30,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.device.HCProtocol;
+import com.st.p2018.entity.PDEntity;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.ExpportDataBeExcel;
@@ -49,7 +50,6 @@ public class PDActivity extends Activity {
     private TextView tvfh;
     private TextView tvtitle;
     private RelativeLayout rl;
-    private HashMap<String,PDEntity> mapPD=new HashMap<>(); //key wz,value 统计
     private Logger logger = Logger.getLogger(this.getClass());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,38 +70,12 @@ public class PDActivity extends Activity {
             tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("盘点结果");
-            Set<String> dealKeys=Cache.HCCSMap.keySet();
-            HashMap<String,String> mapSave=new HashMap<String,String>();
-            List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
-            ProductDao productDao=new ProductDao();
-            list=productDao.getAllProduct();
-            mapPD.clear();
-            for(HashMap map : list){
-                //取出标签
-                if(!map.get("wz").toString().equals("0") && !dealKeys.contains(map.get("card").toString())){
-                    //标签被取出
-                    mapSave.put(map.get("card").toString(),"0");
-                }
-                //存放标签
-                if(map.get("wz").toString().equals("0") && dealKeys.contains(map.get("card").toString())){
-                    //标签被存放
-                    mapSave.put(map.get("card").toString(),Cache.HCCSMap.get(map.get("card").toString()).toString());
-                    //计算效期
-                    initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
-                }
-                //标签在柜子中
-                if(dealKeys.contains(map.get("card").toString())){
-                    if(!map.get("wz").toString().equals("0") && !Cache.HCCSMap.get(map.get("card").toString()).equals(map.get("wz").toString())){
-                        //标签位置更换
-                        mapSave.put(map.get("card").toString(),Cache.HCCSMap.get(map.get("card").toString()));
-                        //计算效期
-                        initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
-                    }else if(Cache.HCCSMap.get(map.get("card").toString()).equals(map.get("wz").toString())){
-                        //标签未动
-                        initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
-                    }
-                }
+            if(Cache.external){
+
+            }else{
+                getDataFromLocal();
             }
+
             int yxcs=0;//有效层数
             if(Cache.gcqy1){
                 yxcs=1;
@@ -144,8 +118,8 @@ public class PDActivity extends Activity {
                 TextView tv1y = new TextView(this);
                 tv1y.setBackgroundColor(Color.RED);
                 String v1="0";
-                if(mapPD.get(String.valueOf(i))!=null ){
-                    v1=String.valueOf(mapPD.get(String.valueOf(i)).getYgq());
+                if(Cache.mapPD.get(String.valueOf(i))!=null ){
+                    v1=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYgq());
                 }
                 tv1y.setText(v1);
                 tv1y.setGravity(Gravity.CENTER);
@@ -160,8 +134,8 @@ public class PDActivity extends Activity {
                 //tv2y.setBackgroundColor(Color.YELLOW);
                 tv2y.setBackgroundColor(Color.argb(255,238,242,14));
                 String v2="0";
-                if(mapPD.get(String.valueOf(i))!=null){
-                    v2=String.valueOf(mapPD.get(String.valueOf(i)).getJxq());
+                if(Cache.mapPD.get(String.valueOf(i))!=null){
+                    v2=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getJxq());
                 }
                 tv2y.setText(v2);
                 tv2y.setTextColor(Color.BLACK);
@@ -177,8 +151,8 @@ public class PDActivity extends Activity {
                 tv3y.setBackgroundColor(Color.argb(255,135,162,86));
                 tv3y.setGravity(Gravity.CENTER);
                 String v3="0";
-                if(mapPD.get(String.valueOf(i))!=null){
-                    v3=String.valueOf(mapPD.get(String.valueOf(i)).getYxq());
+                if(Cache.mapPD.get(String.valueOf(i))!=null){
+                    v3=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYxq());
                 }
                 tv3y.setText(v3);
                 tv3y.setTextColor(Color.BLACK);
@@ -199,18 +173,56 @@ public class PDActivity extends Activity {
                 rl.addView(tv4y);
             }
             tvtitle.setText("盘点结果 ("+titleShow+"个)");
-            //数据库更新内容
-            Set<String> updatesKey=mapSave.keySet();
-            for(String key : updatesKey){
-                productDao.updateProductWZ(mapSave.get(key).toString(),key);
-            }
-            //初始化近效期图示
-            sendJXQ();
+
         }catch(Exception e){
             logger.error("初始化界面出错",e);
         }
     }
 
+    /**
+     * 从本地数据库获取耗材信息
+     */
+    private void getDataFromLocal(){
+        Set<String> dealKeys=Cache.HCCSMap.keySet();
+        HashMap<String,String> mapSave=new HashMap<String,String>();
+        List<HashMap<String,String>> list =new ArrayList<HashMap<String,String>>();
+        ProductDao productDao=new ProductDao();
+        list=productDao.getAllProduct();
+        Cache.mapPD.clear();
+        for(HashMap map : list){
+            //取出标签
+            if(!map.get("wz").toString().equals("0") && !dealKeys.contains(map.get("card").toString())){
+                //标签被取出
+                mapSave.put(map.get("card").toString(),"0");
+            }
+            //存放标签
+            if(map.get("wz").toString().equals("0") && dealKeys.contains(map.get("card").toString())){
+                //标签被存放
+                mapSave.put(map.get("card").toString(),Cache.HCCSMap.get(map.get("card").toString()).toString());
+                //计算效期
+                initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
+            }
+            //标签在柜子中
+            if(dealKeys.contains(map.get("card").toString())){
+                if(!map.get("wz").toString().equals("0") && !Cache.HCCSMap.get(map.get("card").toString()).equals(map.get("wz").toString())){
+                    //标签位置更换
+                    mapSave.put(map.get("card").toString(),Cache.HCCSMap.get(map.get("card").toString()));
+                    //计算效期
+                    initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
+                }else if(Cache.HCCSMap.get(map.get("card").toString()).equals(map.get("wz").toString())){
+                    //标签未动
+                    initXQ(Cache.HCCSMap.get(map.get("card").toString()).toString(),map.get("yxq").toString());
+                }
+            }
+        }
+        //数据库更新内容
+        Set<String> updatesKey=mapSave.keySet();
+        for(String key : updatesKey){
+            productDao.updateProductWZ(mapSave.get(key).toString(),key);
+        }
+        //初始化近效期图示
+        sendJXQ();
+    }
     private void initXQ(String wz,String xq){
         try{
             int ygq=0;
@@ -219,22 +231,22 @@ public class PDActivity extends Activity {
             long current = System.currentTimeMillis();
             long dt = current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
             long t7=dt+1000*3600*24*7;
-            if(mapPD.get(wz)==null){
+            if(Cache.mapPD.get(wz)==null){
                 PDEntity pdEntity=new PDEntity();
                 pdEntity.setJxq(0);
                 pdEntity.setYgq(0);
                 pdEntity.setYxq(0);
-                mapPD.put(wz,pdEntity);
+                Cache.mapPD.put(wz,pdEntity);
             }
             //已过期  小于当前时间
             //近效期  当天0点到7天后24点
             //远效期  8天后0点后
             if(Long.valueOf(xq)<dt){
-                mapPD.get(wz).setYgq(mapPD.get(wz).getYgq()+1);
+                Cache.mapPD.get(wz).setYgq(Cache.mapPD.get(wz).getYgq()+1);
             }else if(Long.valueOf(xq)>=dt && Long.valueOf(xq)<t7){
-                mapPD.get(wz).setJxq(mapPD.get(wz).getJxq()+1);
+                Cache.mapPD.get(wz).setJxq(Cache.mapPD.get(wz).getJxq()+1);
             }else if(Long.valueOf(xq)>=t7){
-                mapPD.get(wz).setYxq(mapPD.get(wz).getYxq()+1);
+                Cache.mapPD.get(wz).setYxq(Cache.mapPD.get(wz).getYxq()+1);
             }
 
         }catch (Exception e){
@@ -274,33 +286,4 @@ public class PDActivity extends Activity {
 
     }
 
-    class PDEntity {
-        private int ygq=0;
-        private int jxq=0;
-        private int yxq=0;
-
-        public int getYgq() {
-            return ygq;
-        }
-
-        public void setYgq(int ygq) {
-            this.ygq = ygq;
-        }
-
-        public int getJxq() {
-            return jxq;
-        }
-
-        public void setJxq(int jxq) {
-            this.jxq = jxq;
-        }
-
-        public int getYxq() {
-            return yxq;
-        }
-
-        public void setYxq(int yxq) {
-            this.yxq = yxq;
-        }
-    }
 }

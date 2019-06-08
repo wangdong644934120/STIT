@@ -401,70 +401,87 @@ public class DataThread extends Thread {
                 updateJD(jd,false);
                 //关闭盘存进度
                 closeJD();
-                Set<String> pr=map.keySet();
+
                 logger.info("获取标签个数："+map.size());
                /* for(String p : pr){
                     logger.info("标签："+p+",位置："+map.get(p));
                 }*/
                 //如果连接第三方平台
-                if(Cache.external){
-                    //发送数据到第三方平台
-                    if(SocketClient.socket!=null){
-                        HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>();
-                        for(String p : pr){
-                            if(mapJSON.get(map.get(p))==null){
-                                List<String> listP = new ArrayList<String>();
-                                listP.add(p);
-                                mapJSON.put(map.get(p),listP);
-                            }else{
-                                mapJSON.get(map.get(p)).add(p);
-                            }
-                        }
-                        StringBuilder sb = new StringBuilder();
-                        sb.append("{\"order\":\"product\",\"number\":\"");
-                        sb.append(UUID.randomUUID().toString()).append("\",\"data\":[");
-                        Set<String> location = mapJSON.keySet();
-                        for(String loa : location){
-                            sb.append("{\"location\":\"").append(loa).append("\",");
-                            sb.append("\"data\":[");
-                            List<String> listCard= mapJSON.get(loa);
-                            for(String card : listCard){
-                                sb.append("\"").append(card).append("\",");
-                            }
-                            sb.deleteCharAt(sb.length()-1).append("]},");
-                        }
-                        if(!location.isEmpty()){
-                            sb.deleteCharAt(sb.length()-1);
-                        }
-                        sb.append("]}");
-                        String sendValue=sb.toString();
-                        SocketClient.send(sendValue);
-                    }
+               /* if(Cache.external){
+
                     return;
-                }
+                }*/
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
                     //耗材初始化要数据
                     Cache.HCCSMap=(HashMap<String,String>)map.clone();
                     map.clear();
                     sendHCCS();
+                    Cache.getHCCS=0;
                 }else if(Cache.getHCCS==2){
                     //主界面盘点要数据
-                    Cache.HCCSMap=(HashMap<String,String>)map.clone();
-                    map.clear();
-                    sendPDZJM();
-                }else{
+                    if(Cache.external){
+                        //连接第三方平台
+                        sendExternalProduct("total");
+                    }else{
+                        //从本地数据库读取数据进行处理
+                        Cache.HCCSMap=(HashMap<String,String>)map.clone();
+                        map.clear();
+                        sendPDZJM();
+                    }
+                    Cache.getHCCS=0;
+                }else  if(Cache.getHCCS==0){
                     //关门盘点数据
-                    HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-                    map.clear();
-                    new DataDeal(mapBQ).start();
-                    //sendTS("状态:盘存耗时:"+(System.currentTimeMillis()-pdstart));
+                    if(Cache.external){
+                        sendExternalProduct("product");
+                    }else{
+                        HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                        map.clear();
+                        new DataDeal(mapBQ).start();
+                    }
                 }
 
             }
         }
 
     }
+
+    private void sendExternalProduct(String order){
+        //发送数据到第三方平台
+        if(SocketClient.socket!=null){
+            Set<String> pr=map.keySet();
+            HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>();
+            for(String p : pr){
+                if(mapJSON.get(map.get(p))==null){
+                    List<String> listP = new ArrayList<String>();
+                    listP.add(p);
+                    mapJSON.put(map.get(p),listP);
+                }else{
+                    mapJSON.get(map.get(p)).add(p);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("{\"order\":\""+order+"\",\"number\":\"");
+            sb.append(UUID.randomUUID().toString()).append("\",\"data\":[");
+            Set<String> location = mapJSON.keySet();
+            for(String loa : location){
+                sb.append("{\"location\":\"").append(loa).append("\",");
+                sb.append("\"data\":[");
+                List<String> listCard= mapJSON.get(loa);
+                for(String card : listCard){
+                    sb.append("\"").append(card).append("\",");
+                }
+                sb.deleteCharAt(sb.length()-1).append("]},");
+            }
+            if(!location.isEmpty()){
+                sb.deleteCharAt(sb.length()-1);
+            }
+            sb.append("]}");
+            String sendValue=sb.toString();
+            SocketClient.send(sendValue);
+        }
+    }
+
     //获取标签数据
     private void getCard(){
         //有标签数据
@@ -722,9 +739,6 @@ public class DataThread extends Thread {
         if(Cache.external){
             bl=true;
             //发送数据到第三方平台
-           /* if(Cache.socketClient!=null){
-                Cache.socketClient.send(sendValue);
-            }*/
            if(SocketClient.socket!=null){
                SocketClient.send(sendValue);
            }

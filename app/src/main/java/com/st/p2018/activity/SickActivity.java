@@ -50,6 +50,7 @@ public class SickActivity extends Activity {
     private RelativeLayout relativeLayout;
     private LinearLayout layoutLoad;
     private Logger logger = Logger.getLogger(SickActivity.class);
+    private boolean sickgg=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,58 +60,62 @@ public class SickActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
-        tvtitle=(TextView)findViewById(R.id.title);
-        tvtitle.setText("选取患者");
-        tvfh=(TextView)findViewById(R.id.fh);
-        tvfh.setOnClickListener(new onClickListener());
-        btnSickOK=(Button)findViewById(R.id.sickok);
-        btnSickOK.setOnClickListener(new onClickListener());
-        btnSickCancle=(Button)findViewById(R.id.sickcancle);
-        btnSickCancle.setOnClickListener(new onClickListener());
-        ivGif=(ImageView)findViewById(R.id.imageview1);
-        relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayouttxl);
-        layoutLoad=(LinearLayout)findViewById(R.id.loadsicktxl);
-
-        RequestOptions options = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-        Glide.with(this).load(R.drawable.loadsick).apply(options).into(ivGif);
-
-
-        getSick();
-        Cache.myHandleSick = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
-                //提示信息
-                if (bundle.getString("show") != null) {
-                    showSick();
-                }
-            }
-        };
-        //contactNames = new String[] {"456","张三丰", "郭靖", "黄蓉", "黄老邪", "赵敏", "123", "天山童姥", "任我行", "于万亭", "陈家洛+2019-12-20+201912200001+心内一", "韦小宝", "$6", "穆人清", "陈圆圆", "郭芙", "郭襄", "穆念慈", "东方不败", "梅超风", "林平之", "林远图", "灭绝师太", "段誉", "鸠摩智"};
-        contactList = (RecyclerView) findViewById(R.id.contact_list);
-        letterView = (LetterView) findViewById(R.id.letter_view);
-        layoutManager = new LinearLayoutManager(this);
-        //adapter = new ContactAdapter(this, contactNames);
-
-        contactList.setLayoutManager(layoutManager);
-        contactList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        //contactList.setAdapter(adapter);
-
-        letterView.setCharacterListener(new LetterView.CharacterClickListener() {
-            @Override
-            public void clickCharacter(String character) {
-                layoutManager.scrollToPositionWithOffset(adapter.getScrollPosition(character), 0);
-            }
-
-            @Override
-            public void clickArrow() {
-                layoutManager.scrollToPositionWithOffset(0, 0);
-            }
-        });
+        initView();
     }
 
+    private  void initView(){
+        try{
+            tvtitle=(TextView)findViewById(R.id.title);
+            tvtitle.setText("选取患者");
+            tvfh=(TextView)findViewById(R.id.fh);
+            tvfh.setOnClickListener(new onClickListener());
+            btnSickOK=(Button)findViewById(R.id.sickok);
+            btnSickOK.setOnClickListener(new onClickListener());
+            btnSickCancle=(Button)findViewById(R.id.sickcancle);
+            btnSickCancle.setOnClickListener(new onClickListener());
+            ivGif=(ImageView)findViewById(R.id.imageview1);
+            relativeLayout=(RelativeLayout)findViewById(R.id.relativeLayouttxl);
+            layoutLoad=(LinearLayout)findViewById(R.id.loadsicktxl);
+
+            RequestOptions options = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+            Glide.with(this).load(R.drawable.loadsick).apply(options).into(ivGif);
+            if(getIntent().getSerializableExtra("sickgg")!=null){
+                sickgg=(Boolean)getIntent().getSerializableExtra("sickgg");
+            }
+            getSick();
+            Cache.myHandleSick = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    //提示信息
+                    if (bundle.getString("show") != null) {
+                        showSick();
+                    }
+                }
+            };
+
+            contactList = (RecyclerView) findViewById(R.id.contact_list);
+            letterView = (LetterView) findViewById(R.id.letter_view);
+            layoutManager = new LinearLayoutManager(this);
+            contactList.setLayoutManager(layoutManager);
+            contactList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+            letterView.setCharacterListener(new LetterView.CharacterClickListener() {
+                @Override
+                public void clickCharacter(String character) {
+                    layoutManager.scrollToPositionWithOffset(adapter.getScrollPosition(character), 0);
+                }
+
+                @Override
+                public void clickArrow() {
+                    layoutManager.scrollToPositionWithOffset(0, 0);
+                }
+            });
+        }catch (Exception e){
+            logger.error("初始化view出错",e);
+        }
+    }
     /**
      * 单击事件监听
      *
@@ -131,8 +136,7 @@ public class SickActivity extends Activity {
                     break;
                 case R.id.sickcancle:
                     btnSickCancle.setPressed(true);
-                    CacheSick.sickChoose="";
-                    SickActivity.this.finish();
+                    sickCancle();
                     btnSickCancle.setPressed(false);
                     break;
 
@@ -147,31 +151,81 @@ public class SickActivity extends Activity {
 
     }
 
+    /**
+     * 确认
+     */
     private void sickOK(){
+        try{
+            //通过点击更改按钮打开的界面
+            if(sickgg){
+                Message message = Message.obtain(Cache.myHandleAccess);
+                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                bund.putString("sickgg","1");
+                message.setData(bund);
+                Cache.myHandleAccess.sendMessage(message);
+            }else{
+                if(HCProtocol.ST_OpenDoor()){
+                    logger.info("下发开门成功");
+                    //sendCZY(data);
+                    MyTextToSpeech.getInstance().speak("开门成功");
+                }else{
+                    logger.info("下发开门失败");
+                    MyTextToSpeech.getInstance().speak("下发开门失败");
+                }
+            }
+        }catch (Exception e){
+            logger.error("患者存在点击确认按钮后出错",e);
+        }
+
         this.finish();
+
+    }
+
+    /**
+     * 取消选择
+     */
+    private void sickCancle(){
+        CacheSick.sickChoose="";
         if(HCProtocol.ST_OpenDoor()){
             logger.info("下发开门成功");
-            //sendCZY(data);
             MyTextToSpeech.getInstance().speak("开门成功");
         }else{
             logger.info("下发开门失败");
             MyTextToSpeech.getInstance().speak("下发开门失败");
         }
+        //关闭界面
+        SickActivity.this.finish();
 
     }
+    /**
+     * 获取患者信息
+     */
     private void getSick(){
-        String sendValue="{\"order\":\"patient\",\"data\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\"}";
-        if(sendExternal(sendValue)){
-            return;
+        try{
+            String sendValue="{\"order\":\"patient\",\"data\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\"}";
+            if(sendExternal(sendValue)){
+                return;
+            }
+        }catch (Exception e){
+            logger.error("发送获取患者信息出错",e);
         }
+
     }
 
+    /**
+     * 显示患者信息
+     */
     private void showSick(){
-        layoutLoad.setVisibility(View.GONE);
-        relativeLayout.setVisibility(View.VISIBLE);
-        contactNames= CacheSick.getSickMess();
-        adapter = new ContactAdapter(this, contactNames);
-        contactList.setAdapter(adapter);
+        try{
+            layoutLoad.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
+            contactNames= CacheSick.getSickMess();
+            adapter = new ContactAdapter(this, contactNames);
+            contactList.setAdapter(adapter);
+        }catch (Exception e){
+            logger.error("显示患者信息出错",e);
+        }
+
     }
     private boolean sendExternal(String sendValue){
         boolean bl=false;
