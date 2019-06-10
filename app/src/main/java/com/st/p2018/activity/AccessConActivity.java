@@ -45,6 +45,8 @@ public class AccessConActivity extends Activity {
     private Button btnGG;
     private Button btnZQ;
     private Button btnYW;
+    private Handler myHandler;
+    CloseThread closeThread=null;
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
@@ -57,6 +59,8 @@ public class AccessConActivity extends Activity {
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
+        closeThread =new CloseThread();
+        closeThread.start();
 
     }
 
@@ -93,6 +97,16 @@ public class AccessConActivity extends Activity {
 
                 }
             };
+            myHandler= new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    //提示信息
+                    if (bundle.getString("value") != null) {
+                        btnZQ.setText(bundle.getString("value"));
+                    }
+                }};
         }catch (Exception e){
             logger.error("初始化view出错",e);
         }
@@ -218,9 +232,10 @@ public class AccessConActivity extends Activity {
         }catch (Exception e){
             logger.error("发送耗材数据出错",e);
         }
-        try{
+        closeThread.close();
+        /*try{
             this.finish();
-            if(Cache.lockScreen.equals("1")){
+            if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
                 Message message = Message.obtain(Cache.myHandle);
                 Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                 bund.putString("ui","lock");
@@ -229,12 +244,48 @@ public class AccessConActivity extends Activity {
             }
         }catch (Exception e){
             logger.error("关闭界面，打开锁屏界面出错",e);
-        }
+        }*/
 
 
 
     }
 
+    class CloseThread extends Thread{
+        int i=10;
+        public void run(){
+            if(Cache.listPR.size()==0){
+                i=5;
+            }else if(Cache.listPR.size()<=5){
+                i=10;
+            }else{
+                i=Cache.listPR.size()*3;
+            }
+            for(;i>0;i--){
+                Message message = Message.obtain(myHandler);
+                Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                data.putString("value","正确("+i+"s)");
+                message.setData(data);
+                myHandler.sendMessage(message);
+                logger.info("--------------------------");
+                try{
+                    Thread.sleep(1000);
+                }catch (Exception e){
+                }
+            }
+            AccessConActivity.this.finish();
+            if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                Message message = Message.obtain(Cache.myHandle);
+                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                bund.putString("ui","lock");
+                message.setData(bund);
+                Cache.myHandle.sendMessage(message);
+            }
+        }
+
+        public void close(){
+            i=0;
+        }
+    }
 
 
 }

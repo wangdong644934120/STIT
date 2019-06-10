@@ -40,5 +40,6 @@ dependencies {
     implementation files('libs/poi-3.0.1-FINAL-20070705.jar')
     compile 'com.github.huangyanbin:SmartTable:1.7.1'
     compile 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.alibaba:fastjson:1.1.54.android'
 
 }

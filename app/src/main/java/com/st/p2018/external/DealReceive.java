@@ -3,10 +3,14 @@ package com.st.p2018.external;
 import android.os.Bundle;
 import android.os.Message;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
+import com.st.p2018.externalentity.ExternalPorduct;
 import com.st.p2018.entity.PDEntity;
 import com.st.p2018.entity.Product;
+import com.st.p2018.externalentity.TotalMessage;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.MyTextToSpeech;
@@ -122,7 +126,7 @@ public class DealReceive extends Thread{
             }
 
         }catch(Exception e){
-
+            logger.error("解析服务器发送数据出错",e);
         }
 
     }
@@ -503,15 +507,68 @@ public class DealReceive extends Thread{
      * @param value
      */
     private void dealPorduct(String number,String value){
-        long start=System.currentTimeMillis();
         try{
-            JSONObject jsonObject=new JSONObject(value);
-            String data=jsonObject.getString("data");
-            JSONObject jsonData=new JSONObject(data);
-            JSONArray jsonArrayAction=jsonData.getJSONArray("action");
-            JSONArray jsonArrayTotal=jsonData.getJSONArray("total");
+            long start=System.currentTimeMillis();
+            ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
             Cache.listOperaOut.clear();
             Cache.listOperaSave.clear();
+            for(Product product :externalPorduct.getData().getAction()){
+                if(product.getOperation().equals("存")){
+                    Cache.listOperaSave.add(product);
+                }else if(product.getOperation().equals("取")){
+                    Cache.listOperaOut.add(product);
+                }
+            }
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("ui","access");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+            System.out.println("haoshi1:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
+
+            Cache.mapTotal.put("jxq",new ArrayList<Product>());
+            Cache.mapTotal.put("yxq",new ArrayList<Product>());
+            Cache.mapTotal.put("ygq",new ArrayList<Product>());
+            for(TotalMessage totalMessage : externalPorduct.getData().getTotal()){
+                if(totalMessage.getXq().equals("近效期")){
+                    Cache.mapTotal.get("jxq").addAll(totalMessage.getData());
+                }else if(totalMessage.getXq().equals("远效期")){
+                    Cache.mapTotal.get("yxq").addAll(totalMessage.getData());
+                }else if(totalMessage.getXq().equals("已过期")){
+                    Cache.mapTotal.get("ygq").addAll(totalMessage.getData());
+                }
+            }
+
+            Message messageInitXQ = Message.obtain(Cache.myHandle);
+            Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bundInitXQ.putString("initJXQExternal","1");
+            messageInitXQ.setData(bundInitXQ);
+            Cache.myHandle.sendMessage(messageInitXQ);
+            System.out.println("haoshi2:"+(System.currentTimeMillis()-start));
+        }catch (Exception e){
+            logger.error("处理服务器返回的耗材数据出错",e);
+        }
+
+        /*long start=System.currentTimeMillis();
+        try{
+            JSONObject jsonObject=new JSONObject(value);
+            System.out.println("耗时1:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
+            String data=jsonObject.getString("data");
+            System.out.println("耗时12:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
+            JSONObject jsonData=new JSONObject(data);
+            System.out.println("耗时11:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
+            JSONArray jsonArrayAction=jsonData.getJSONArray("action");
+            JSONArray jsonArrayTotal=jsonData.getJSONArray("total");
+            System.out.println("耗时111:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
+            Cache.listOperaOut.clear();
+            Cache.listOperaSave.clear();
+            System.out.println("耗时1111:"+(System.currentTimeMillis()-start));
+            start=System.currentTimeMillis();
             for(int i=0;i<jsonArrayAction.length();i++){
                 JSONObject obj=jsonArrayAction.getJSONObject(i);
                 String pp=obj.getString("pp");
@@ -537,7 +594,8 @@ public class DealReceive extends Thread{
                     Cache.listOperaOut.add(product);
                 }
             }
-            System.out.println("耗时1:"+(System.currentTimeMillis()-start));
+            ------
+            System.out.println("耗时2:"+(System.currentTimeMillis()-start));
             Message message = Message.obtain(Cache.myHandle);
             Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
             bund.putString("ui","access");
@@ -585,7 +643,7 @@ public class DealReceive extends Thread{
 
             }
 
-            System.out.println("耗时2:"+(System.currentTimeMillis()-start));
+            System.out.println("耗时3:"+(System.currentTimeMillis()-start));
             Message messageInitXQ = Message.obtain(Cache.myHandle);
             Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
             bundInitXQ.putString("initJXQExternal","1");
@@ -594,7 +652,7 @@ public class DealReceive extends Thread{
 
         }catch (Exception e){
             logger.error("初始化效期出错",e);
-        }
+        }*/
     }
 
     /**

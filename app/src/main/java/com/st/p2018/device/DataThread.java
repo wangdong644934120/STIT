@@ -174,6 +174,12 @@ public class DataThread extends Thread {
                 //设置门开
                 updateUI("men","","1");
                 Cache.mztcgq=1;
+                //如果开启锁屏功能需要将锁屏关闭
+                if(Cache.lockScreen.equals("1")){
+                    logger.info("当前柜门为打开状态，取消锁屏");
+                    sendCloseLockScreen();
+                }
+
             }
             //门开
             if(Cache.mztcgq==0){
@@ -599,6 +605,14 @@ public class DataThread extends Thread {
         data.putString("pdzjm","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
+    }
+    private  void sendCloseLockScreen(){
+        Message message = Message.obtain(Cache.myHandleLockScreen);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+
+        data.putString("close","1");
+        message.setData(data);
+        Cache.myHandleLockScreen.sendMessage(message);
     }
 
     /**
