@@ -17,4 +17,8 @@
         <item>全部盘存</item>
         <item>触发盘存</item>
     </string-array>
+    <string-array name="lock">
+        <item>否</item>
+        <item>是</item>
+    </string-array>
 </resources>

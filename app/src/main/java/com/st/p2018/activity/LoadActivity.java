@@ -3,6 +3,7 @@ package com.st.p2018.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +43,7 @@ public class LoadActivity extends Activity {
         LogUtil.initLog();// 初始log
         logger = Logger.getLogger(this.getClass());
         initView();
+        closeBar();
         new MainThread().start();
 
     }
@@ -77,11 +79,13 @@ public class LoadActivity extends Activity {
             if(listPZ==null || listPZ.isEmpty()){
                 Cache.appname="高值耗材柜";
                 Cache.appcode="0";
+                Cache.lockScreen="0";
             }else{
                 Cache.appname=listPZ.get(0).get("appname")==null?"高值耗材柜":listPZ.get(0).get("appname").toString();
                 Cache.appcode=listPZ.get(0).get("appcode")==null?"0":listPZ.get(0).get("appcode").toString();
                 Cache.ServerIP=listPZ.get(0).get("serverip")==null?"0":listPZ.get(0).get("serverip").toString();
-                Cache.ServerPort=Integer.valueOf(listPZ.get(0).get("serverport")==null?"0":listPZ.get(0).get("serverport").toString());
+                Cache.ServerPort=Integer.valueOf((listPZ.get(0).get("serverport")==null || listPZ.get(0).get("serverport").equals(""))?"0":listPZ.get(0).get("serverport").toString());
+                Cache.lockScreen=listPZ.get(0).get("lockscreen")==null?"0":listPZ.get(0).get("lockscreen").toString();
             }
             if(!Cache.ServerIP.equals("") && Cache.ServerPort!=0){
                 logger.info("配置了第三方平台");
@@ -109,5 +113,27 @@ public class LoadActivity extends Activity {
 
     public void closeLoad(){
         this.finish();
+    }
+
+    /**
+     * 关闭底部状态栏
+     */
+    private void closeBar() {
+        try {
+            //需要root 权限
+            Build.VERSION_CODES vc = new Build.VERSION_CODES();
+            Build.VERSION vr = new Build.VERSION();
+            String ProcID = "79";
+
+            if (vr.SDK_INT >= vc.ICE_CREAM_SANDWICH) {
+                ProcID = "42"; //ICS AND NEWER
+            }
+            //需要root 权限
+            Process proc = Runtime.getRuntime().exec(new String[]{"su", "-c", "service call activity " + ProcID + " s16 com.android.systemui"}); //WAS 79
+            proc.waitFor();
+
+        } catch (Exception ex) {
+           logger.error("aa",ex);
+        }
     }
 }

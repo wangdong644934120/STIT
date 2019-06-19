@@ -16,7 +16,6 @@ import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.st.p2018.entity.Product;
-import com.st.p2018.entity.ProductRecord;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
@@ -24,12 +23,7 @@ import com.bin.david.form.core.SmartTable;
 import com.st.p2018.util.CacheSick;
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.w3c.dom.Text;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 
@@ -57,7 +51,7 @@ public class AccessConActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitlenofh);
         initView();
         closeThread =new CloseThread();
         closeThread.start();
@@ -66,8 +60,8 @@ public class AccessConActivity extends Activity {
 
     private void initView(){
         try{
-            tvfh=(TextView)findViewById(R.id.fh);
-            tvfh.setOnClickListener(new onClickListener());
+            //tvfh=(TextView)findViewById(R.id.fh);
+            //tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("存取确认");
             btnGG=(Button)findViewById(R.id.btngg);
@@ -222,7 +216,7 @@ public class AccessConActivity extends Activity {
             if(allproduct.length()>1){
                 allproduct=allproduct.substring(0,allproduct.length()-1);
             }
-            String sendValue="{\"order\":\"patientproduct\",\"number\":\""+ UUID.randomUUID().toString()+"\"," +
+            String sendValue="{\"order\":\"patientproduct\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+ UUID.randomUUID().toString()+"\"," +
                     "\"data\":{\"result\":\""+zqoryw+"\",\"patient\":\""+CacheSick.getSickMessAndID().get(CacheSick.sickChoose)+"\"," +
                     "\"operator\":\""+Cache.operatorCode+"\",\"product\":["+allproduct+"]}}";
             if(SocketClient.socket!=null){
@@ -233,19 +227,6 @@ public class AccessConActivity extends Activity {
             logger.error("发送耗材数据出错",e);
         }
         closeThread.close();
-        /*try{
-            this.finish();
-            if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                Message message = Message.obtain(Cache.myHandle);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                bund.putString("ui","lock");
-                message.setData(bund);
-                Cache.myHandle.sendMessage(message);
-            }
-        }catch (Exception e){
-            logger.error("关闭界面，打开锁屏界面出错",e);
-        }*/
-
 
 
     }
@@ -253,12 +234,12 @@ public class AccessConActivity extends Activity {
     class CloseThread extends Thread{
         int i=10;
         public void run(){
-            if(Cache.listPR.size()==0){
-                i=5;
-            }else if(Cache.listPR.size()<=5){
+            if((Cache.listOperaSave.size()+Cache.listOperaOut.size())==0){
                 i=10;
+            }else if((Cache.listOperaSave.size()+Cache.listOperaOut.size())<=10){
+                i=60;
             }else{
-                i=Cache.listPR.size()*3;
+                i=180;
             }
             for(;i>0;i--){
                 Message message = Message.obtain(myHandler);
@@ -266,7 +247,7 @@ public class AccessConActivity extends Activity {
                 data.putString("value","正确("+i+"s)");
                 message.setData(data);
                 myHandler.sendMessage(message);
-                logger.info("--------------------------");
+
                 try{
                     Thread.sleep(1000);
                 }catch (Exception e){

@@ -59,7 +59,7 @@ public class SickActivity extends Activity {
         setContentView(R.layout.activity_sick);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitlenofh);
         initView();
     }
 
@@ -67,8 +67,8 @@ public class SickActivity extends Activity {
         try{
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("选取患者");
-            tvfh=(TextView)findViewById(R.id.fh);
-            tvfh.setOnClickListener(new onClickListener());
+            //tvfh=(TextView)findViewById(R.id.fh);
+            //tvfh.setOnClickListener(new onClickListener());
             btnSickOK=(Button)findViewById(R.id.sickok);
             btnSickOK.setOnClickListener(new onClickListener());
             btnSickCancle=(Button)findViewById(R.id.sickcancle);

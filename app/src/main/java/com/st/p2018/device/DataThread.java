@@ -208,27 +208,6 @@ public class DataThread extends Thread {
     }
     //电控锁
     private void alaDKS(String dks){
-        //电控锁,下发获取电控锁状态
-
-        //dks=dks.substring(5,7);
-//        if(dks.contains("1")){
-//            //门开
-//            if(!Cache.mztcgq){
-//                System.out.println("设置门开");
-//                //设置门开
-//                updateUI("men","","1");
-//                Cache.mztcgq=true;
-//            }
-//        }else
-//          if(dks.equals("00")){
-//            //门关
-//            if(Cache.mztcgq){
-//                logger.info("设置门关");
-//                //设置门关
-//                updateUI("men","","0");
-//                Cache.mztcgq=false;
-//            }
-//        }
     }
     //红外行程开关
     private void alaHWXCKG(String hwxckg){
@@ -407,16 +386,8 @@ public class DataThread extends Thread {
                 updateJD(jd,false);
                 //关闭盘存进度
                 closeJD();
-
                 logger.info("获取标签个数："+map.size());
-               /* for(String p : pr){
-                    logger.info("标签："+p+",位置："+map.get(p));
-                }*/
-                //如果连接第三方平台
-               /* if(Cache.external){
 
-                    return;
-                }*/
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
                     //耗材初始化要数据
@@ -467,7 +438,7 @@ public class DataThread extends Thread {
                 }
             }
             StringBuilder sb = new StringBuilder();
-            sb.append("{\"order\":\""+order+"\",\"number\":\"");
+            sb.append("{\"order\":\""+order+"\",\"code\":\""+Cache.appcode+"\",\"operator\":\""+Cache.operatorCode+"\",\"number\":\"");
             sb.append(UUID.randomUUID().toString()).append("\",\"data\":[");
             Set<String> location = mapJSON.keySet();
             for(String loa : location){
@@ -484,6 +455,7 @@ public class DataThread extends Thread {
             }
             sb.append("]}");
             String sendValue=sb.toString();
+            map.clear();
             SocketClient.send(sendValue);
         }
     }

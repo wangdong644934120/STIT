@@ -2,6 +2,7 @@ package com.st.p2018.externalentity;
 
 import com.st.p2018.entity.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,8 +10,8 @@ import java.util.List;
  */
 
 public class ActionTotal {
-    private List<Product> action;
-    private List<TotalMessage> total;
+    private List<Product> action = new ArrayList<Product>();
+    private List<TotalMessage> total=new ArrayList<TotalMessage>();
 
     public List<Product> getAction() {
         return action;

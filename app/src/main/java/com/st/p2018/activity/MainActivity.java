@@ -219,6 +219,7 @@ public class MainActivity extends Activity {
                                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        showBar();
                                         System.exit(0);
                                     }
                                 });
@@ -1111,7 +1112,7 @@ public class MainActivity extends Activity {
                     message.setData(data);
                     Cache.myHandle.sendMessage(message);
                     time=time+1;
-                    if(time/100>0 && time%100==0){
+                    if(time/600>0 && time%600==0){
                         HCProtocol.ST_GetAllCard();
                     }
                 }catch (Exception e){
@@ -1164,6 +1165,19 @@ public class MainActivity extends Activity {
     private void pdshow(){
         Intent intent = new Intent(MainActivity.this, PDActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * 打开状态栏
+     */
+    private void showBar() {
+        try {
+            Process proc = Runtime.getRuntime().exec(new String[]{
+                    "am", "startservice", "-n", "com.android.systemui/.SystemUIService"});
+            proc.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

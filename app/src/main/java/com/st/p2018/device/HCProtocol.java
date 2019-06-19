@@ -482,6 +482,7 @@ public class HCProtocol {
                     byte[] card=new byte[8];
                     System.arraycopy(cardby,i*9+1,card,0,8);
                     String cardS = DataTypeChange.byteArrayToHexString(card);
+                    System.out.println("aa:"+cardS);
                     map.put(cardS.toUpperCase(),String.valueOf(wz));
                 }
 

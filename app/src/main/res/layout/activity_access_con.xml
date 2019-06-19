@@ -61,22 +61,24 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/savecount"
+                android:id="@+id/outcount"
                 android:layout_width="match_parent"
                 android:layout_height="52px"
-                android:gravity="center"
-                android:text="共存放0个"
+                android:gravity="left"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:text="共取出0个"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:textSize="25dp" />
 
             <com.bin.david.form.core.SmartTable
-                android:id="@+id/tablesave"
+                android:id="@+id/tableout"
                 android:layout_width="match_parent"
                 android:layout_height="360px"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp" />
-
         </LinearLayout>
 
         <View
@@ -90,21 +92,25 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/outcount"
+                android:id="@+id/savecount"
                 android:layout_width="match_parent"
                 android:layout_height="52px"
-                android:gravity="center"
-                android:text="共取出0个"
+                android:gravity="left"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="20dp"
+                android:text="共存放0个"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textSize="20dp" />
+                android:textSize="25dp" />
 
             <com.bin.david.form.core.SmartTable
-                android:id="@+id/tableout"
+                android:id="@+id/tablesave"
                 android:layout_width="match_parent"
                 android:layout_height="360px"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp" />
+
         </LinearLayout>
 
         <View

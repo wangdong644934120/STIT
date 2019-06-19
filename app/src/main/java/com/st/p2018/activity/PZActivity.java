@@ -55,6 +55,7 @@ public class PZActivity extends Activity {
     private EditText tvpdjg;
     private EditText edfwqdz;
     private EditText edfwqdkh;
+    private Spinner spLockScreen;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -164,6 +165,7 @@ public class PZActivity extends Activity {
         tvpdjg=(EditText)findViewById(R.id.pdjg);
         edfwqdz=(EditText)findViewById(R.id.fwqdz);
         edfwqdkh=(EditText)findViewById(R.id.fwqdkh);
+        spLockScreen=(Spinner)findViewById(R.id.splockscreen);
         //tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -221,11 +223,21 @@ public class PZActivity extends Activity {
             tvxtbh.setText("");
             edfwqdz.setText("");
             edfwqdkh.setText("");
+            spLockScreen.setSelection(0);
+            Cache.lockScreen="0";
         }else{
             tvxtmc.setText(listPZ.get(0).get("appname")==null?"":listPZ.get(0).get("appname").toString());
             tvxtbh.setText(listPZ.get(0).get("appcode")==null?"":listPZ.get(0).get("appcode").toString());
             edfwqdz.setText(listPZ.get(0).get("serverip")==null?"":listPZ.get(0).get("serverip").toString());
             edfwqdkh.setText(listPZ.get(0).get("serverport")==null?"":listPZ.get(0).get("serverport").toString());
+            if(listPZ.get(0).get("lockscreen")==null || listPZ.get(0).get("lockscreen").toString().equals("0")){
+                spLockScreen.setSelection(0);
+                Cache.lockScreen="0";
+            }else{
+                spLockScreen.setSelection(1);
+                Cache.lockScreen="1";
+            }
+
         }
     }
     /**
@@ -357,7 +369,13 @@ public class PZActivity extends Activity {
                             return;
                         }
                         PZDao pzDao= new PZDao();
-                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString(),edfwqdz.getText().toString(),edfwqdkh.getText().toString());
+                        String lock="0";
+                        if(spLockScreen.getSelectedItem().toString().equals("否")){
+                            lock="0";
+                        }else{
+                            lock="1";
+                        }
+                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString(),edfwqdz.getText().toString(),edfwqdkh.getText().toString(),lock);
                         sendAPPName(tvxtmc.getText().toString());
                         Cache.appname=tvxtmc.getText().toString();
                         Cache.appcode=tvxtbh.getText().toString();

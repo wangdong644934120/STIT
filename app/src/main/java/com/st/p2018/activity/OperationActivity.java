@@ -59,7 +59,7 @@ public class OperationActivity extends Activity {
                 Column<String> column2 = new Column<>("名称", "mc");
                 Column<String> column3 = new Column<>("效期批次", "xqpc");
                 //Column<String> column4 = new Column<>("剩余天数", "yxrq");
-                Column<String> column5 = new Column<>("所在位置", "szwz");
+                Column<String> column5 = new Column<>("位置(层/抽)", "szwz");
                 if(yxqFlag.contains("已过期")){
                    yxqFlag="ygq";
                 }else if(yxqFlag.contains("近效期")){

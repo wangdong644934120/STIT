@@ -288,10 +288,12 @@ public class DealReceive extends Thread{
         try{
             String xtmc="";
             String code="";
+            String lock="";
             try{
                 JSONObject jsonData = new JSONObject(data);
                 xtmc=jsonData.getString("name")==null?Cache.appname:jsonData.getString("name").toString();
                 code=jsonData.getString("number")==null?Cache.appcode:jsonData.getString("number").toString();
+                lock=jsonData.getString("lockscreen")==null?Cache.lockScreen:jsonData.getString("lockscreen").toString();
             }catch (Exception ex){
                 logger.error("解析系统编号及名称data数据出错",ex);
                 sendValue="{\"order\":\"code\",\"number\":\""+number+"\",\"message\":\"2\"}";
@@ -300,7 +302,7 @@ public class DealReceive extends Thread{
             }
 
             PZDao pzDao= new PZDao();
-            pzDao.updateAppName(xtmc,code, Cache.ServerIP, String.valueOf( Cache.ServerPort));
+            pzDao.updateAppName(xtmc,code, Cache.ServerIP, String.valueOf( Cache.ServerPort),lock);
             sendAPPName(xtmc);
             Cache.appname=xtmc;
             Cache.appcode=code;
@@ -421,7 +423,7 @@ public class DealReceive extends Thread{
      */
     private void getPower(String number,String data){
         try{
-            if(data.equals("")){
+            if(data.equals("") || data.toLowerCase().equals("null")){
                 MyTextToSpeech.getInstance().speak("无开门权限");
                 return;
             }
@@ -512,13 +514,16 @@ public class DealReceive extends Thread{
             ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
             Cache.listOperaOut.clear();
             Cache.listOperaSave.clear();
-            for(Product product :externalPorduct.getData().getAction()){
-                if(product.getOperation().equals("存")){
-                    Cache.listOperaSave.add(product);
-                }else if(product.getOperation().equals("取")){
-                    Cache.listOperaOut.add(product);
+            if(externalPorduct.getData()!=null){
+                for(Product product :externalPorduct.getData().getAction()){
+                    if(product.getOperation().equals("存")){
+                        Cache.listOperaSave.add(product);
+                    }else if(product.getOperation().equals("取")){
+                        Cache.listOperaOut.add(product);
+                    }
                 }
             }
+
             Message message = Message.obtain(Cache.myHandle);
             Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
             bund.putString("ui","access");
@@ -530,13 +535,15 @@ public class DealReceive extends Thread{
             Cache.mapTotal.put("jxq",new ArrayList<Product>());
             Cache.mapTotal.put("yxq",new ArrayList<Product>());
             Cache.mapTotal.put("ygq",new ArrayList<Product>());
-            for(TotalMessage totalMessage : externalPorduct.getData().getTotal()){
-                if(totalMessage.getXq().equals("近效期")){
-                    Cache.mapTotal.get("jxq").addAll(totalMessage.getData());
-                }else if(totalMessage.getXq().equals("远效期")){
-                    Cache.mapTotal.get("yxq").addAll(totalMessage.getData());
-                }else if(totalMessage.getXq().equals("已过期")){
-                    Cache.mapTotal.get("ygq").addAll(totalMessage.getData());
+            if(externalPorduct.getData()!=null){
+                for(TotalMessage totalMessage : externalPorduct.getData().getTotal()){
+                    if(totalMessage.getXq().equals("近效期")){
+                        Cache.mapTotal.get("jxq").addAll(totalMessage.getData());
+                    }else if(totalMessage.getXq().equals("远效期")){
+                        Cache.mapTotal.get("yxq").addAll(totalMessage.getData());
+                    }else if(totalMessage.getXq().equals("已过期")){
+                        Cache.mapTotal.get("ygq").addAll(totalMessage.getData());
+                    }
                 }
             }
 
@@ -550,109 +557,7 @@ public class DealReceive extends Thread{
             logger.error("处理服务器返回的耗材数据出错",e);
         }
 
-        /*long start=System.currentTimeMillis();
-        try{
-            JSONObject jsonObject=new JSONObject(value);
-            System.out.println("耗时1:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-            String data=jsonObject.getString("data");
-            System.out.println("耗时12:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-            JSONObject jsonData=new JSONObject(data);
-            System.out.println("耗时11:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-            JSONArray jsonArrayAction=jsonData.getJSONArray("action");
-            JSONArray jsonArrayTotal=jsonData.getJSONArray("total");
-            System.out.println("耗时111:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-            Cache.listOperaOut.clear();
-            Cache.listOperaSave.clear();
-            System.out.println("耗时1111:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-            for(int i=0;i<jsonArrayAction.length();i++){
-                JSONObject obj=jsonArrayAction.getJSONObject(i);
-                String pp=obj.getString("pp");
-                String mc=obj.getString("mc");
-                String xqpc=obj.getString("xqpc");
-                String yxrq=obj.getString("yxrq");
-                String syts=obj.getString("syts");
-                String szwz=obj.getString("szwz");
-                String epc=obj.getString("epc");
-                String operation=obj.getString("operation");
-                Product product=new Product();
-                product.setPp(pp);
-                product.setMc(mc);
-                product.setXqpc(xqpc);
-                product.setYxrq(yxrq);
-                product.setSyts(syts);
-                product.setSzwz(szwz);
-                product.setEpc(epc);
-                product.setOperation(operation);
-                if(operation.equals("存")){
-                    Cache.listOperaSave.add(product);
-                }else if(operation.equals("取")){
-                    Cache.listOperaOut.add(product);
-                }
-            }
-            ------
-            System.out.println("耗时2:"+(System.currentTimeMillis()-start));
-            Message message = Message.obtain(Cache.myHandle);
-            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bund.putString("ui","access");
-            message.setData(bund);
-            Cache.myHandle.sendMessage(message);
 
-
-            start=System.currentTimeMillis();
-            Cache.mapTotal.put("jxq",new ArrayList<Product>());
-            Cache.mapTotal.put("yxq",new ArrayList<Product>());
-            Cache.mapTotal.put("ygq",new ArrayList<Product>());
-
-            for(int i=0;i<jsonArrayTotal.length();i++){
-                JSONObject objXQ=jsonArrayTotal.getJSONObject(i);
-                String xq=objXQ.getString("xq");
-                JSONArray jsonTotalXQ=objXQ.getJSONArray("data");
-                List<Product> listProductXQ=new ArrayList<Product>();
-                for(int j=0;j<jsonTotalXQ.length();j++){
-                    JSONObject obj=jsonTotalXQ.getJSONObject(i);
-                    String pp=obj.getString("pp");
-                    String mc=obj.getString("mc");
-                    String xqpc=obj.getString("xqpc");
-                    String yxrq=obj.getString("yxrq");
-                    String syts=obj.getString("syts");
-                    String szwz=obj.getString("szwz");
-                    String epc=obj.getString("epc");
-                    String operation=obj.getString("operation");
-                    Product product=new Product();
-                    product.setPp(pp);
-                    product.setMc(mc);
-                    product.setXqpc(xqpc);
-                    product.setYxrq(yxrq);
-                    product.setSyts(syts);
-                    product.setSzwz(szwz);
-                    product.setEpc(epc);
-                    product.setOperation(operation);
-                    if(xq.equals("近效期")){
-                        Cache.mapTotal.get("jxq").add(product);
-                    }else if(xq.equals("远效期")){
-                        Cache.mapTotal.get("yxq").add(product);
-                    }else if(xq.equals("已过期")){
-                        Cache.mapTotal.get("ygq").add(product);
-                    }
-                }
-
-            }
-
-            System.out.println("耗时3:"+(System.currentTimeMillis()-start));
-            Message messageInitXQ = Message.obtain(Cache.myHandle);
-            Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bundInitXQ.putString("initJXQExternal","1");
-            messageInitXQ.setData(bundInitXQ);
-            Cache.myHandle.sendMessage(messageInitXQ);
-
-        }catch (Exception e){
-            logger.error("初始化效期出错",e);
-        }*/
     }
 
     /**

@@ -37,7 +37,7 @@ public class HeartThread extends Thread {
             }
 
             try{
-                Thread.sleep(10000);
+                Thread.sleep(30000);
             }catch (Exception e){
 
             }

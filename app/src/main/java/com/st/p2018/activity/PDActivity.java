@@ -95,6 +95,40 @@ public class PDActivity extends Activity {
             if(Cache.gcqy6){
                 yxcs=6;
             }
+            rl=(RelativeLayout)findViewById(R.id.layoutpd);
+            RelativeLayout.LayoutParams paramsxq ;
+            //操作员图片
+
+            paramsxq = new RelativeLayout.LayoutParams(130, 80);
+            paramsxq.setMargins(110, 150, 0, 0);
+            TextView tvygq = new TextView(this);
+            tvygq.setText("已过期");
+            tvygq.setGravity(Gravity.CENTER);
+            tvygq.setTextColor(Color.BLACK);
+            tvygq.setTextSize(25);
+            tvygq.setLayoutParams(paramsxq);
+
+            paramsxq = new RelativeLayout.LayoutParams(130, 80);
+            paramsxq.setMargins(240, 150, 0, 0);
+            TextView tvjxq = new TextView(this);
+            tvjxq.setText("近效期");
+            tvjxq.setGravity(Gravity.CENTER);
+            tvjxq.setTextColor(Color.BLACK);
+            tvjxq.setTextSize(25);
+            tvjxq.setLayoutParams(paramsxq);
+
+            paramsxq = new RelativeLayout.LayoutParams(130, 80);
+            paramsxq.setMargins(370, 150, 0, 0);
+            TextView tvyxq = new TextView(this);
+            tvyxq.setText("远效期");
+            tvyxq.setGravity(Gravity.CENTER);
+            tvyxq.setTextColor(Color.BLACK);
+            tvyxq.setTextSize(25);
+            tvyxq.setLayoutParams(paramsxq);
+            rl.addView(tvygq);
+            rl.addView(tvjxq);
+            rl.addView(tvyxq);
+
             //更新界面显示
             int titleShow=0;
             for(int i=1;i<=yxcs;i++){
