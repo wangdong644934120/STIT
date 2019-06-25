@@ -17,7 +17,7 @@
         android:focusable="false"
         android:clickable="false"
         android:focusedByDefault="false"
-        android:background="@mipmap/ic_launcher"/>
+        android:background="@drawable/huanzhe"/>
 
     <TextView
         android:id="@+id/contact_name"

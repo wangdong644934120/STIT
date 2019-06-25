@@ -41,6 +41,7 @@ public class AccessConActivity extends Activity {
     private Button btnYW;
     private Handler myHandler;
     CloseThread closeThread=null;
+    private boolean isSend=false;//是否已经发送（正确倒计时最后一秒点击有误时，可能会发送一次有误和一次成功消息）
     private Logger logger = Logger.getLogger(this.getClass());
 
     @Override
@@ -60,8 +61,6 @@ public class AccessConActivity extends Activity {
 
     private void initView(){
         try{
-            //tvfh=(TextView)findViewById(R.id.fh);
-            //tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("存取确认");
             btnGG=(Button)findViewById(R.id.btngg);
@@ -205,13 +204,19 @@ public class AccessConActivity extends Activity {
      * @param zqoryw
      */
     private void sendQR(String zqoryw){
+        if(isSend){
+            return;
+        }else{
+            isSend=true;
+        }
+        closeThread.close();
         try{
             String allproduct="";
             for(Product p : Cache.listOperaSave){
-                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"operation\":\"存\"},";
+                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"location\":\""+p.getSzwz()+"\",\"operation\":\"存\"},";
             }
             for(Product p : Cache.listOperaOut){
-                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"operation\":\"取\"},";
+                allproduct=allproduct+"{\"epc\":\""+p.getEpc()+"\",\"location\":\"" + p.getSzwz() + "\",\"operation\":\"取\"},";
             }
             if(allproduct.length()>1){
                 allproduct=allproduct.substring(0,allproduct.length()-1);
@@ -226,7 +231,7 @@ public class AccessConActivity extends Activity {
         }catch (Exception e){
             logger.error("发送耗材数据出错",e);
         }
-        closeThread.close();
+
 
 
     }
@@ -253,6 +258,7 @@ public class AccessConActivity extends Activity {
                 }catch (Exception e){
                 }
             }
+            sendQR("0");
             AccessConActivity.this.finish();
             if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
                 Message message = Message.obtain(Cache.myHandle);

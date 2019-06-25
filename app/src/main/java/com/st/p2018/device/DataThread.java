@@ -427,7 +427,42 @@ public class DataThread extends Thread {
         //发送数据到第三方平台
         if(SocketClient.socket!=null){
             Set<String> pr=map.keySet();
-            HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>();
+            HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>(); //key--location，List--耗材EPC
+
+            if(Cache.pc==0){
+                //如果是全部盘存，则将所有位置的标签耗材都要发送（可能该层耗材被全部拿走）
+                int cs=0;
+                if(Cache.gcqy1){
+                    cs=1;
+                }
+                if(Cache.gcqy2){
+                    cs=2;
+                }
+                if(Cache.gcqy3){
+                    cs=3;
+                }
+                if(Cache.gcqy4){
+                    cs=4;
+                }
+                if(Cache.gcqy5){
+                    cs=5;
+                }
+                if(Cache.gcqy6){
+                    cs=6;
+                }
+                for(int i=1;i<=cs;i++){
+                    mapJSON.put(String.valueOf(i),new ArrayList<String>());
+                }
+            }else if(Cache.pc==1){
+                //如果是触发盘存，则需要将所有触发的红外所在层的标签发送（可能该层耗材被全部拿走）
+                for(String cf : Cache.cfpdcs){
+                    if(cf.equals("0")){
+                        continue;
+                    }
+                    mapJSON.put(cf,new ArrayList<String>());
+                }
+            }
+
             for(String p : pr){
                 if(mapJSON.get(map.get(p))==null){
                     List<String> listP = new ArrayList<String>();
@@ -445,10 +480,15 @@ public class DataThread extends Thread {
                 sb.append("{\"location\":\"").append(loa).append("\",");
                 sb.append("\"data\":[");
                 List<String> listCard= mapJSON.get(loa);
-                for(String card : listCard){
-                    sb.append("\"").append(card).append("\",");
+                if(!listCard.isEmpty()){
+                    for(String card : listCard){
+                        sb.append("\"").append(card).append("\",");
+                    }
+                    sb.deleteCharAt(sb.length()-1).append("]},");
+                }else{
+                    sb.append("]},");
                 }
-                sb.deleteCharAt(sb.length()-1).append("]},");
+
             }
             if(!location.isEmpty()){
                 sb.deleteCharAt(sb.length()-1);

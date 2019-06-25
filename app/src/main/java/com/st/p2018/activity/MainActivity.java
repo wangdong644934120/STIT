@@ -926,7 +926,7 @@ public class MainActivity extends Activity {
     private SpannableString generateCenterSpannableText(String value) {
 
         SpannableString s = new SpannableString(value);
-        s.setSpan(new RelativeSizeSpan(10f), 0, value.length(), 0);
+        s.setSpan(new RelativeSizeSpan(5f), 0, value.length(), 0);
         s.setSpan(new StyleSpan(Typeface.BOLD), 0, value.length(), 0);
         s.setSpan(new ForegroundColorSpan(Color.argb(255,0x45,0x8b,0x00)), 0, value.length(), 0);
 

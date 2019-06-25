@@ -7,8 +7,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
@@ -29,7 +33,7 @@ import java.util.List;
 public class LoadActivity extends Activity {
 
     private Logger logger;
-    private TextView tvload;
+    private ImageView imageviewload;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,10 @@ public class LoadActivity extends Activity {
 
     }
     private void initView(){
-        tvload=(TextView)findViewById(R.id.load);
+        imageviewload=(ImageView) findViewById(R.id.imageviewload);
+        RequestOptions options = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+        Glide.with(this).load(R.drawable.loading).apply(options).into(imageviewload);
 
     }
     private boolean initDataBase() {

@@ -7,6 +7,10 @@
     <color name="background">#1581c4</color>
     <color name="black">#000000</color>
     <color name="black_overlay">#66000000</color>
+    <color name="lowergray">#eeeeee</color>
+    <color name="lowergreen">#268e03</color>
+    <color name="lowerblue">#ddf3ff</color>
+    <color name="loweryellow">#b28e04</color>
     <color name="transparent">#00000000</color>
     <color name="blue">#0011ff</color>
     <color name="gray">#737171</color>
