@@ -4,16 +4,21 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
@@ -50,6 +55,8 @@ public class PDActivity extends Activity {
     private TextView tvfh;
     private TextView tvtitle;
     private RelativeLayout rl;
+    private ImageView ivGif;
+    private LinearLayout layoutLoad;
     private Logger logger = Logger.getLogger(this.getClass());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,147 +77,171 @@ public class PDActivity extends Activity {
             tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("盘点结果");
-            if(Cache.external){
-
-            }else{
-                getDataFromLocal();
-            }
-
-            int yxcs=0;//有效层数
-            if(Cache.gcqy1){
-                yxcs=1;
-            }
-            if(Cache.gcqy2){
-                yxcs=2;
-            }
-            if(Cache.gcqy3){
-                yxcs=3;
-            }
-            if(Cache.gcqy4){
-                yxcs=4;
-            }
-            if(Cache.gcqy5){
-                yxcs=5;
-            }
-            if(Cache.gcqy6){
-                yxcs=6;
-            }
+            ivGif=(ImageView)findViewById(R.id.imageview1);
+            layoutLoad=(LinearLayout)findViewById(R.id.loadpdtxl);
             rl=(RelativeLayout)findViewById(R.id.layoutpd);
-            RelativeLayout.LayoutParams paramsxq ;
-            //操作员图片
+            RequestOptions options = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+            Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
 
-            paramsxq = new RelativeLayout.LayoutParams(130, 80);
-            paramsxq.setMargins(110, 150, 0, 0);
-            TextView tvygq = new TextView(this);
-            tvygq.setText("已过期");
-            tvygq.setGravity(Gravity.CENTER);
-            tvygq.setTextColor(Color.BLACK);
-            tvygq.setTextSize(25);
-            tvygq.setLayoutParams(paramsxq);
-
-            paramsxq = new RelativeLayout.LayoutParams(130, 80);
-            paramsxq.setMargins(240, 150, 0, 0);
-            TextView tvjxq = new TextView(this);
-            tvjxq.setText("近效期");
-            tvjxq.setGravity(Gravity.CENTER);
-            tvjxq.setTextColor(Color.BLACK);
-            tvjxq.setTextSize(25);
-            tvjxq.setLayoutParams(paramsxq);
-
-            paramsxq = new RelativeLayout.LayoutParams(130, 80);
-            paramsxq.setMargins(370, 150, 0, 0);
-            TextView tvyxq = new TextView(this);
-            tvyxq.setText("远效期");
-            tvyxq.setGravity(Gravity.CENTER);
-            tvyxq.setTextColor(Color.BLACK);
-            tvyxq.setTextSize(25);
-            tvyxq.setLayoutParams(paramsxq);
-            rl.addView(tvygq);
-            rl.addView(tvjxq);
-            rl.addView(tvyxq);
-
-            //更新界面显示
-            int titleShow=0;
-            for(int i=1;i<=yxcs;i++){
-                rl=(RelativeLayout)findViewById(R.id.layoutpd);
-                RelativeLayout.LayoutParams params ;
-                //操作员图片
-
-                params = new RelativeLayout.LayoutParams(100, 80);
-                params.setMargins(10, 150+i*100, 0, 0);
-                TextView tv1 = new TextView(this);
-                String wz="第"+i+"层/抽";
-                tv1.setText(wz);
-                tv1.setGravity(Gravity.CENTER);
-                tv1.setTextColor(Color.BLACK);
-                tv1.setTextSize(20);
-                tv1.setLayoutParams(params);
-                rl.addView(tv1);
-
-                params = new RelativeLayout.LayoutParams(130, 80);
-                params.setMargins(110, 150+i*100, 0, 0);
-                TextView tv1y = new TextView(this);
-                tv1y.setBackgroundColor(Color.RED);
-                String v1="0";
-                if(Cache.mapPD.get(String.valueOf(i))!=null ){
-                    v1=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYgq());
+            Cache.myHandlePD = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Bundle bundle = msg.getData();
+                    //提示信息
+                    if (bundle.getString("show") != null) {
+                        layoutLoad.setVisibility(View.GONE);
+                        rl.setVisibility(View.VISIBLE);
+                        show();
+                    }
                 }
-                tv1y.setText(v1);
-                tv1y.setGravity(Gravity.CENTER);
-                tv1y.setTextColor(Color.BLACK);
-                tv1y.setTextSize(20);
-                tv1y.setLayoutParams(params);
-                rl.addView(tv1y);
+            };
 
-                params = new RelativeLayout.LayoutParams(130, 80);
-                params.setMargins(240, 150+i*100, 0, 0);
-                TextView tv2y = new TextView(this);
-                //tv2y.setBackgroundColor(Color.YELLOW);
-                tv2y.setBackgroundColor(Color.argb(255,238,242,14));
-                String v2="0";
-                if(Cache.mapPD.get(String.valueOf(i))!=null){
-                    v2=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getJxq());
-                }
-                tv2y.setText(v2);
-                tv2y.setTextColor(Color.BLACK);
-                tv2y.setGravity(Gravity.CENTER);
-                tv2y.setTextSize(20);
-                tv2y.setLayoutParams(params);
-                rl.addView(tv2y);
-
-                params = new RelativeLayout.LayoutParams(130, 80);
-                params.setMargins(370, 150+i*100, 0, 0);
-                TextView tv3y = new TextView(this);
-                //tv3y.setBackgroundColor(Color.BLUE);
-                tv3y.setBackgroundColor(Color.argb(255,135,162,86));
-                tv3y.setGravity(Gravity.CENTER);
-                String v3="0";
-                if(Cache.mapPD.get(String.valueOf(i))!=null){
-                    v3=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYxq());
-                }
-                tv3y.setText(v3);
-                tv3y.setTextColor(Color.BLACK);
-                tv3y.setTextSize(20);
-                tv3y.setLayoutParams(params);
-                rl.addView(tv3y);
-
-                params = new RelativeLayout.LayoutParams(130, 80);
-                params.setMargins(500, 150+i*100, 0, 0);
-                TextView tv4y = new TextView(this);
-                String all=String.valueOf(Integer.valueOf(v1)+Integer.valueOf(v2)+Integer.valueOf(v3));
-                titleShow=titleShow+Integer.valueOf(all);
-                tv4y.setText(all);
-                tv4y.setGravity(Gravity.CENTER);
-                tv4y.setTextColor(Color.BLACK);
-                tv4y.setTextSize(20);
-                tv4y.setLayoutParams(params);
-                rl.addView(tv4y);
-            }
-            tvtitle.setText("盘点结果 ("+titleShow+"个)");
 
         }catch(Exception e){
             logger.error("初始化界面出错",e);
         }
+    }
+
+    private void show(){
+        if(Cache.external){
+
+        }else{
+            getDataFromLocal();
+        }
+
+        int yxcs=0;//有效层数
+        if(Cache.gcqy1){
+            yxcs=1;
+        }
+        if(Cache.gcqy2){
+            yxcs=2;
+        }
+        if(Cache.gcqy3){
+            yxcs=3;
+        }
+        if(Cache.gcqy4){
+            yxcs=4;
+        }
+        if(Cache.gcqy5){
+            yxcs=5;
+        }
+        if(Cache.gcqy6){
+            yxcs=6;
+        }
+        rl=(RelativeLayout)findViewById(R.id.layoutpd);
+        RelativeLayout.LayoutParams paramsxq ;
+        //操作员图片
+
+        paramsxq = new RelativeLayout.LayoutParams(130, 80);
+        paramsxq.setMargins(110, 150, 0, 0);
+        TextView tvygq = new TextView(this);
+        tvygq.setText("已过期");
+        tvygq.setGravity(Gravity.CENTER);
+        tvygq.setTextColor(Color.BLACK);
+        tvygq.setTextSize(25);
+        tvygq.setLayoutParams(paramsxq);
+
+        paramsxq = new RelativeLayout.LayoutParams(130, 80);
+        paramsxq.setMargins(240, 150, 0, 0);
+        TextView tvjxq = new TextView(this);
+        tvjxq.setText("近效期");
+        tvjxq.setGravity(Gravity.CENTER);
+        tvjxq.setTextColor(Color.BLACK);
+        tvjxq.setTextSize(25);
+        tvjxq.setLayoutParams(paramsxq);
+
+        paramsxq = new RelativeLayout.LayoutParams(130, 80);
+        paramsxq.setMargins(370, 150, 0, 0);
+        TextView tvyxq = new TextView(this);
+        tvyxq.setText("远效期");
+        tvyxq.setGravity(Gravity.CENTER);
+        tvyxq.setTextColor(Color.BLACK);
+        tvyxq.setTextSize(25);
+        tvyxq.setLayoutParams(paramsxq);
+        rl.addView(tvygq);
+        rl.addView(tvjxq);
+        rl.addView(tvyxq);
+
+        //更新界面显示
+        int titleShow=0;
+        for(int i=1;i<=yxcs;i++){
+            rl=(RelativeLayout)findViewById(R.id.layoutpd);
+            RelativeLayout.LayoutParams params ;
+            //操作员图片
+
+            params = new RelativeLayout.LayoutParams(100, 80);
+            params.setMargins(10, 150+i*100, 0, 0);
+            TextView tv1 = new TextView(this);
+            String wz="第"+i+"层/抽";
+            tv1.setText(wz);
+            tv1.setGravity(Gravity.CENTER);
+            tv1.setTextColor(Color.BLACK);
+            tv1.setTextSize(20);
+            tv1.setLayoutParams(params);
+            rl.addView(tv1);
+
+            params = new RelativeLayout.LayoutParams(130, 80);
+            params.setMargins(110, 150+i*100, 0, 0);
+            TextView tv1y = new TextView(this);
+            tv1y.setBackgroundColor(Color.RED);
+            String v1="0";
+            if(Cache.mapPD.get(String.valueOf(i))!=null ){
+                v1=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYgq());
+            }
+            tv1y.setText(v1);
+            tv1y.setGravity(Gravity.CENTER);
+            tv1y.setTextColor(Color.BLACK);
+            tv1y.setTextSize(20);
+            tv1y.setLayoutParams(params);
+            rl.addView(tv1y);
+
+            params = new RelativeLayout.LayoutParams(130, 80);
+            params.setMargins(240, 150+i*100, 0, 0);
+            TextView tv2y = new TextView(this);
+            //tv2y.setBackgroundColor(Color.YELLOW);
+            tv2y.setBackgroundColor(Color.argb(255,238,242,14));
+            String v2="0";
+            if(Cache.mapPD.get(String.valueOf(i))!=null){
+                v2=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getJxq());
+            }
+            tv2y.setText(v2);
+            tv2y.setTextColor(Color.BLACK);
+            tv2y.setGravity(Gravity.CENTER);
+            tv2y.setTextSize(20);
+            tv2y.setLayoutParams(params);
+            rl.addView(tv2y);
+
+            params = new RelativeLayout.LayoutParams(130, 80);
+            params.setMargins(370, 150+i*100, 0, 0);
+            TextView tv3y = new TextView(this);
+            //tv3y.setBackgroundColor(Color.BLUE);
+            tv3y.setBackgroundColor(Color.argb(255,135,162,86));
+            tv3y.setGravity(Gravity.CENTER);
+            String v3="0";
+            if(Cache.mapPD.get(String.valueOf(i))!=null){
+                v3=String.valueOf(Cache.mapPD.get(String.valueOf(i)).getYxq());
+            }
+            tv3y.setText(v3);
+            tv3y.setTextColor(Color.BLACK);
+            tv3y.setTextSize(20);
+            tv3y.setLayoutParams(params);
+            rl.addView(tv3y);
+
+            params = new RelativeLayout.LayoutParams(130, 80);
+            params.setMargins(500, 150+i*100, 0, 0);
+            TextView tv4y = new TextView(this);
+            String all=String.valueOf(Integer.valueOf(v1)+Integer.valueOf(v2)+Integer.valueOf(v3));
+            titleShow=titleShow+Integer.valueOf(all);
+            tv4y.setText(all);
+            tv4y.setGravity(Gravity.CENTER);
+            tv4y.setTextColor(Color.BLACK);
+            tv4y.setTextSize(20);
+            tv4y.setLayoutParams(params);
+            rl.addView(tv4y);
+        }
+        tvtitle.setText("盘点结果 ("+titleShow+"个)");
     }
 
     /**

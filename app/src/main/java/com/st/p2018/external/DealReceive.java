@@ -74,11 +74,6 @@ public class DealReceive extends Thread{
                     break;
                 case "product":
                     dealPorduct(number,value);
-                    /*if(HCProtocol.ST_GetAllCard()){
-                        logger.info("下发盘点成功");
-                    }else{
-                        logger.info("下发盘点失败");
-                    }*/
                     break;
                 case "deviceinfo":
                     //获取设备信息
@@ -245,27 +240,33 @@ public class DealReceive extends Thread{
             if(type.equals("1")){
                 //添加指纹
                 if(HCProtocol.ST_AddZW(Integer.valueOf(code),tzz)){
+                    logger.info("添加指纹成功,编号："+code);
                     // 指纹添加成功
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"0\"}";
                 }else{
+                    logger.info("添加指纹失败,编号："+code);
                     //指纹添加失败
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"3\"}";
                 }
             }else if(type.equals("2")){
                 //删除指纹
                 if(HCProtocol.ST_DeleteZW(0,Integer.valueOf(code))){
+                    logger.info("删除指纹成功,编号："+code);
                     //删除指纹成功
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"0\"}";
                 }else{
+                    logger.info("删除指纹失败,编号："+code);
                     //删除指纹失败
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"3\"}";
                 }
             }else if(type.equals("3")){
                 //删除所有指纹
                 if(HCProtocol.ST_DeleteZW(1,0)){
+                    logger.info("删除所有指纹成功");
                     //删除指纹成功
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"0\"}";
                 }else{
+                    logger.info("删除所有指纹失败");
                     //删除指纹失败
                     sendValue="{\"order\":\"person\",\"number\":\""+number+"\",\"message\":\"3\"}";
                 }
@@ -512,8 +513,7 @@ public class DealReceive extends Thread{
         try{
             long start=System.currentTimeMillis();
             ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
-            Cache.listOperaOut.clear();
-            Cache.listOperaSave.clear();
+
             if(externalPorduct.getData()!=null){
                 for(Product product :externalPorduct.getData().getAction()){
                     if(product.getOperation().equals("存")){
@@ -523,12 +523,15 @@ public class DealReceive extends Thread{
                     }
                 }
             }
+            if(Cache.myHandleAccess!=null){
+                Message message = Message.obtain(Cache.myHandleAccess);
+                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                bund.putString("show","1");
+                message.setData(bund);
+                Cache.myHandleAccess.sendMessage(message);
+            }
 
-            Message message = Message.obtain(Cache.myHandle);
-            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bund.putString("ui","access");
-            message.setData(bund);
-            Cache.myHandle.sendMessage(message);
+
             System.out.println("haoshi1:"+(System.currentTimeMillis()-start));
             start=System.currentTimeMillis();
 
@@ -616,11 +619,11 @@ public class DealReceive extends Thread{
                 }
 
             }
-            Message message = Message.obtain(Cache.myHandle);
+            Message message = Message.obtain(Cache.myHandlePD);
             Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bund.putString("ui","pd");
+            bund.putString("show","1");
             message.setData(bund);
-            Cache.myHandle.sendMessage(message);
+            Cache.myHandlePD.sendMessage(message);
 
             System.out.println("耗时2:"+(System.currentTimeMillis()-start));
             Message messageInitXQ = Message.obtain(Cache.myHandle);

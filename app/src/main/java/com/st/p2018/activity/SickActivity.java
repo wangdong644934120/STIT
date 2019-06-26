@@ -79,7 +79,7 @@ public class SickActivity extends Activity {
 
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-            Glide.with(this).load(R.drawable.loadsick).apply(options).into(ivGif);
+            Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
             if(getIntent().getSerializableExtra("sickgg")!=null){
                 sickgg=(Boolean)getIntent().getSerializableExtra("sickgg");
             }
@@ -217,11 +217,12 @@ public class SickActivity extends Activity {
      */
     private void showSick(){
         try{
-            layoutLoad.setVisibility(View.GONE);
-            relativeLayout.setVisibility(View.VISIBLE);
+            logger.info("显示患者信息");
             contactNames= CacheSick.getSickMess();
             adapter = new ContactAdapter(this, contactNames);
             contactList.setAdapter(adapter);
+            layoutLoad.setVisibility(View.GONE);
+            relativeLayout.setVisibility(View.VISIBLE);
         }catch (Exception e){
             logger.error("显示患者信息出错",e);
         }

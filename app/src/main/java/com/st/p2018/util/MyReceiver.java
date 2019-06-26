@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.st.p2018.activity.LoadActivity;
 import com.st.p2018.activity.MainActivity;
 
 /**
@@ -20,7 +21,7 @@ public class MyReceiver extends BroadcastReceiver {
     {
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED"))
         {
-            Intent i = new Intent(context, MainActivity.class);
+            Intent i = new Intent(context, LoadActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(i);
         }

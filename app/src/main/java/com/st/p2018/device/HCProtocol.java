@@ -716,7 +716,7 @@ public class HCProtocol {
                 if(i>192){
                     break;
                 }
-                int a=Integer.valueOf(bb[i]);
+                int a=Integer.valueOf(bb[i].trim());
                 bytzz[i+2]=(byte)a;
             }
 

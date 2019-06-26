@@ -196,7 +196,7 @@ public class PersonActivity extends Activity {
 
         try{
             List<HashMap<String,String>> list = pd.getPerson();
-            if(list==null || list.isEmpty()){
+           /* if(list==null || list.isEmpty()){
                 //删除所有指纹
                 boolean bl=HCProtocol.ST_DeleteZW(1,0);
                 if(bl){
@@ -204,7 +204,7 @@ public class PersonActivity extends Activity {
                 }else{
                     logger.info("表格中查询人员为空，清空设备所有指纹失败");
                 }
-            }
+            }*/
             mQueryData.clear();
             for(HashMap map : list){
                 map.put("id",map.get("id").toString());
@@ -217,7 +217,6 @@ public class PersonActivity extends Activity {
         }catch (Exception e){
             logger.error("从数据库查询数据出错",e);
         }
-
 
     }
 

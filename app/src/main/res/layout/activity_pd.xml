@@ -15,7 +15,23 @@
         <RelativeLayout
             android:id="@+id/layoutpd"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:id="@+id/loadpdtxl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageview1"
+                android:layout_width="200px"
+                android:layout_height="200px" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

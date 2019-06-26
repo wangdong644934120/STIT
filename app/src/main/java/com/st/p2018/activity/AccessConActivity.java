@@ -10,11 +10,17 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.st.p2018.entity.Product;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
@@ -36,6 +42,9 @@ public class AccessConActivity extends Activity {
     private TextView tvSick;
     private TextView tvSaveCount;
     private TextView tvOutCount;
+    private ImageView ivGif;
+    private LinearLayout linearLayout;
+    private LinearLayout layoutLoad;
     private Button btnGG;
     private Button btnZQ;
     private Button btnYW;
@@ -54,8 +63,7 @@ public class AccessConActivity extends Activity {
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitlenofh);
         initView();
-        closeThread =new CloseThread();
-        closeThread.start();
+
 
     }
 
@@ -72,19 +80,33 @@ public class AccessConActivity extends Activity {
             btnZQ.setOnClickListener(new onClickListener());
             btnYW=(Button)findViewById(R.id.btnyw);
             btnYW.setOnClickListener(new onClickListener());
-            initSave();
-            initOut();
-            tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
-            tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
+            ivGif=(ImageView)findViewById(R.id.imageview1);
+            linearLayout=(LinearLayout)findViewById(R.id.linnerLayouttxl);
+            layoutLoad=(LinearLayout)findViewById(R.id.loadaccesstxl);
+            RequestOptions options = new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+            Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
+
             tvSick.setText(CacheSick.sickChoose);
             Cache.myHandleAccess= new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
-                    //提示信息
+                    //点击更改按钮后显示选择的患者信息
                     if (bundle.getString("sickgg") != null) {
                         tvSick.setText(CacheSick.sickChoose);
+                    }
+                    //显示耗材存取情况信息
+                    if(bundle.getString("show")!=null){
+                        tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
+                        tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
+                        initSave();
+                        initOut();
+                        layoutLoad.setVisibility(View.GONE);
+                        linearLayout.setVisibility(View.VISIBLE);
+                        closeThread =new CloseThread();
+                        closeThread.start();
                     }
 
 

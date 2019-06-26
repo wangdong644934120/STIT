@@ -121,6 +121,7 @@ public class MainActivity extends Activity {
         initJXQData();
         new DeviceCom().start();
         if(Cache.lockScreen.equals("1")){
+            logger.info("配置了锁屏");
             Intent intent = new Intent(MainActivity.this, LockActivity.class);
             startActivity(intent);
         }
@@ -1112,9 +1113,9 @@ public class MainActivity extends Activity {
                     message.setData(data);
                     Cache.myHandle.sendMessage(message);
                     time=time+1;
-                    if(time/600>0 && time%600==0){
+                    /*if(time/600>0 && time%600==0){
                         HCProtocol.ST_GetAllCard();
-                    }
+                    }*/
                 }catch (Exception e){
                     logger.error(e);
                 }

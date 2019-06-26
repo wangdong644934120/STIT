@@ -137,7 +137,7 @@ public class DataThread extends Thread {
             card=String.valueOf(Long.parseLong(card,  16));
             logger.info("指纹编号转十进制结果："+card);
             //判断是否发送到第三方平台
-            String sendValue="{\"order\":\"power\",\"type\":\"2\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
+            String sendValue="{\"order\":\"power\",\"type\":\"1\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }
@@ -387,6 +387,19 @@ public class DataThread extends Thread {
                 //关闭盘存进度
                 closeJD();
                 logger.info("获取标签个数："+map.size());
+                HashMap<String,Integer> mapCS= new HashMap<String,Integer>();
+                Set<String> keys = map.keySet();
+                for(String key : keys){
+                    if(mapCS.get(map.get(key))==null){
+                        mapCS.put(map.get(key),1);
+                    }else{
+                        mapCS.put(map.get(key),mapCS.get(map.get(key))+1);
+                    }
+                }
+                Set<String> keysCS=mapCS.keySet();
+                for(String key : keysCS){
+                    logger.info("第"+key+"层："+mapCS.get(key));
+                }
 
                 //对标签数据进行处理
                 if(Cache.getHCCS==1){
@@ -400,6 +413,13 @@ public class DataThread extends Thread {
                     if(Cache.external){
                         //连接第三方平台
                         sendExternalProduct("total");
+                        //打开耗材统计界面
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                        bund.putString("ui","pd");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
+
                     }else{
                         //从本地数据库读取数据进行处理
                         Cache.HCCSMap=(HashMap<String,String>)map.clone();
@@ -410,7 +430,15 @@ public class DataThread extends Thread {
                 }else  if(Cache.getHCCS==0){
                     //关门盘点数据
                     if(Cache.external){
+                        Cache.listOperaOut.clear();
+                        Cache.listOperaSave.clear();
                         sendExternalProduct("product");
+                        //打开耗材确认界面
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                        bund.putString("ui","access");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
                     }else{
                         HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
                         map.clear();
@@ -611,12 +639,18 @@ public class DataThread extends Thread {
 
     //盘点主界面
     private  void sendPDZJM(){
+        //打开盘点主界面
         Message message = Message.obtain(Cache.myHandle);
-        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-
+        Bundle data = new Bundle();
         data.putString("pdzjm","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
+        //更新主界面数据
+        message = Message.obtain(Cache.myHandlePD);
+        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        bund.putString("show","1");
+        message.setData(bund);
+        Cache.myHandlePD.sendMessage(message);
     }
     private  void sendCloseLockScreen(){
         Message message = Message.obtain(Cache.myHandleLockScreen);

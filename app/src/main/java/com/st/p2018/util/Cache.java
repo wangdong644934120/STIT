@@ -23,13 +23,14 @@ import java.util.List;
 
 public class Cache {
     public static Context myContext;
-    public static Handler myHandle;
-    public static Handler myHandleProgress;
-    public static Handler myHandleKH;
-    public static Handler myHandleHCCS;
-    public static Handler myHandleLockScreen;
-    public static Handler myHandleSick;
-    public static Handler myHandleAccess;//患者确认
+    public static Handler myHandle; //主界面的handle
+    public static Handler myHandleProgress; //读取等待的handle
+    public static Handler myHandleKH; //人员管理界面要卡号的handle
+    public static Handler myHandleHCCS; //耗材管理界面耗材初始的handle
+    public static Handler myHandleLockScreen; //锁屏界面的锁屏handle
+    public static Handler myHandleSick;  //患者界面的患者信息显示handle
+    public static Handler myHandleAccess;//耗材确认界面的handle
+    public static Handler myHandlePD;   //盘点结果显示handle
     public static boolean getPersonCard;
     public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
