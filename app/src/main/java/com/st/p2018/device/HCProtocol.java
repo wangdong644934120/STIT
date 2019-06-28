@@ -374,7 +374,6 @@ public class HCProtocol {
 
                 //RFID读写器
                 String rfid=DataTypeChange.getBit(data[10]);
-//                String rfid=DataTypeChange.bytes2HexString(data[10]);
                 map.put("rfid",rfid);
             }
             return map;
@@ -428,20 +427,7 @@ public class HCProtocol {
                 System.arraycopy(data, 4, cardby, 0, 2);
                 card = DataTypeChange.byteArrayToHexString(cardby);
             }
-//            if (data!=null && data.length>=4 && data[0] == (byte) 0x3A && data[1] == (byte) 0x07
-//                    && data[3] == (byte) 0x08 ) {
-//                //卡权限
-//                if(power==0){
-//                    byte[] cardby = new byte[4];
-//                    System.arraycopy(data, 4, cardby, 0, 4);
-//                    card = DataTypeChange.byteArrayToHexString(cardby);
-//                }else if(power==1){
-//                    byte[] cardby = new byte[4];
-//                    System.arraycopy(data, 4, cardby, 0, 4);
-//                    card = DataTypeChange.byteArrayToHexString(cardby);
-//                }
-//
-//            }
+
             return card;
         }catch (Exception e){
             logger.error("获取用户权限出错",e);
@@ -482,7 +468,6 @@ public class HCProtocol {
                     byte[] card=new byte[8];
                     System.arraycopy(cardby,i*9+1,card,0,8);
                     String cardS = DataTypeChange.byteArrayToHexString(card);
-                    System.out.println("aa:"+cardS);
                     map.put(cardS.toUpperCase(),String.valueOf(wz));
                 }
 
@@ -655,12 +640,8 @@ public class HCProtocol {
             //发送数据
             byte[] data=sp.sendAndGet(send);
 
-//            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
-//                    && data[3] == (byte) 0x22 ) {
-                return true;
-//            }else{
-//                return false;
-//            }
+            return true;
+
         }catch (Exception e){
             logger.error("添加指纹出错",e);
             return  false;

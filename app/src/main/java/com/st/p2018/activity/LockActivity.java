@@ -100,7 +100,7 @@ public class LockActivity extends Activity {
             }
             if(zhanghao.getText().toString().trim().equals("admin") && mima.getText().toString().trim().equals("888888")){
                 logger.info("admin超级管理员登录，无需验证权限");
-                this.finish();
+                closeActivity();
                 return;
             }
             String data=zhanghao.getText().toString().trim()+"+"+mima.getText().toString().trim();
@@ -129,6 +129,7 @@ public class LockActivity extends Activity {
     }
 
     public void closeActivity(){
+        Cache.myHandleLockScreen=null;
         this.finish();
     }
 }

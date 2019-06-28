@@ -9,9 +9,9 @@ import java.util.List;
  * Created by Administrator on 2019/6/10.
  */
 
-public class ActionTotal {
+public class ExternalPorduct_ActionTotal {
     private List<Product> action = new ArrayList<Product>();
-    private List<TotalMessage> total=new ArrayList<TotalMessage>();
+    private List<ActionTotal_TotalMessage> total=new ArrayList<ActionTotal_TotalMessage>();
 
     public List<Product> getAction() {
         return action;
@@ -21,11 +21,11 @@ public class ActionTotal {
         this.action = action;
     }
 
-    public List<TotalMessage> getTotal() {
+    public List<ActionTotal_TotalMessage> getTotal() {
         return total;
     }
 
-    public void setTotal(List<TotalMessage> total) {
+    public void setTotal(List<ActionTotal_TotalMessage> total) {
         this.total = total;
     }
 }

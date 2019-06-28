@@ -49,7 +49,7 @@ public class AccessConActivity extends Activity {
     private Button btnZQ;
     private Button btnYW;
     private Handler myHandler;
-    CloseThread closeThread=null;
+    //CloseThread closeThread=null;
     private boolean isSend=false;//是否已经发送（正确倒计时最后一秒点击有误时，可能会发送一次有误和一次成功消息）
     private Logger logger = Logger.getLogger(this.getClass());
 
@@ -72,13 +72,16 @@ public class AccessConActivity extends Activity {
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("存取确认");
             btnGG=(Button)findViewById(R.id.btngg);
+            btnGG.setEnabled(false);
             btnGG.setOnClickListener(new onClickListener());
             tvSick=(TextView)findViewById(R.id.sickname);
             tvSaveCount=(TextView)findViewById(R.id.savecount);
             tvOutCount=(TextView)findViewById(R.id.outcount);
             btnZQ=(Button)findViewById(R.id.btnzq);
+            btnZQ.setEnabled(false);
             btnZQ.setOnClickListener(new onClickListener());
             btnYW=(Button)findViewById(R.id.btnyw);
+            btnYW.setEnabled(false);
             btnYW.setOnClickListener(new onClickListener());
             ivGif=(ImageView)findViewById(R.id.imageview1);
             linearLayout=(LinearLayout)findViewById(R.id.linnerLayouttxl);
@@ -99,19 +102,23 @@ public class AccessConActivity extends Activity {
                     }
                     //显示耗材存取情况信息
                     if(bundle.getString("show")!=null){
+                        btnGG.setEnabled(true);
+                        btnZQ.setEnabled(true);
+                        btnYW.setEnabled(true);
                         tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
                         tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
                         initSave();
                         initOut();
                         layoutLoad.setVisibility(View.GONE);
                         linearLayout.setVisibility(View.VISIBLE);
-                        closeThread =new CloseThread();
-                        closeThread.start();
+                        /*closeThread =new CloseThread();
+                        closeThread.start();*/
                     }
 
 
                 }
             };
+            logger.info("初始化myHandleAccess完成");
             myHandler= new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -231,7 +238,8 @@ public class AccessConActivity extends Activity {
         }else{
             isSend=true;
         }
-        closeThread.close();
+
+        //closeThread.close();
         try{
             String allproduct="";
             for(Product p : Cache.listOperaSave){
@@ -249,6 +257,16 @@ public class AccessConActivity extends Activity {
             if(SocketClient.socket!=null){
                 SocketClient.send(sendValue);
             }
+            //关闭界面
+            Cache.myHandleAccess=null;
+            AccessConActivity.this.finish();
+            if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                Message message = Message.obtain(Cache.myHandle);
+                Bundle bund = new Bundle();
+                bund.putString("ui","lock");
+                message.setData(bund);
+                Cache.myHandle.sendMessage(message);
+            }
 
         }catch (Exception e){
             logger.error("发送耗材数据出错",e);
@@ -257,7 +275,7 @@ public class AccessConActivity extends Activity {
 
 
     }
-
+/*
     class CloseThread extends Thread{
         int i=10;
         public void run(){
@@ -281,10 +299,11 @@ public class AccessConActivity extends Activity {
                 }
             }
             sendQR("0");
+            Cache.myHandleAccess=null;
             AccessConActivity.this.finish();
             if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
                 Message message = Message.obtain(Cache.myHandle);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                Bundle bund = new Bundle();
                 bund.putString("ui","lock");
                 message.setData(bund);
                 Cache.myHandle.sendMessage(message);
@@ -294,7 +313,7 @@ public class AccessConActivity extends Activity {
         public void close(){
             i=0;
         }
-    }
+    }*/
 
 
 }

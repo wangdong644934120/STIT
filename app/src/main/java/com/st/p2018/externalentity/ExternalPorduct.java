@@ -1,9 +1,6 @@
 package com.st.p2018.externalentity;
 
-import com.st.p2018.entity.Product;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by Administrator on 2019/6/10.
@@ -12,7 +9,7 @@ import java.util.List;
 public class ExternalPorduct implements Serializable {
     private String order;
     private String number;
-    private ActionTotal data;
+    private ExternalPorduct_ActionTotal data;
 
 
     public String getOrder() {
@@ -31,11 +28,11 @@ public class ExternalPorduct implements Serializable {
         this.number = number;
     }
 
-    public ActionTotal getData() {
+    public ExternalPorduct_ActionTotal getData() {
         return data;
     }
 
-    public void setData(ActionTotal data) {
+    public void setData(ExternalPorduct_ActionTotal data) {
         this.data = data;
     }
 

@@ -288,6 +288,7 @@ public class PDActivity extends Activity {
         //初始化近效期图示
         sendJXQ();
     }
+
     private void initXQ(String wz,String xq){
         try{
             int ygq=0;
@@ -342,6 +343,7 @@ public class PDActivity extends Activity {
             switch (v.getId()) {
 
                 case R.id.fh:
+                    Cache.myHandlePD=null;
                     PDActivity.this.finish();
                     break;
                 default:

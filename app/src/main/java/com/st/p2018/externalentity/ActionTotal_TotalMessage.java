@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Administrator on 2019/6/10.
  */
 
-public class TotalMessage {
+public class ActionTotal_TotalMessage {
         private String xq;
         private List<Product> data;
 

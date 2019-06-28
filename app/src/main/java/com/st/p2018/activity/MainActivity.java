@@ -113,7 +113,7 @@ public class MainActivity extends Activity {
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        //LogUtil.initLog();// 初始log
+
         logger =Logger.getLogger(this.getClass());
         initView();
         initSpeechPlug();
@@ -122,8 +122,6 @@ public class MainActivity extends Activity {
         new DeviceCom().start();
         if(Cache.lockScreen.equals("1")){
             logger.info("配置了锁屏");
-            Intent intent = new Intent(MainActivity.this, LockActivity.class);
-            startActivity(intent);
         }
 
     }
@@ -230,6 +228,9 @@ public class MainActivity extends Activity {
                                     }
                                 });
                                 builder.create().show();
+                            }
+                            if(bundle.getString("ui").toString().equals("connectfail")){
+                                Toast.makeText(MainActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
                             }
                         }
                         //缩略图更新
@@ -475,31 +476,6 @@ public class MainActivity extends Activity {
                     break;
                 case R.id.kaideng:
                     logger.info("点击开灯");
-                    /*Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
-                    startActivity(intent);*/
-                  //String json="{\"order\":\"patient\",\"number\":\"111\",\"data\":[{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"},{\"time\":\"shijian1\",\"name\":\"name1\",\"code\":\"code1\"}]}";
-                 /*   String product="{\"order\":\"product\",\"number\":\"123456\",\"code\":\"321\"}";
-                    SocketClient.send(product);
-                    if(1==1){
-                        return;
-                    }*/
-
-                   /* String zuomu9="15,77,143,41,193,66,19,171,193,63,138,43,129,48,36,155,33,38,10,172,193,16,13,87,33,81,161,133,162,79,149,44,130,72,30,4,130,59,148,2,2,51,21,130,66,28,15,217,34,26,152,66,2,22,26,154,2,19,166,196,194,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
-                    String zuoshi8="11,71,19,160,161,64,13,95,97,40,5,106,97,38,29,6,33,32,139,214,161,19,36,5,33,76,141,227,194,68,135,228,98,38,151,156,98,24,14,236,194,22,20,3,66,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
-                    boolean bl=HCProtocol.ST_AddZW(8,zuoshi8);*/
-
-                    /*  String[] bb=aa.split(",");
-                    byte[] by=new byte[192];
-                    for(int i=0;i<bb.length;i++){
-                        if(i>191){
-                            break;
-                        }
-                        int a=Integer.valueOf(bb[i]);
-                        by[i]=(byte)a;
-                    }*/
-
-
-
                     if(Cache.zmdzt){
                         boolean bl=HCProtocol.ST_CloseLight();
                         if(bl){
@@ -606,6 +582,10 @@ public class MainActivity extends Activity {
                 map.put("ygq","已过期("+ygq+"个)");
                 map.put("jxq","近效期("+jxq+"个)");
                 map.put("yxq","远效期("+yxq+"个)");
+                if(tvtj!=null){
+                    tvtj.setText("数量统计："+String.valueOf(Integer.valueOf(ygq)+Integer.valueOf(jxq)+Integer.valueOf(yxq)));
+                }
+
             }
             entries.clear();
             entries.add(new PieEntry(1, map.get("ygq").toString()));
@@ -1045,7 +1025,7 @@ public class MainActivity extends Activity {
 
         }
     }
-
+    //初始化效期数据，连接的是本地的数据库
     private void initJXQData(){
         try{
             mChart.setCenterText(generateCenterSpannableText(Cache.appcode));

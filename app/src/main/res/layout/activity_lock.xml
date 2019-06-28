@@ -36,6 +36,7 @@
             android:layout_marginRight="120dp"
             android:ems="10"
             android:hint="密码"
+            android:inputType="textPassword"
             android:textColorHint="@color/black_overlay"
             android:singleLine="true"
             android:text="" />

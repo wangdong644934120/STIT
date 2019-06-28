@@ -174,11 +174,6 @@ public class DataThread extends Thread {
                 //设置门开
                 updateUI("men","","1");
                 Cache.mztcgq=1;
-                //如果开启锁屏功能需要将锁屏关闭
-                if(Cache.lockScreen.equals("1")){
-                    logger.info("当前柜门为打开状态，取消锁屏");
-                    sendCloseLockScreen();
-                }
 
             }
             //门开
@@ -188,6 +183,7 @@ public class DataThread extends Thread {
                 updateUI("men","","1");
                 Cache.mztcgq=1;
             }
+
         }else if(mztcgq.equals("00")){
             //初始化第一次判断
             if(Cache.mztcgq==2){
@@ -202,7 +198,22 @@ public class DataThread extends Thread {
                 //设置门关
                 updateUI("men","","0");
                 Cache.mztcgq=0;
+                //门关后如果启用锁屏了，并且是触发盘存模式，红外都没有被触发，那么直接锁屏
+                if(Cache.myHandleLockScreen==null){
+                    if(Cache.lockScreen.equals("1") && Cache.pc==1 && !Cache.hwxc1 && !Cache.hwxc2 && !Cache.hwxc3 && !Cache.hwxc4 && !Cache.hwxc5 && !Cache.hwxc6){
+                        //开启锁屏
+                        logger.info("开启锁屏");
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","lock");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
+                    }
+                }
             }
+
+
+
         }
         //门状态传感器，下发获取门状态
     }
@@ -362,12 +373,12 @@ public class DataThread extends Thread {
             dealFlag=true;
             if(data.equals("00")){
                 //无标签数据初始
-                logger.info("正在盘存标签无标签数据");
+                //logger.info("正在盘存标签无标签数据");
                 //无标签数据，打开盘存进度
                 openJD();
             }else if(data.equals("01")){
                 //有标签数据
-                logger.info("正在盘存标签有标签数据");
+                //logger.info("正在盘存标签有标签数据");
                 openJD();
                 getCard();
             }
@@ -387,7 +398,7 @@ public class DataThread extends Thread {
                 //关闭盘存进度
                 closeJD();
                 logger.info("获取标签个数："+map.size());
-                HashMap<String,Integer> mapCS= new HashMap<String,Integer>();
+                /*HashMap<String,Integer> mapCS= new HashMap<String,Integer>();
                 Set<String> keys = map.keySet();
                 for(String key : keys){
                     if(mapCS.get(map.get(key))==null){
@@ -399,10 +410,28 @@ public class DataThread extends Thread {
                 Set<String> keysCS=mapCS.keySet();
                 for(String key : keysCS){
                     logger.info("第"+key+"层："+mapCS.get(key));
-                }
+                }*/
 
                 //对标签数据进行处理
-                if(Cache.getHCCS==1){
+                if(Cache.getHCCS==0){
+                    //关门盘点数据
+                    if(Cache.external){
+                        Cache.listOperaOut.clear();
+                        Cache.listOperaSave.clear();
+
+                        //打开耗材确认界面
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                        bund.putString("ui","access");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
+                        sendExternalProduct("product");
+                    }else{
+                        HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
+                        map.clear();
+                        new DataDeal(mapBQ).start();
+                    }
+                }else if(Cache.getHCCS==1){
                     //耗材初始化要数据
                     Cache.HCCSMap=(HashMap<String,String>)map.clone();
                     map.clear();
@@ -411,15 +440,14 @@ public class DataThread extends Thread {
                 }else if(Cache.getHCCS==2){
                     //主界面盘点要数据
                     if(Cache.external){
-                        //连接第三方平台
-                        sendExternalProduct("total");
                         //打开耗材统计界面
                         Message message = Message.obtain(Cache.myHandle);
                         Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                         bund.putString("ui","pd");
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
-
+                        //连接第三方平台
+                        sendExternalProduct("total");
                     }else{
                         //从本地数据库读取数据进行处理
                         Cache.HCCSMap=(HashMap<String,String>)map.clone();
@@ -427,22 +455,22 @@ public class DataThread extends Thread {
                         sendPDZJM();
                     }
                     Cache.getHCCS=0;
-                }else  if(Cache.getHCCS==0){
-                    //关门盘点数据
+                } else if(Cache.getHCCS==3){
+                    //界面加载时要数据
                     if(Cache.external){
-                        Cache.listOperaOut.clear();
-                        Cache.listOperaSave.clear();
-                        sendExternalProduct("product");
-                        //打开耗材确认界面
+                        sendExternalProduct("total");
+                    }
+                    Cache.getHCCS=0;
+                    if(Cache.mztcgq==1){
+                        //门开，无需锁屏
+                        logger.info("当前门状态为开，无需锁屏");
+                    }else{
+                        logger.info("当前门状态为关，开启锁屏");
                         Message message = Message.obtain(Cache.myHandle);
-                        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                        bund.putString("ui","access");
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","lock");
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
-                    }else{
-                        HashMap<String,String> mapBQ= (HashMap<String,String>)map.clone();
-                        map.clear();
-                        new DataDeal(mapBQ).start();
                     }
                 }
 
@@ -451,6 +479,7 @@ public class DataThread extends Thread {
 
     }
 
+    //发送数据到第三方平台
     private void sendExternalProduct(String order){
         //发送数据到第三方平台
         if(SocketClient.socket!=null){
@@ -489,6 +518,7 @@ public class DataThread extends Thread {
                     }
                     mapJSON.put(cf,new ArrayList<String>());
                 }
+                Cache.cfpdcs.clear();
             }
 
             for(String p : pr){
@@ -533,7 +563,7 @@ public class DataThread extends Thread {
         //有标签数据
         while(true){
             HashMap<String,String> mapSingle=HCProtocol.ST_GetCard();
-            logger.info("标签个数:"+mapSingle.size());
+            //logger.info("标签个数:"+mapSingle.size());
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
             if(mapSingle.isEmpty()){
@@ -584,9 +614,7 @@ public class DataThread extends Thread {
             MyTextToSpeech.getInstance().speak("读取结束");
         }
     }
-
-
-
+    //发送操作员
     private  void sendCZY(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -594,9 +622,10 @@ public class DataThread extends Thread {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
+    //发送红外状态
     private  void sendZT(String value){
         Message message = Message.obtain(Cache.myHandle);
-        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        Bundle data = new Bundle();
         if(value.equals("1")){
             value="0";
         }else if(value.equals("0")){
@@ -606,7 +635,7 @@ public class DataThread extends Thread {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
-
+    //打开盘点界面
     private  void sendOpenPD(String value){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -615,7 +644,7 @@ public class DataThread extends Thread {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
-
+    //发送近效期
     private  void sendJXQ(){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -624,7 +653,7 @@ public class DataThread extends Thread {
         message.setData(data);
         Cache.myHandle.sendMessage(message);
     }
-
+    //发送盘点进度
     private  void sendPD(String value){
         if(Cache.myHandleProgress==null){
             return;
@@ -645,20 +674,33 @@ public class DataThread extends Thread {
         data.putString("pdzjm","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
-        //更新主界面数据
-        message = Message.obtain(Cache.myHandlePD);
-        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-        bund.putString("show","1");
-        message.setData(bund);
-        Cache.myHandlePD.sendMessage(message);
-    }
-    private  void sendCloseLockScreen(){
-        Message message = Message.obtain(Cache.myHandleLockScreen);
-        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        try{
+            Thread.sleep(1000);
+        }catch (Exception e){
 
-        data.putString("close","1");
-        message.setData(data);
-        Cache.myHandleLockScreen.sendMessage(message);
+        }
+
+        //更新主界面数据
+        if(Cache.myHandlePD!=null){
+            message = Message.obtain(Cache.myHandlePD);
+            Bundle bund = new Bundle();
+            bund.putString("show","1");
+            message.setData(bund);
+            Cache.myHandlePD.sendMessage(message);
+        }
+
+    }
+    //发送关闭锁屏
+    private  void sendCloseLockScreen(){
+        if(Cache.myHandleLockScreen!=null){
+            Message message = Message.obtain(Cache.myHandleLockScreen);
+            Bundle data = new Bundle();
+
+            data.putString("close","1");
+            message.setData(data);
+            Cache.myHandleLockScreen.sendMessage(message);
+        }
+
     }
 
     /**
@@ -761,7 +803,7 @@ public class DataThread extends Thread {
 
     private  void startRecord(){
         Message message = Message.obtain(Cache.myHandle);
-        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        Bundle data = new Bundle();
         data.putString("record","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);

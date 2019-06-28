@@ -1,5 +1,10 @@
 package com.st.p2018.external;
 
+import android.os.Bundle;
+import android.os.Message;
+import android.widget.Toast;
+
+import com.st.p2018.activity.PersonActivity;
 import com.st.p2018.util.Cache;
 
 import org.apache.log4j.Logger;
@@ -7,6 +12,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
@@ -67,8 +73,9 @@ public class SocketClient extends Thread {
             try {
                 if(socket!=null && !socket.isClosed()) {
                     logger.info("客户端发送数据:"+value);
-                    outStream.write(value.getBytes());
+                    outStream.write(value.getBytes("UTF-8"));
                     outStream.flush();
+                    logger.info("发送完成");
 
                 }else {
                     logger.info("连接失败，不发送数据了:"+value);
@@ -89,11 +96,16 @@ public class SocketClient extends Thread {
 
     class SHThread extends Thread{
         public void run() {
+            //是否连接成功标志，0-失败，1-成功
+            int successFlag=0;
             while(true) {
                 try {
                     if (socket == null || socket.isClosed()) {
-                        socket = new Socket(Cache.ServerIP, Cache.ServerPort);
+                        socket=new Socket();
+                        //socket = new Socket(Cache.ServerIP, Cache.ServerPort);
+                        socket.connect(new InetSocketAddress(Cache.ServerIP, Cache.ServerPort), 3000);
                         logger.info("连接第三方平台成功：ip"+Cache.ServerIP+" 端口号："+Cache.ServerPort);
+                        successFlag=1;
                         inStream = socket.getInputStream();
                         outStream = socket.getOutputStream();
                         //数据接收线程
@@ -106,10 +118,22 @@ public class SocketClient extends Thread {
                     }
 
                 }catch(Exception e) {
-                    logger.info("连接第三方平台失败");
+                    if(Cache.myHandle!=null){
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","connectfail");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
+                        if(successFlag==1){
+                            logger.info("连接第三方平台失败");
+                            successFlag=0;
+                        }
+
+                        socket=null;
+                    }
                 }
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(1000);
                 }catch(Exception e) {
 
                 }

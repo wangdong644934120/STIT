@@ -10,7 +10,7 @@ import com.st.p2018.device.HCProtocol;
 import com.st.p2018.externalentity.ExternalPorduct;
 import com.st.p2018.entity.PDEntity;
 import com.st.p2018.entity.Product;
-import com.st.p2018.externalentity.TotalMessage;
+import com.st.p2018.externalentity.ActionTotal_TotalMessage;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.MyTextToSpeech;
@@ -28,7 +28,7 @@ import java.util.List;
  */
 
 public class DealReceive extends Thread{
-    private Logger logger= Logger.getLogger(this.getClass());
+    private Logger logger= Logger.getLogger(DealReceive.class);
     String value="";
     public DealReceive(String value){
         this.value=value;
@@ -492,6 +492,7 @@ public class DealReceive extends Thread{
                     logger.info("handle打开患者选择界面发送失败");
                     return;
                 }
+                logger.info("handlesick有效");
                 Message message = Message.obtain(Cache.myHandleSick);
                 Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                 bund.putString("show","sick");
@@ -525,21 +526,23 @@ public class DealReceive extends Thread{
             }
             if(Cache.myHandleAccess!=null){
                 Message message = Message.obtain(Cache.myHandleAccess);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                Bundle bund = new Bundle();
                 bund.putString("show","1");
                 message.setData(bund);
                 Cache.myHandleAccess.sendMessage(message);
+            }else{
+                logger.info("耗材确认界面已经关闭，无需展示数据");
             }
 
 
-            System.out.println("haoshi1:"+(System.currentTimeMillis()-start));
+            logger.info("耗材操作统计耗时:"+(System.currentTimeMillis()-start));
             start=System.currentTimeMillis();
 
             Cache.mapTotal.put("jxq",new ArrayList<Product>());
             Cache.mapTotal.put("yxq",new ArrayList<Product>());
             Cache.mapTotal.put("ygq",new ArrayList<Product>());
             if(externalPorduct.getData()!=null){
-                for(TotalMessage totalMessage : externalPorduct.getData().getTotal()){
+                for(ActionTotal_TotalMessage totalMessage : externalPorduct.getData().getTotal()){
                     if(totalMessage.getXq().equals("近效期")){
                         Cache.mapTotal.get("jxq").addAll(totalMessage.getData());
                     }else if(totalMessage.getXq().equals("远效期")){
@@ -555,7 +558,7 @@ public class DealReceive extends Thread{
             bundInitXQ.putString("initJXQExternal","1");
             messageInitXQ.setData(bundInitXQ);
             Cache.myHandle.sendMessage(messageInitXQ);
-            System.out.println("haoshi2:"+(System.currentTimeMillis()-start));
+            logger.info("耗材效期统计耗时:"+(System.currentTimeMillis()-start));
         }catch (Exception e){
             logger.error("处理服务器返回的耗材数据出错",e);
         }
@@ -571,63 +574,42 @@ public class DealReceive extends Thread{
     private void dealTotal(String number,String value){
         long start=System.currentTimeMillis();
         try{
-            JSONObject jsonObject=new JSONObject(value);
-            String data=jsonObject.getString("data");
-            JSONObject jsonData=new JSONObject(data);
-            JSONArray jsonArrayTotal=jsonData.getJSONArray("total");
-
-            start=System.currentTimeMillis();
+            Cache.mapPD.clear();
             Cache.mapTotal.put("jxq",new ArrayList<Product>());
             Cache.mapTotal.put("yxq",new ArrayList<Product>());
             Cache.mapTotal.put("ygq",new ArrayList<Product>());
-            Cache.mapPD.clear();
+            ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
+            logger.info("耗材统计解析耗时:"+(System.currentTimeMillis()-start));
 
-            for(int i=0;i<jsonArrayTotal.length();i++){
-                JSONObject objXQ=jsonArrayTotal.getJSONObject(i);
-                String xq=objXQ.getString("xq");
-                JSONArray jsonTotalXQ=objXQ.getJSONArray("data");
-                List<Product> listProductXQ=new ArrayList<Product>();
-                for(int j=0;j<jsonTotalXQ.length();j++){
-                    JSONObject obj=jsonTotalXQ.getJSONObject(i);
-                    String pp=obj.getString("pp");
-                    String mc=obj.getString("mc");
-                    String xqpc=obj.getString("xqpc");
-                    String yxrq=obj.getString("yxrq");
-                    String syts=obj.getString("syts");
-                    String szwz=obj.getString("szwz");
-                    String epc=obj.getString("epc");
-                    String operation=obj.getString("operation");
-                    Product product=new Product();
-                    product.setPp(pp);
-                    product.setMc(mc);
-                    product.setXqpc(xqpc);
-                    product.setYxrq(yxrq);
-                    product.setSyts(syts);
-                    product.setSzwz(szwz);
-                    product.setEpc(epc);
-                    product.setOperation(operation);
-                    if(xq.equals("近效期")){
-                        Cache.mapTotal.get("jxq").add(product);
-                        initJXQ(szwz);
-                    }else if(xq.equals("远效期")){
-                        Cache.mapTotal.get("yxq").add(product);
-                        initYXQ(szwz);
-                    }else if(xq.equals("已过期")){
-                        Cache.mapTotal.get("ygq").add(product);
-                        initYGQ(szwz);
+            if(externalPorduct.getData()!=null){
+                for(ActionTotal_TotalMessage totalMessage :externalPorduct.getData().getTotal()){
+                    String xq="jxq";
+                    if(totalMessage.getXq().equals("近效期")){
+                        xq="jxq";
+                    }else if(totalMessage.getXq().equals("远效期")){
+                        xq="yxq";
+                    }else if(totalMessage.getXq().equals("已过期")){
+                        xq="ygq";
+                    }
+                    Cache.mapTotal.get(xq).addAll(totalMessage.getData());
+                    for(Product product : totalMessage.getData()){
+                        initXQ(totalMessage.getXq(),product);
                     }
                 }
-
             }
-            Message message = Message.obtain(Cache.myHandlePD);
-            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bund.putString("show","1");
-            message.setData(bund);
-            Cache.myHandlePD.sendMessage(message);
 
-            System.out.println("耗时2:"+(System.currentTimeMillis()-start));
+            if(Cache.myHandlePD!=null){
+                Message message = Message.obtain(Cache.myHandlePD);
+                Bundle bund = new Bundle();
+                bund.putString("show","1");
+                message.setData(bund);
+                Cache.myHandlePD.sendMessage(message);
+            }else{
+                logger.info("盘点界面已经关闭，取消信息显示");
+            }
+
             Message messageInitXQ = Message.obtain(Cache.myHandle);
-            Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            Bundle bundInitXQ = new Bundle();
             bundInitXQ.putString("initJXQExternal","1");
             messageInitXQ.setData(bundInitXQ);
             Cache.myHandle.sendMessage(messageInitXQ);
@@ -637,33 +619,40 @@ public class DealReceive extends Thread{
         }
     }
 
-    private void initJXQ(String szwz){
-        if(Cache.mapPD.get(szwz)==null){
-            PDEntity pdEntity=new PDEntity();
-            pdEntity.setJxq(pdEntity.getJxq()+1);
-            Cache.mapPD.put(szwz,pdEntity);
-        }else{
-            Cache.mapPD.get(szwz).setJxq(Cache.mapPD.get(szwz).getJxq()+1);
+    /**
+     * 初始化效期
+     * @param xq
+     * @param product
+     */
+    private void initXQ(String xq,Product product){
+        if(xq.equals("近效期")){
+            if(Cache.mapPD.get(product.getSzwz())==null){
+                PDEntity pdEntity=new PDEntity();
+                pdEntity.setJxq(pdEntity.getJxq()+1);
+                Cache.mapPD.put(product.getSzwz(),pdEntity);
+            }else{
+                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
+                Cache.mapPD.get(product.getSzwz()).setJxq(pdEntity.getJxq()+1);
+            }
+        }else if(xq.equals("远效期")){
+            if(Cache.mapPD.get(product.getSzwz())==null){
+                PDEntity pdEntity=new PDEntity();
+                pdEntity.setYxq(pdEntity.getYxq()+1);
+                Cache.mapPD.put(product.getSzwz(),pdEntity);
+            }else{
+                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
+                Cache.mapPD.get(product.getSzwz()).setYxq(pdEntity.getYxq()+1);
+            }
+        }else if(xq.equals("已过期")){
+            if(Cache.mapPD.get(product.getSzwz())==null){
+                PDEntity pdEntity=new PDEntity();
+                pdEntity.setYgq(pdEntity.getYgq()+1);
+                Cache.mapPD.put(product.getSzwz(),pdEntity);
+            }else{
+                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
+                Cache.mapPD.get(product.getSzwz()).setYgq(pdEntity.getYgq()+1);
+            }
         }
     }
 
-    private void initYXQ(String szwz){
-        if(Cache.mapPD.get(szwz)==null){
-            PDEntity pdEntity=new PDEntity();
-            pdEntity.setYxq(pdEntity.getYxq()+1);
-            Cache.mapPD.put(szwz,pdEntity);
-        }else{
-            Cache.mapPD.get(szwz).setYxq(Cache.mapPD.get(szwz).getYxq()+1);
-        }
-    }
-
-    private void initYGQ(String szwz){
-        if(Cache.mapPD.get(szwz)==null){
-            PDEntity pdEntity=new PDEntity();
-            pdEntity.setYgq(pdEntity.getYgq()+1);
-            Cache.mapPD.put(szwz,pdEntity);
-        }else{
-            Cache.mapPD.get(szwz).setYgq(Cache.mapPD.get(szwz).getYgq()+1);
-        }
-    }
 }

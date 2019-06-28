@@ -176,7 +176,7 @@ public class SickActivity extends Activity {
         }catch (Exception e){
             logger.error("患者存在点击确认按钮后出错",e);
         }
-
+        Cache.myHandleSick=null;
         this.finish();
 
     }
@@ -185,13 +185,19 @@ public class SickActivity extends Activity {
      * 取消选择
      */
     private void sickCancle(){
-        CacheSick.sickChoose="";
-        if(HCProtocol.ST_OpenDoor()){
-            logger.info("下发开门成功");
-            MyTextToSpeech.getInstance().speak("开门成功");
+        //通过点击更改按钮打开的界面
+        if(sickgg){
+
         }else{
-            logger.info("下发开门失败");
-            MyTextToSpeech.getInstance().speak("下发开门失败");
+            CacheSick.sickChoose="";
+            if(HCProtocol.ST_OpenDoor()){
+                logger.info("下发开门成功");
+                MyTextToSpeech.getInstance().speak("开门成功");
+            }else{
+                logger.info("下发开门失败");
+                MyTextToSpeech.getInstance().speak("下发开门失败");
+            }
+            Cache.myHandleSick=null;
         }
         //关闭界面
         SickActivity.this.finish();

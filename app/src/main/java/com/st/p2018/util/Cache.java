@@ -32,7 +32,7 @@ public class Cache {
     public static Handler myHandleAccess;//耗材确认界面的handle
     public static Handler myHandlePD;   //盘点结果显示handle
     public static boolean getPersonCard;
-    public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据
+    public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据,-加载界面盘点所有耗材
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
     public static String code;
     public static int mztcgq=2;//门状态传感器  1--开，0--关
@@ -43,7 +43,6 @@ public class Cache {
     public static boolean hwxc4=false;
     public static boolean hwxc5=false;
     public static boolean hwxc6=false;
-
     public static boolean gcqy1=false;  //柜层启用状态
     public static boolean gcqy2=false;
     public static boolean gcqy3=false;
@@ -60,9 +59,7 @@ public class Cache {
     public static String sdpdcs="0";    //手动盘点层数
     public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
     public static boolean zwlrNow=false;   //正在录入指纹
-    //public static SocketClient socketClient=null;
     public static boolean external=false;  //是否挂接第三方平台
-    public static String ipmac="ip+mac";
     public static String appname;   //app名称
     public static String appcode="0";   //app编号
     public static String ServerIP="";  //连接服务器地址
@@ -73,7 +70,7 @@ public class Cache {
     public static List<Product> listOperaSave=new ArrayList<Product>();  //护士存操作缓存
     public static List<Product> listOperaOut=new ArrayList<Product>();  //护士取操作缓存
     public static HashMap<String,List<Product>> mapTotal=new HashMap<String,List<Product>>(); //第三方平台获取到的效期统计信息
-    public static String operatorCode; //操作员编号
+    public static String operatorCode=""; //操作员编号
     public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
 
 }

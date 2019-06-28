@@ -17,6 +17,7 @@ import com.st.p2018.dao.PZDao;
 import com.st.p2018.database.DatabaseManager;
 import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
@@ -94,11 +95,7 @@ public class LoadActivity extends Activity {
                 Cache.ServerPort=Integer.valueOf((listPZ.get(0).get("serverport")==null || listPZ.get(0).get("serverport").equals(""))?"0":listPZ.get(0).get("serverport").toString());
                 Cache.lockScreen=listPZ.get(0).get("lockscreen")==null?"0":listPZ.get(0).get("lockscreen").toString();
             }
-            if(!Cache.ServerIP.equals("") && Cache.ServerPort!=0){
-                logger.info("配置了第三方平台");
-                Cache.external=true;
-                new SocketClient().start();
-            }
+
         }catch (Exception e){
             logger.error("初始化app名称及编号出错",e);
         }
@@ -110,6 +107,7 @@ public class LoadActivity extends Activity {
                     Utils.getPingYin("张");
                     initDataBase();
                     initAppName();
+                    initExternal();
                     Intent intent = new Intent(LoadActivity.this, MainActivity.class);
                     startActivity(intent);
                     closeLoad();
@@ -141,6 +139,25 @@ public class LoadActivity extends Activity {
 
         } catch (Exception ex) {
            logger.error("aa",ex);
+        }
+    }
+
+
+
+    /**
+     * 初始化对外连接
+     */
+    private void initExternal(){
+        if(!Cache.ServerIP.equals("") && Cache.ServerPort!=0){
+            logger.info("配置了第三方平台:"+Cache.ServerIP+" "+Cache.ServerPort);
+            Cache.external=true;
+            new SocketClient().start();
+            try{
+                Thread.sleep(500);
+            }catch (Exception e){
+
+            }
+
         }
     }
 }

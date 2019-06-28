@@ -50,9 +50,16 @@ public class DeviceCom extends Thread{
         }else{
             logger.info("报警:获取工作模式失败");
         }
-        //new HeartThread().start();
-        //new TimeThread().start();
        new DataThread().start();
+        if(Cache.external){
+            Cache.getHCCS=3;
+            if(HCProtocol.ST_GetAllCard()){
+                logger.info("加载界面下发获取所有耗材成功");
+            }else{
+                logger.info("加载界面下发获取所有耗材失败");
+            }
+        }
+
     }
 
     private void JXDevice(byte[] data){
