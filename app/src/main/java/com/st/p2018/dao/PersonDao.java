@@ -80,4 +80,10 @@ public class PersonDao {
         String sql="update stit_t_person set tzz=''";
         return DataBaseExec.execOther(sql,null);
     }
+
+    public boolean deleteZW(String code){
+        String sql="update stit_t_person set tzz='' where code=?";
+        String[] args=new String[]{code};
+        return DataBaseExec.execOther(sql,args);
+    }
 }

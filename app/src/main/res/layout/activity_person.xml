@@ -79,6 +79,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:hint="输入数字:1-700"
+                    android:singleLine="true"
                     android:inputType="number"
                     android:ems="10" />
             </TableRow>
@@ -105,6 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
+                    android:singleLine="true"
                     android:ems="10" />
             </TableRow>
 
@@ -132,6 +134,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:singleLine="true"
+                    android:enabled="false"
                     android:text="" />
                 <Button
                     android:id="@+id/btntzz"
@@ -139,6 +142,7 @@
                     android:layout_height="40px"
                     android:layout_weight="1"
                     android:text="录入"
+
                     android:textSize="15dp" />
             </TableRow>
 
@@ -165,6 +169,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:singleLine="true"
+                    android:enabled="false"
                     android:text="" />
                 <Button
                     android:id="@+id/btnkh"

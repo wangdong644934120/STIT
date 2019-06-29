@@ -461,6 +461,10 @@ public class DataThread extends Thread {
                         sendExternalProduct("total");
                     }
                     Cache.getHCCS=0;
+                    if(Cache.lockScreen.equals("0")){
+                        logger.info("未配置锁屏");
+                        return;
+                    }
                     if(Cache.mztcgq==1){
                         //门开，无需锁屏
                         logger.info("当前门状态为开，无需锁屏");
@@ -811,16 +815,16 @@ public class DataThread extends Thread {
 
 
     private  void sendKH(String value){
-        if(Cache.myHandleKH==null){
+        if(Cache.myHandlePerson ==null){
             logger.info("handle卡号发送失败");
             return;
         }
-        Message message = Message.obtain(Cache.myHandleKH);
+        Message message = Message.obtain(Cache.myHandlePerson);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
 
         data.putString("kh",value);
         message.setData(data);
-        Cache.myHandleKH.sendMessage(message);
+        Cache.myHandlePerson.sendMessage(message);
     }
 
     private  void sendHCCS(){

@@ -57,7 +57,12 @@ public class AccessConActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        setContentView(R.layout.activity_access_con);
+        if(Cache.chooseSick.equals("1")){
+            setContentView(R.layout.activity_access_con_sick);
+        }else{
+            setContentView(R.layout.activity_access_con_nosick);
+        }
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
@@ -118,7 +123,6 @@ public class AccessConActivity extends Activity {
 
                 }
             };
-            logger.info("初始化myHandleAccess完成");
             myHandler= new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
@@ -142,7 +146,6 @@ public class AccessConActivity extends Activity {
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
             Column<String> column3 = new Column<>("效期批次", "xqpc");
-            //Column<String> column4 = new Column<>("剩余天数", "yxrq");
             Column<String> column5 = new Column<>("所在位置", "szwz");
 
             //表格数据 datas是需要填充的数据

@@ -25,7 +25,7 @@ public class Cache {
     public static Context myContext;
     public static Handler myHandle; //主界面的handle
     public static Handler myHandleProgress; //读取等待的handle
-    public static Handler myHandleKH; //人员管理界面要卡号的handle
+    public static Handler myHandlePerson; //人员管理界面handle
     public static Handler myHandleHCCS; //耗材管理界面耗材初始的handle
     public static Handler myHandleLockScreen; //锁屏界面的锁屏handle
     public static Handler myHandleSick;  //患者界面的患者信息显示handle
@@ -66,7 +66,7 @@ public class Cache {
     public static int ServerPort=0;   //连接服务器端口号
     public static String threadFlag="";    //与第三方平台通讯线程标志
     public static String lockScreen="1";  //是否启用锁屏功能，0-不启用，1-启用
-    public static String chooseSick="1"; //是否启用选择患者功能，0-不启用，1-启用
+    public static String chooseSick="0"; //是否启用选择患者功能，0-不启用，1-启用
     public static List<Product> listOperaSave=new ArrayList<Product>();  //护士存操作缓存
     public static List<Product> listOperaOut=new ArrayList<Product>();  //护士取操作缓存
     public static HashMap<String,List<Product>> mapTotal=new HashMap<String,List<Product>>(); //第三方平台获取到的效期统计信息

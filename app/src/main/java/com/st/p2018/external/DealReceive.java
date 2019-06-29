@@ -460,6 +460,11 @@ public class DealReceive extends Thread{
                 Cache.operatorCode=oprmess[1];
             }
             sendCZY(name);
+
+            if(Cache.chooseSick.equals("0")){
+                logger.info("未配置患者选择，核验成功直接打开柜门");
+                HCProtocol.ST_OpenDoor();
+            }
             MyTextToSpeech.getInstance().speak(name+"核验成功");
         }catch (Exception e){
             logger.error("获取权限出错",e);

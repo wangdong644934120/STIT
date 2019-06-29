@@ -3,7 +3,6 @@ package com.st.p2018.device;
 import android.os.Bundle;
 import android.os.Message;
 
-import com.st.p2018.dao.PZDao;
 import com.st.p2018.util.Cache;
 
 import org.apache.log4j.Logger;
@@ -562,8 +561,9 @@ public class HCProtocol {
     }
 
     public static void ST_GetZWZT(){
-        int i=13;
+
         boolean bl=true;
+        boolean isSendProgress=false;
         try{
             myLock.lock();
             while(bl){
@@ -573,33 +573,30 @@ public class HCProtocol {
                         && data[3] == (byte) 0x22) {
                     if( data[4] == (byte) 0x20){
                         //指纹录入成功
+                        logger.info("指纹录入成功");
                         sendZWZT("ok");
                         bl=false;
                         break;
                     }else if(data[4]==(byte)0x22){
                         //指纹录入失败
                         sendZWZT("fail");
+                        logger.info("指纹录入失败");
                         bl=false;
                         break;
                     }else if(data[4]==(byte)0x21){
                         //指纹录入中
-                        if(i>0){
-                            sendZWZT(String.valueOf(i));
+                        if(!isSendProgress){
+                            isSendProgress=true;
+                            sendZWZT("progress");
                         }
 
                     }
 
-                }else if(i<=-2){
-                    sendZWZT("fail");
-                    bl=false;
-                    break;
                 }
-                i=i-1;
                 Thread.sleep(1000);
             }
 
         }catch (Exception e){
-            i=-1;
             logger.error("添加指纹出错",e);
         }finally {
             Cache.zwlrNow=false;
@@ -937,10 +934,10 @@ public class HCProtocol {
     }
 
     public static  void sendZWZT(String value){
-        Message message = Message.obtain(Cache.myHandleKH);
+        Message message = Message.obtain(Cache.myHandlePerson);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
         data.putString("zw",value);
         message.setData(data);
-        Cache.myHandleKH.sendMessage(message);
+        Cache.myHandlePerson.sendMessage(message);
     }
 }

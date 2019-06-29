@@ -1,6 +1,8 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -92,17 +94,36 @@ public class KZActivity extends Activity {
                     }
                     break;
                 case R.id.scsyzw:
+
                     btnSCSYZW.setPressed(true);
-                    bl=HCProtocol.ST_DeleteZW(1,0);
+
+
+                    final AlertDialog alertDialog = new AlertDialog.Builder(KZActivity.this)
+                            .setTitle("确认提示框")
+                            .setMessage("确认删除所有指纹？")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    boolean bl=HCProtocol.ST_DeleteZW(1,0);
+                                    if(bl){
+                                        //将人员表数据库中的所有指纹清空
+                                        PersonDao pd = new PersonDao();
+                                        pd.deleteAllZW();
+                                        sendTS("删除所有指纹成功");
+                                    }else{
+                                        sendTS("删除所有指纹失败");
+                                    }
+                                }
+                            })
+
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {//添加取消
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            }) .create();
+                    alertDialog.show();
                     btnSCSYZW.setPressed(false);
-                    if(bl){
-                        //将人员表数据库中的所有指纹清空
-                        PersonDao pd = new PersonDao();
-                        pd.deleteAllZW();
-                        sendTS("删除所有指纹成功");
-                    }else{
-                        sendTS("删除所有指纹失败");
-                    }
+
                     break;
                 case R.id.fh:
                     KZActivity.this.finish();

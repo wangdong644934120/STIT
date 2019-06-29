@@ -1,27 +1,19 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,11 +28,8 @@ import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.UUID;
 
 
@@ -63,6 +52,7 @@ public class PersonActivity extends Activity {
     private PersonDao pd = new PersonDao();
     private TextView tvfh;
     private TextView tvtitle;
+    private KHThread khThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +102,7 @@ public class PersonActivity extends Activity {
             modify.setOnClickListener(new onClickListener());
             delete.setOnClickListener(new onClickListener());
 
-            Cache.myHandleKH = new Handler() {
+            Cache.myHandlePerson = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
@@ -121,23 +111,26 @@ public class PersonActivity extends Activity {
                     if (bundle.getString("kh") != null) {
                         kh.setText(bundle.getString("kh"));
                         Cache.getPersonCard=false;
+                        if(khThread!=null){
+                            khThread.closeKHThread();
+                        }
                         MyTextToSpeech.getInstance().speak("刷卡成功");
                         Toast.makeText(PersonActivity.this, "刷卡成功", Toast.LENGTH_SHORT).show();
                     }
                     if (bundle.getString("zw") != null) {
                         if(bundle.getString("zw").toString().equals("ok")){
-                            tzz.setText("AE1849231A5C3487A234DF232");
-                            btntzz.setText("录入");
+                            Cache.zwlrNow=false;
+                            tzz.setText(UUID.randomUUID().toString());
                             MyTextToSpeech.getInstance().speak("指纹录入成功");
                             Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
                         }else if(bundle.getString("zw").toString().equals("fail")){
                             tzz.setText("");
-                            btntzz.setText("1秒");
-                            btntzz.setText("录入");
+                            Cache.zwlrNow=false;
                             MyTextToSpeech.getInstance().speak("指纹录入失败");
                             Toast.makeText(PersonActivity.this, "指纹录入失败", Toast.LENGTH_SHORT).show();
-                        }else{
-                            btntzz.setText(bundle.getString("zw").toString()+"秒");
+                        }else if(bundle.getString("zw").toString().equals("progress")){
+                            MyTextToSpeech.getInstance().speak("指纹录入中请勿移动手指");
+                            Toast.makeText(PersonActivity.this, "指纹录入中请勿移动手指", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -277,7 +270,23 @@ public class PersonActivity extends Activity {
                     break;
                 case R.id.delete:
                     delete.setPressed(true);
-                    delete();
+                    final AlertDialog alertDialog = new AlertDialog.Builder(PersonActivity.this)
+                            .setTitle("确认提示框")
+                            .setMessage("确认删除该人员？")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    delete();
+                                }
+                            })
+
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {//添加取消
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                }
+                            }) .create();
+                    alertDialog.show();
+
                     delete.setPressed(false);
                     break;
                 case R.id.fh:
@@ -300,6 +309,8 @@ public class PersonActivity extends Activity {
             String namep=name.getText().toString();
             String tzzp=tzz.getText().toString();
             String cardp=kh.getText().toString();
+            //根据工号判断是否能够添加
+
             if(check(codep,namep)){
                 Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
@@ -327,6 +338,10 @@ public class PersonActivity extends Activity {
             pi.setTzz(tzzp);
             if(pd.addPerson(pi)){
                 initQueryGrid();
+                code.setText("");
+                name.setText("");
+                tzz.setText("");
+                kh.setText("");
                 Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("添加成功");
             }
@@ -448,9 +463,14 @@ public class PersonActivity extends Activity {
                 Toast.makeText(this, "工号必须为数字", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(Integer.valueOf(code.getText().toString())>700){
-                MyTextToSpeech.getInstance().speak("工号不能超过700");
+            if(Integer.valueOf(code.getText().toString())>710){
+                MyTextToSpeech.getInstance().speak("工号不能超过710");
                 Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(Integer.valueOf(code.getText().toString())<=0){
+                MyTextToSpeech.getInstance().speak("工号不能小于等于0");
+                Toast.makeText(this, "工号不能小于等于0", Toast.LENGTH_SHORT).show();
                 return;
             }
             //根据工号判断用户是添加还是修改指纹
@@ -481,12 +501,15 @@ public class PersonActivity extends Activity {
                     }
                 }
             }
-
+            //将数据库中该人员的指纹信息删除
+            tzz.setText("");
+            pd.deleteZW(code.getText().toString().trim());
             //先将指纹模块中该人员编号指纹删除
             MyTextToSpeech.getInstance().speak("请录入指纹");
             Toast.makeText(this, "请录入指纹", Toast.LENGTH_SHORT).show();
             boolean bl=HCProtocol.ST_AddSaveZW(Integer.valueOf(code.getText().toString()));
             if(bl){
+                Cache.zwlrNow=true;
                 new ZWLR().start();
             }else{
                 MyTextToSpeech.getInstance().speak("指纹录入失败");
@@ -520,6 +543,8 @@ public class PersonActivity extends Activity {
     private void getKH(){
         try{
             Cache.getPersonCard=true;
+            khThread=new KHThread();
+            khThread.start();
             MyTextToSpeech.getInstance().speak("请刷卡");
             Toast.makeText(this, "请刷卡", Toast.LENGTH_SHORT).show();
         }catch (Exception e){
@@ -546,12 +571,38 @@ public class PersonActivity extends Activity {
     class ZWLR extends Thread{
         public void run(){
             try{
-                Cache.zwlrNow=true;
                 HCProtocol.ST_GetZWZT();
             }catch (Exception e){
                 logger.error("指纹录入出错",e);
             }
 
+        }
+    }
+
+    class KHThread extends Thread{
+        boolean bl=true;
+        int i=0;
+        public void run(){
+            while(bl){
+                logger.info("刷卡线程运行中");
+                i=i+1;
+                if(i>=20){
+                    Cache.getPersonCard=false;
+                    MyTextToSpeech.getInstance().speak("刷卡失败");
+
+                    break;
+                }
+                try{
+                    Thread.sleep(500);
+                }catch (Exception e){
+
+                }
+            }
+        }
+
+        public void closeKHThread(){
+            i=0;
+            bl=false;
         }
     }
 
