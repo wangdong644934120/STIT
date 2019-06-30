@@ -95,12 +95,14 @@ public class DataThread extends Thread {
                 sendKH(card);
                 return;
             }
+            if(Cache.isPCNow==1){
+                return;
+            }
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
-                    Cache.code=list.get(0).get("code");
                     sendCZY(list.get(0).get("name"));
                     MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
                 }else{
@@ -141,12 +143,14 @@ public class DataThread extends Thread {
             if(sendExternal(sendValue)){
                 return;
             }
+            if(Cache.isPCNow==1){
+                return;
+            }
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
-                    Cache.code=list.get(0).get("code");
                     sendCZY(list.get(0).get("name"));
                     MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
                 }else{
@@ -369,6 +373,7 @@ public class DataThread extends Thread {
         //logger.info("盘存状态："+zt);
 
         if(zt.equals("01")){
+            Cache.isPCNow=1;
             //正在盘存标签
             dealFlag=true;
             if(data.equals("00")){
@@ -387,6 +392,7 @@ public class DataThread extends Thread {
 
         }else if(zt.equals("00")){
             if(dealFlag){
+
                 dealFlag=false;
                 //处理器标签数据
                 logger.info("标签盘存结束，开始处理数据");
@@ -612,6 +618,7 @@ public class DataThread extends Thread {
     //关闭盘存进度
     private void closeJD(){
         if(openPDFlag==1){
+            Cache.isPCNow=0;
             logger.info("关闭进度条");
             sendPD("closedpd");
             openPDFlag=0;

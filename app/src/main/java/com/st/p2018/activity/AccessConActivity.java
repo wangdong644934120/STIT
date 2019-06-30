@@ -255,7 +255,7 @@ public class AccessConActivity extends Activity {
                 allproduct=allproduct.substring(0,allproduct.length()-1);
             }
             String sendValue="{\"order\":\"patientproduct\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+ UUID.randomUUID().toString()+"\"," +
-                    "\"data\":{\"result\":\""+zqoryw+"\",\"patient\":\""+CacheSick.getSickMessAndID().get(CacheSick.sickChoose)+"\"," +
+                    "\"data\":{\"result\":\""+zqoryw+"\",\"patient\":\""+(CacheSick.getSickMessAndID().get(CacheSick.sickChoose)==null?"":CacheSick.getSickMessAndID().get(CacheSick.sickChoose))+"\"," +
                     "\"operator\":\""+Cache.operatorCode+"\",\"product\":["+allproduct+"]}}";
             if(SocketClient.socket!=null){
                 SocketClient.send(sendValue);

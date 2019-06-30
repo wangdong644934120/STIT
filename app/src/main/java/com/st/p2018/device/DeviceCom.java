@@ -75,28 +75,27 @@ public class DeviceCom extends Thread{
                 gx="Ⅱ型";
                 Cache.gx=gx;
             }
-            //--
-//            gx="Ⅱ型";
-//            Cache.gx=gx;
-            //---
-//            map.put("gx",gx);
-//            map.put("gc1","0");
-//            map.put("gc2","0");
-//            map.put("gc3","0");
-//            map.put("gc4","0");
-//            map.put("gc5","0");
-//            map.put("gc6","0");
-//            00000111
-            String qygc=DataTypeChange.getBit(data[13]);
-//            map.put("gc1",qygc.substring(7,8));
-//            map.put("gc2",qygc.substring(6,7));
-//            map.put("gc3",qygc.substring(5,6));
-//            map.put("gc4",qygc.substring(4,5));
-//            map.put("gc5",qygc.substring(3,4));
-//            map.put("gc6",qygc.substring(2,3));
+            //产品序列号
+            byte[] cpxlh = new byte[6];
+            System.arraycopy(data, 5, cpxlh, 0, 6);
+            for(byte b : cpxlh){
+                Cache.cpxlh=Cache.cpxlh+DataTypeChange.getHeight4(b);
+                Cache.cpxlh=Cache.cpxlh+DataTypeChange.getLow4(b);
+            }
+            logger.info("产品序列号："+Cache.cpxlh);
 
-//            PZDao pzDao=new PZDao();
-//            pzDao.updatePZByDevice(map);
+            //硬件版本号
+            byte[] yjbbh=new byte[1];
+            System.arraycopy(data,6,yjbbh,0,1);
+            Cache.yjbbh="V"+DataTypeChange.getHeight4(yjbbh[0])+"."+DataTypeChange.getLow4(yjbbh[0]);
+            logger.info("硬件版本号："+Cache.yjbbh);
+            //固件版本号
+            byte[] gjbbh=new byte[1];
+            System.arraycopy(data,7,gjbbh,0,1);
+            Cache.gjbbh="V"+DataTypeChange.getHeight4(gjbbh[0])+"."+DataTypeChange.getLow4(gjbbh[0]);
+            logger.info("固件版本号："+Cache.gjbbh);
+
+            String qygc=DataTypeChange.getBit(data[13]);
             logger.info("获取设备信息完成");
             Cache.gcqy1=(qygc.substring(7,8).equals("1"))?true:false;
             Cache.gcqy2=(qygc.substring(6,7).equals("1"))?true:false;

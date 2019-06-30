@@ -624,5 +624,18 @@ public class DataTypeChange {
         sb.append((by>>7)&0x1).append((by>>6)&0x1).append((by>>5)&0x1).append((by>>4)&0x1).append((by>>3)&0x1).append((by>>2)&0x1).append((by>>1)&0x1).append((by>>0)&0x1);
         return sb.toString();
     }
+    //获取一个字节的高四位
+    public static int getHeight4(byte data){
+        int height;
+        height = ((data & 0xf0) >> 4);
+        return height;
+    }
+    //获取一个字节的低四位
+    public static int getLow4(byte data){
+        int low;
+        low = (data & 0x0f);
+        return low;
+    }
+
 
 }

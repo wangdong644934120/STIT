@@ -88,12 +88,14 @@ public class LoadActivity extends Activity {
                 Cache.appname="高值耗材柜";
                 Cache.appcode="0";
                 Cache.lockScreen="0";
+                Cache.chooseSick="0";
             }else{
                 Cache.appname=listPZ.get(0).get("appname")==null?"高值耗材柜":listPZ.get(0).get("appname").toString();
                 Cache.appcode=listPZ.get(0).get("appcode")==null?"0":listPZ.get(0).get("appcode").toString();
                 Cache.ServerIP=listPZ.get(0).get("serverip")==null?"0":listPZ.get(0).get("serverip").toString();
                 Cache.ServerPort=Integer.valueOf((listPZ.get(0).get("serverport")==null || listPZ.get(0).get("serverport").equals(""))?"0":listPZ.get(0).get("serverport").toString());
                 Cache.lockScreen=listPZ.get(0).get("lockscreen")==null?"0":listPZ.get(0).get("lockscreen").toString();
+                Cache.chooseSick=listPZ.get(0).get("choosesick")==null?"0":listPZ.get(0).get("choosesick").toString();
             }
 
         }catch (Exception e){

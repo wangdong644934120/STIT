@@ -30,13 +30,13 @@ public class PZDao {
     }
 
     public List<HashMap<String,String>> getPZ(){
-        String sql="select gx,dk,pl,gc1,gc2,gc3,gc4,gc5,gc6,appname,appcode,serverip,serverport,lockscreen from stit_t_pz where id='1'";
+        String sql="select gx,dk,pl,gc1,gc2,gc3,gc4,gc5,gc6,appname,appcode,serverip,serverport,lockscreen,choosesick from stit_t_pz where id='1'";
         return DataBaseExec.execQueryForMap(sql,null);
     }
 
-    public void updateAppName(String name,String code,String serverip,String serverport,String lockscreen){
-        String sql="update stit_t_pz set appname=? ,appcode=?,serverip=?,serverport=?,lockscreen=?";
-        String[] args = new String[]{name,code,serverip,serverport,lockscreen};
+    public void updateAppName(String name,String code,String serverip,String serverport,String lockscreen,String choosesick){
+        String sql="update stit_t_pz set appname=? ,appcode=?,serverip=?,serverport=?,lockscreen=?,choosesick=?";
+        String[] args = new String[]{name,code,serverip,serverport,lockscreen,choosesick};
         DataBaseExec.execOther(sql,args);
     }
 

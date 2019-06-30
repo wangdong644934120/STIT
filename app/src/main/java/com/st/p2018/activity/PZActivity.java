@@ -56,6 +56,7 @@ public class PZActivity extends Activity {
     private EditText edfwqdz;
     private EditText edfwqdkh;
     private Spinner spLockScreen;
+    private Spinner spChooseSick;
     private byte[] bysblx=new byte[1]; //设备类型
     private byte[] bycpxlh=new byte[6]; //产品序列号
     private byte[] byyjbbh=new byte[1]; //硬件版本号
@@ -166,6 +167,7 @@ public class PZActivity extends Activity {
         edfwqdz=(EditText)findViewById(R.id.fwqdz);
         edfwqdkh=(EditText)findViewById(R.id.fwqdkh);
         spLockScreen=(Spinner)findViewById(R.id.splockscreen);
+        spChooseSick=(Spinner)findViewById(R.id.choosesick);
         //tvpdjg.setFilters(new InputFilter[]{ new InputFilterMinMa("5", "255")});
         sb.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -224,7 +226,9 @@ public class PZActivity extends Activity {
             edfwqdz.setText("");
             edfwqdkh.setText("");
             spLockScreen.setSelection(0);
+            spChooseSick.setSelection(0);
             Cache.lockScreen="0";
+            Cache.chooseSick="0";
         }else{
             tvxtmc.setText(listPZ.get(0).get("appname")==null?"":listPZ.get(0).get("appname").toString());
             tvxtbh.setText(listPZ.get(0).get("appcode")==null?"":listPZ.get(0).get("appcode").toString());
@@ -236,6 +240,13 @@ public class PZActivity extends Activity {
             }else{
                 spLockScreen.setSelection(1);
                 Cache.lockScreen="1";
+            }
+            if(listPZ.get(0).get("choosesick")==null || listPZ.get(0).get("choosesick").toString().equals("0")){
+                spChooseSick.setSelection(0);
+                Cache.chooseSick="0";
+            }else{
+                spChooseSick.setSelection(1);
+                Cache.chooseSick="1";
             }
 
         }
@@ -369,13 +380,19 @@ public class PZActivity extends Activity {
                             return;
                         }
                         PZDao pzDao= new PZDao();
-                        String lock="0";
+
                         if(spLockScreen.getSelectedItem().toString().equals("否")){
-                            lock="0";
+                            Cache.lockScreen="0";
                         }else{
-                            lock="1";
+                            Cache.lockScreen="1";
                         }
-                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString(),edfwqdz.getText().toString(),edfwqdkh.getText().toString(),lock);
+
+                        if(spChooseSick.getSelectedItem().toString().equals("否")){
+                            Cache.chooseSick="0";
+                        }else{
+                            Cache.chooseSick="1";
+                        }
+                        pzDao.updateAppName(tvxtmc.getText().toString(),tvxtbh.getText().toString(),edfwqdz.getText().toString(),edfwqdkh.getText().toString(),Cache.lockScreen,Cache.chooseSick);
                         sendAPPName(tvxtmc.getText().toString());
                         Cache.appname=tvxtmc.getText().toString();
                         Cache.appcode=tvxtbh.getText().toString();

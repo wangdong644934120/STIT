@@ -290,11 +290,13 @@ public class DealReceive extends Thread{
             String xtmc="";
             String code="";
             String lock="";
+            String choosesick="";
             try{
                 JSONObject jsonData = new JSONObject(data);
                 xtmc=jsonData.getString("name")==null?Cache.appname:jsonData.getString("name").toString();
                 code=jsonData.getString("number")==null?Cache.appcode:jsonData.getString("number").toString();
                 lock=jsonData.getString("lockscreen")==null?Cache.lockScreen:jsonData.getString("lockscreen").toString();
+                choosesick=jsonData.getString("choosesick")==null?Cache.chooseSick:jsonData.getString("choosesick").toString();
             }catch (Exception ex){
                 logger.error("解析系统编号及名称data数据出错",ex);
                 sendValue="{\"order\":\"code\",\"number\":\""+number+"\",\"message\":\"2\"}";
@@ -303,7 +305,7 @@ public class DealReceive extends Thread{
             }
 
             PZDao pzDao= new PZDao();
-            pzDao.updateAppName(xtmc,code, Cache.ServerIP, String.valueOf( Cache.ServerPort),lock);
+            pzDao.updateAppName(xtmc,code, Cache.ServerIP, String.valueOf( Cache.ServerPort),lock,choosesick);
             sendAPPName(xtmc);
             Cache.appname=xtmc;
             Cache.appcode=code;
@@ -426,6 +428,10 @@ public class DealReceive extends Thread{
         try{
             if(data.equals("") || data.toLowerCase().equals("null")){
                 MyTextToSpeech.getInstance().speak("无开门权限");
+                return;
+            }
+            if(Cache.isPCNow==1){
+                logger.info("正在盘存，禁止开门");
                 return;
             }
 

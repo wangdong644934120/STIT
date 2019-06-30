@@ -501,6 +501,12 @@ public class MainActivity extends Activity {
 
                     break;
                 case R.id.pandian:
+                    if(Cache.mztcgq==1){
+                        //当前为开门状态禁止盘点
+                        MyTextToSpeech.getInstance().speak("请关闭柜门");
+                        Toast.makeText(MainActivity.this, "请关闭柜门", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Cache.getHCCS=2;
                     if(HCProtocol.ST_GetAllCard()){
                     }else{

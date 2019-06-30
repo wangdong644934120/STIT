@@ -59,7 +59,7 @@
         <LinearLayout
             android:id="@+id/linnerLayouttxl"
             android:layout_width="match_parent"
-            android:layout_height="849px"
+            android:layout_height="885px"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -171,7 +171,7 @@
         <LinearLayout
             android:id="@+id/loadaccesstxl"
             android:layout_width="match_parent"
-            android:layout_height="849px"
+            android:layout_height="885px"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="visible">

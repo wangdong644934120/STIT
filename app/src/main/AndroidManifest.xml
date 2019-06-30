@@ -121,7 +121,8 @@
         <activity android:name="com.st.p2018.activity.PDActivity" />
         <activity android:name="com.st.p2018.activity.SickActivity" />
         <activity android:name="com.st.p2018.activity.LockActivity" />
-        <activity android:name="com.st.p2018.activity.AccessConActivity"></activity>
+        <activity android:name="com.st.p2018.activity.AccessConActivity" />
+        <activity android:name="com.st.p2018.activity.VersionActivity"></activity>
     </application>
 
 </manifest>

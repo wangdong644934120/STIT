@@ -2,6 +2,7 @@ package com.st.p2018.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -33,6 +34,10 @@ public class DeviceActivity extends Activity {
     private CheckBox gc6;
     private TextView tvfh;
     private TextView tvtitle;
+    private TextView tvcpxlh;
+    private TextView tvyjbbh;
+    private  TextView tvgjbbh;
+    private Button btnChooseFile;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +74,11 @@ public class DeviceActivity extends Activity {
         }else{
             gc6.setVisibility(View.INVISIBLE);
         }
+        tvcpxlh=(TextView)findViewById(R.id.cpxlh);
+        tvyjbbh=(TextView)findViewById(R.id.yjbbh);
+        tvgjbbh=(TextView)findViewById(R.id.gjbbh);
+        btnChooseFile=(Button)findViewById(R.id.btnchoosefile);
+        btnChooseFile.setOnClickListener(new onClickListener());
 
     }
 
@@ -80,6 +90,11 @@ public class DeviceActivity extends Activity {
         gc4.setChecked(Cache.gcqy4);
         gc5.setChecked(Cache.gcqy5);
         gc6.setChecked(Cache.gcqy6);
+        tvcpxlh.setText(Cache.cpxlh);
+        tvyjbbh.setText(Cache.yjbbh);
+        tvgjbbh.setText(Cache.gjbbh);
+
+
     }
 
     public class onClickListener implements View.OnClickListener {
@@ -89,6 +104,15 @@ public class DeviceActivity extends Activity {
             if (v.isEnabled() == false)
                 return;
             switch (v.getId()) {
+                case R.id.btnchoosefile:
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.setType("*/*");//设置类型，我这里是任意类型，任意后缀的可以这样写。
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+
+
+                    startActivityForResult(intent,1);
+                    break;
                 case R.id.fh:
                     DeviceActivity.this.finish();
                     break;
@@ -98,5 +122,7 @@ public class DeviceActivity extends Activity {
         }
 
     }
+
+
 
 }

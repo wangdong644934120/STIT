@@ -22,7 +22,7 @@
             'dk' varchar(36) DEFAULT '灯自动','pl' varchar(36) DEFAULT '0','gc1' varchar(1) DEFAULT '1',
             'gc2' varchar(1) DEFAULT '1','gc3' varchar(1) DEFAULT '1','gc4' varchar(1) DEFAULT '1',
             'gc5' varchar(1) DEFAULT '1','gc6' varchar(1) DEFAULT '1','appname' varchar(50) DEFAULT '高值耗材柜',
-            'appcode' varchar(10) DEFAULT '0' ,'serverip' varchar(30) ,'serverport' varchar(10), 'lockscreen' varchar(10), PRIMARY KEY ('id'))
+            'appcode' varchar(10) DEFAULT '0' ,'serverip' varchar(30) ,'serverport' varchar(10), 'lockscreen' varchar(10), 'choosesick' varchar(10), PRIMARY KEY ('id'))
         </update>
         <update>
             insert into 'stit_t_pz' ('id','gx','dk','pl','gc1','gc2','gc3','gc4','gc5','gc6')
