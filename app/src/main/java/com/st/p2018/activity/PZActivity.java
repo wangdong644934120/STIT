@@ -352,8 +352,8 @@ public class PZActivity extends Activity {
                             Cache.zmd=lightModel;
                             Cache.pc=pc;
                             Cache.pccs=pccs;
-                            Toast.makeText(PZActivity.this, "下传配置成功", Toast.LENGTH_LONG).show();
-                            MyTextToSpeech.getInstance().speak("下传配置成功");
+                            Toast.makeText(PZActivity.this, "下传配置完成", Toast.LENGTH_LONG).show();
+                            MyTextToSpeech.getInstance().speak("下传配置完成");
 
                             logger.info("下传配置成功："+spDK.getSelectedItem().toString()+","+spPD.getSelectedItem().toString()+"盘存次数:"+edpdcs.getText().toString());
                         }else{
@@ -398,8 +398,8 @@ public class PZActivity extends Activity {
                         Cache.appcode=tvxtbh.getText().toString();
                         Cache.ServerIP=edfwqdz.getText().toString();
                         Cache.ServerPort=Integer.valueOf(edfwqdkh.getText().toString().equals("")?"0":edfwqdkh.getText().toString());
-                        Toast.makeText(PZActivity.this, "保存配置成功", Toast.LENGTH_LONG).show();
-                        MyTextToSpeech.getInstance().speak("保存配置成功");
+                        Toast.makeText(PZActivity.this, "保存配置完成", Toast.LENGTH_LONG).show();
+                        MyTextToSpeech.getInstance().speak("保存配置完成");
                     }catch (Exception e){
                         logger.error("保存APP名称等信息出错",e);
                     }

@@ -5,31 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.st.p2018.activity.ProgressDialog">
-    <!--<RelativeLayout-->
-        <!--android:background="@drawable/pic_bg"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="230dp">-->
 
-        <!--<com.st.p2018.view.PercentCircle-->
-            <!--android:id="@+id/percentCircle"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_width="200dp"-->
-            <!--android:layout_height="200dp"-->
-            <!--app:radius="250"-->
-            <!--app:circleBackground="#00000000"-->
-            <!--app:ringColor="#ffffff"-->
-            <!--app:textColor="#ffffff"-->
-            <!--/>-->
-
-        <!--<ImageView-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:layout_width="220dp"-->
-            <!--android:layout_height="220dp"-->
-            <!--android:src="@drawable/ring"/>-->
-
-
-
-    <!--</RelativeLayout>-->
 
     <RelativeLayout
         android:layout_marginTop="250dp"

@@ -93,6 +93,7 @@ public class LockActivity extends Activity {
      */
     private void login(){
         try{
+            Cache.isAdmin="0";//先配置不是管理员登录
             if(zhanghao.getText().toString().trim().equals("") || mima.getText().toString().trim().equals("")){
                 Toast.makeText(this, "账号或密码不能为空", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("账号或密码不能为空");
@@ -100,6 +101,7 @@ public class LockActivity extends Activity {
             }
             if(zhanghao.getText().toString().trim().equals("admin") && mima.getText().toString().trim().equals("888888")){
                 logger.info("admin超级管理员登录，无需验证权限");
+                Cache.isAdmin="1";
                 closeActivity();
                 return;
             }

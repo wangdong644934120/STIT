@@ -59,6 +59,7 @@ public class Cache {
     public static int pcjg=5;   //盘存时间间隔
     public static int zmd=0;//照明灯控制模式
     public static String sdpdcs="0";    //手动盘点层数
+    public static String isAdmin="0";   //是否是管理员登录，0-否，1-是
     public static List<String> cfpdcs=new ArrayList<String>(); //触发盘点层数 0-全部盘存，1-只盘存第一层,2...
     public static boolean zwlrNow=false;   //正在录入指纹
     public static boolean external=false;  //是否挂接第三方平台

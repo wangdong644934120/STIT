@@ -66,14 +66,15 @@ public class AccessConActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitlenofh);
+        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         initView();
-
 
     }
 
     private void initView(){
         try{
+            tvfh=(TextView)findViewById(R.id.fh);
+            tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("存取确认");
             btnGG=(Button)findViewById(R.id.btngg);
@@ -222,6 +223,7 @@ public class AccessConActivity extends Activity {
                     startActivity(intent);
                     break;
                 case R.id.fh:
+                    Cache.myHandleAccess=null;
                     AccessConActivity.this.finish();
                     break;
                 default:

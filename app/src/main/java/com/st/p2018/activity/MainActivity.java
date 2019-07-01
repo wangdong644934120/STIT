@@ -172,6 +172,7 @@ public class MainActivity extends Activity {
                     try{
                         //菜单栏
                         if(bundle.getString("ui")!=null){
+
                             if(bundle.getString("ui").toString().equals("ry")){
                                 Intent intent = new Intent(MainActivity.this, PersonActivity.class);
                                 startActivity(intent);
@@ -207,6 +208,16 @@ public class MainActivity extends Activity {
                             if(bundle.getString("ui").toString().equals("pd")){
                                 Intent intent = new Intent(MainActivity.this, PDActivity.class);
                                 startActivity(intent);
+                            }
+                            if(bundle.getString("ui").toString().equals("cd")){
+                                SelectDialog selectDialog = new SelectDialog(MainActivity.this,R.style.dialog);//创建Dialog并设置样式主题
+                                Window win = selectDialog.getWindow();
+                                WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                                params.x = 220;//设置x坐标
+                                params.y = -315;//设置y坐标
+                                win.setAttributes(params);
+                                selectDialog.setCanceledOnTouchOutside(true);//设置点击Dialog外部任意区域关闭Dialog
+                                selectDialog.show();
                             }
                             if(bundle.getString("ui").toString().equals("tccx")){
                                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -465,6 +476,12 @@ public class MainActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.dian:
+                    if(Cache.isAdmin.equals("0")){
+                        //普通用户登录,需要进行权限验证
+                        Intent intent = new Intent(MainActivity.this, PassActivity.class);
+                        startActivity(intent);
+                        return;
+                    }
                     SelectDialog selectDialog = new SelectDialog(MainActivity.this,R.style.dialog);//创建Dialog并设置样式主题
                     Window win = selectDialog.getWindow();
                     WindowManager.LayoutParams params = new WindowManager.LayoutParams();
@@ -479,8 +496,8 @@ public class MainActivity extends Activity {
                     if(Cache.zmdzt){
                         boolean bl=HCProtocol.ST_CloseLight();
                         if(bl){
-                            MyTextToSpeech.getInstance().speak("关灯成功");
-                            Toast.makeText(MainActivity.this, "关灯成功", Toast.LENGTH_SHORT).show();
+                            MyTextToSpeech.getInstance().speak("灯已关");
+                            Toast.makeText(MainActivity.this, "灯已关", Toast.LENGTH_SHORT).show();
                         }else{
                             MyTextToSpeech.getInstance().speak("关灯失败");
                             Toast.makeText(MainActivity.this, "关灯失败", Toast.LENGTH_SHORT).show();
@@ -491,8 +508,8 @@ public class MainActivity extends Activity {
                         int a=0;
                         boolean bl=HCProtocol.ST_OpenLight();
                         if(bl){
-                            MyTextToSpeech.getInstance().speak("开灯成功");
-                            Toast.makeText(MainActivity.this, "开灯成功", Toast.LENGTH_SHORT).show();
+                            MyTextToSpeech.getInstance().speak("灯已开");
+                            Toast.makeText(MainActivity.this, "灯已开", Toast.LENGTH_SHORT).show();
                         }else{
                             MyTextToSpeech.getInstance().speak("开灯失败");
                             Toast.makeText(MainActivity.this, "开灯失败", Toast.LENGTH_SHORT).show();

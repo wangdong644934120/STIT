@@ -104,7 +104,7 @@ public class DataThread extends Thread {
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
                     sendCZY(list.get(0).get("name"));
-                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门完成");
                 }else{
                     logger.info("下发开门失败");
                 }
@@ -152,7 +152,7 @@ public class DataThread extends Thread {
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
                     sendCZY(list.get(0).get("name"));
-                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门成功");
+                    MyTextToSpeech.getInstance().speak(list.get(0).get("name")+"开门完成");
                 }else{
                     logger.info("下发开门失败");
                 }

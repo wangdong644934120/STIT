@@ -167,10 +167,10 @@ public class SickActivity extends Activity {
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
                     //sendCZY(data);
-                    MyTextToSpeech.getInstance().speak("开门成功");
+                    MyTextToSpeech.getInstance().speak("门已开");
                 }else{
                     logger.info("下发开门失败");
-                    MyTextToSpeech.getInstance().speak("下发开门失败");
+                    MyTextToSpeech.getInstance().speak("开门失败");
                 }
             }
         }catch (Exception e){
@@ -192,10 +192,10 @@ public class SickActivity extends Activity {
             CacheSick.sickChoose="";
             if(HCProtocol.ST_OpenDoor()){
                 logger.info("下发开门成功");
-                MyTextToSpeech.getInstance().speak("开门成功");
+                MyTextToSpeech.getInstance().speak("门已开");
             }else{
                 logger.info("下发开门失败");
-                MyTextToSpeech.getInstance().speak("下发开门失败");
+                MyTextToSpeech.getInstance().speak("开门失败");
             }
             Cache.myHandleSick=null;
         }

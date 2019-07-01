@@ -67,7 +67,7 @@ public class KZActivity extends Activity {
                     boolean bl=HCProtocol.ST_OpenDoor();
                     btnKM.setPressed(false);
                     if(bl){
-                        sendTS("开门成功");
+                        sendTS("门已开");
                     }else{
                         sendTS("开门失败");
                     }
@@ -78,7 +78,7 @@ public class KZActivity extends Activity {
                     bl=HCProtocol.ST_OpenLight();
                     btnKD.setPressed(false);
                     if(bl){
-                        sendTS("开灯成功");
+                        sendTS("灯已开");
                     }else{
                         sendTS("开灯失败");
                     }
@@ -88,7 +88,7 @@ public class KZActivity extends Activity {
                     bl=HCProtocol.ST_CloseLight();
                     btnGD.setPressed(false);
                     if(bl){
-                        sendTS("关灯成功");
+                        sendTS("灯已关");
                     }else{
                         sendTS("关灯失败");
                     }
@@ -109,7 +109,7 @@ public class KZActivity extends Activity {
                                         //将人员表数据库中的所有指纹清空
                                         PersonDao pd = new PersonDao();
                                         pd.deleteAllZW();
-                                        sendTS("删除所有指纹成功");
+                                        sendTS("删除所有指纹完成");
                                     }else{
                                         sendTS("删除所有指纹失败");
                                     }

@@ -564,9 +564,17 @@ public class HCProtocol {
 
         boolean bl=true;
         boolean isSendProgress=false;
+        int i=0;
         try{
             myLock.lock();
             while(bl){
+                i=i+1;
+                if(i>=20){
+                    logger.info("控制器没有返回失败，主动重置指纹录入失败");
+                    //指纹录入失败
+                    sendZWZT("fail");
+                    break;
+                }
                 //发送数据
                 byte[] data=sp.getOnly();
                 if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
@@ -578,13 +586,14 @@ public class HCProtocol {
                         bl=false;
                         break;
                     }else if(data[4]==(byte)0x22){
+                        logger.info("指纹录入失败");
                         //指纹录入失败
                         sendZWZT("fail");
-                        logger.info("指纹录入失败");
                         bl=false;
                         break;
                     }else if(data[4]==(byte)0x21){
                         //指纹录入中
+                        logger.info("指纹录入中");
                         if(!isSendProgress){
                             isSendProgress=true;
                             sendZWZT("progress");

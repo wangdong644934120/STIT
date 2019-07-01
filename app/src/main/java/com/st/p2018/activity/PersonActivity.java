@@ -114,15 +114,15 @@ public class PersonActivity extends Activity {
                         if(khThread!=null){
                             khThread.closeKHThread();
                         }
-                        MyTextToSpeech.getInstance().speak("刷卡成功");
-                        Toast.makeText(PersonActivity.this, "刷卡成功", Toast.LENGTH_SHORT).show();
+                        MyTextToSpeech.getInstance().speak("刷卡完成");
+                        Toast.makeText(PersonActivity.this, "刷卡完成", Toast.LENGTH_SHORT).show();
                     }
                     if (bundle.getString("zw") != null) {
                         if(bundle.getString("zw").toString().equals("ok")){
                             Cache.zwlrNow=false;
                             tzz.setText(UUID.randomUUID().toString());
-                            MyTextToSpeech.getInstance().speak("指纹录入成功");
-                            Toast.makeText(PersonActivity.this, "指纹录入成功", Toast.LENGTH_SHORT).show();
+                            MyTextToSpeech.getInstance().speak("指纹录入完成");
+                            Toast.makeText(PersonActivity.this, "指纹录入完成", Toast.LENGTH_SHORT).show();
                         }else if(bundle.getString("zw").toString().equals("fail")){
                             tzz.setText("");
                             Cache.zwlrNow=false;
@@ -342,8 +342,8 @@ public class PersonActivity extends Activity {
                 name.setText("");
                 tzz.setText("");
                 kh.setText("");
-                Toast.makeText(this, "添加成功", Toast.LENGTH_SHORT).show();
-                MyTextToSpeech.getInstance().speak("添加成功");
+                Toast.makeText(this, "添加完成", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("添加完成");
             }
         }catch (Exception e){
             logger.error("添加人员数据出错",e);
@@ -395,8 +395,8 @@ public class PersonActivity extends Activity {
             pi.setTzz(tzzp);
             if(pd.modifyPerson(pi)){
                 initQueryGrid();
-                Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-                MyTextToSpeech.getInstance().speak("修改成功");
+                Toast.makeText(this, "修改完成", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("修改完成");
             }
         }catch (Exception e){
             logger.error("修改人员数据出错",e);
@@ -416,8 +416,8 @@ public class PersonActivity extends Activity {
             HCProtocol.ST_DeleteZW(0,Integer.valueOf(mQueryData.get(selecItem).get("code").toString()));
             if(pd.deletePerson(id)){
                 initQueryGrid();
-                Toast.makeText(this, "删除成功", Toast.LENGTH_SHORT).show();
-                MyTextToSpeech.getInstance().speak("删除成功");
+                Toast.makeText(this, "删除完成", Toast.LENGTH_SHORT).show();
+                MyTextToSpeech.getInstance().speak("删除完成");
                 code.setText("");
                 name.setText("");
                 tzz.setText("");

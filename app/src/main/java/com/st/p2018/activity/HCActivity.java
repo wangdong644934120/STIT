@@ -146,7 +146,7 @@ public class HCActivity extends Activity {
                     File fileout = new File(Environment.getExternalStorageDirectory()+File.separator+"STIT"+File.separator+"down.xls");
                     boolean bl=ExpportDataBeExcel.saveExcel(fileout);
                     if(bl){
-                        Toast.makeText(HCActivity.this, "下载耗材库成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HCActivity.this, "下载耗材库完成", Toast.LENGTH_SHORT).show();
                     }else{
                         Toast.makeText(HCActivity.this, "下载耗材库失败", Toast.LENGTH_SHORT).show();
                     }
