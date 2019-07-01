@@ -49,7 +49,6 @@ public class AccessConActivity extends Activity {
     private Button btnZQ;
     private Button btnYW;
     private Handler myHandler;
-    //CloseThread closeThread=null;
     private boolean isSend=false;//是否已经发送（正确倒计时最后一秒点击有误时，可能会发送一次有误和一次成功消息）
     private Logger logger = Logger.getLogger(this.getClass());
 
