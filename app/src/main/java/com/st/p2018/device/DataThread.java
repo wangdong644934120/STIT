@@ -38,7 +38,7 @@ public class DataThread extends Thread {
     public void run(){
         personDao= new PersonDao();
         productDao=new ProductDao();
-        while(true){
+        while(Cache.deviceCommunication){
             try {
                     HashMap<String, String> map = HCProtocol.ST_GetWorkState();
                     if (map.get("skq") != null) {
@@ -75,6 +75,7 @@ public class DataThread extends Thread {
 
 
             }
+            logger.info("退出设备通讯线程");
     }
     //刷卡器
     private void alaSKQ(String skq){

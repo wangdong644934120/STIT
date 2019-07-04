@@ -21,14 +21,16 @@ import android_serialport_api.SerialPort;
 
 public class HCProtocol {
     private static Logger logger=Logger.getLogger(HCProtocol.class);
-    private static SerialPort sp;
+    private static SerialPort sp=null;
     private static Lock myLock=new ReentrantLock(true);
     public static int ONLINE=1;
     public static int NOTONLINECOUNT=0;
     //打开串口
     public static int ST_OpenCom() {
         try{
-            sp = new SerialPort(new File("/dev/ttyS1"), 38400, 0);
+            if(sp==null){
+                sp = new SerialPort(new File("/dev/ttyS1"), 38400, 0);
+            }
         }catch(Exception e){
             logger.error("打开串口出错",e);
             return -1;
@@ -738,7 +740,6 @@ public class HCProtocol {
 
     }
 
-
     //开门指令
     public static boolean ST_OpenDoor(){
         try{
@@ -949,4 +950,119 @@ public class HCProtocol {
         message.setData(data);
         Cache.myHandlePerson.sendMessage(message);
     }
+
+    /**
+     * 固件升级开始
+     * @return
+     */
+    public static boolean ST_STARTSJ(){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x05 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x02};
+            byte[] bydata=new byte[]{0x00,0x00};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGetFor3Seconds(send);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x02 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("下发固件升级开始指令出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+    }
+
+    /**
+     * 固件升级结束
+     * @return
+     */
+    public static boolean ST_ENDSJ(){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x05 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x02};
+            byte[] bydata=new byte[]{0x00,0x01};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //发送数据
+            byte[] data=sp.sendAndGetFor3Seconds(send);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x02 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("下发固件升级结束指令出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+    }
+
+    /**
+     * 固件升级中(必须为33个字节，不够后面补充0xff)
+     * @return
+     */
+    public static boolean ST_NOWSJ(byte[] bydata){
+        try{
+            myLock.lock();
+            byte[] head = new byte[] { 0x3A };
+            byte[] length = new byte[] { 0x24 };
+            byte[] deviceID = new byte[] { 0x00};
+            byte[] order = new byte[] {0x02};
+            byte[] before=new byte[]{};
+            before=DataTypeChange.byteAddToByte(before,head);
+            before=DataTypeChange.byteAddToByte(before,length);
+            before=DataTypeChange.byteAddToByte(before,deviceID);
+            before=DataTypeChange.byteAddToByte(before,order);
+            before=DataTypeChange.byteAddToByte(before,bydata);
+            byte jyData=getJYData(before);
+
+            byte[] send= DataTypeChange.byteAddToByte(before, jyData);
+            //send=new byte[]{0x3A,0X24,0X00,0X02,0X01,(byte)0X80,0X75,0X00,0X20,0X45,0X01,0X01,0X08,0X15,0X1F,0X01,0X08,0X75,0X19,0X01,0X08,0X11,0X1F,0X01,0X08,(byte)0X91,0X08,0X01,0X08,0X51,0X38,0X01,0X08,0X00,0X00,0X00,0X00,(byte)0XEB};
+            //发送数据
+            byte[] data=sp.sendAndGet(send);
+
+            if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x04
+                    && data[3] == (byte) 0x02 && data[4] == (byte) 0x00 ) {
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception e){
+            logger.error("下发固件升级中指令出错",e);
+            return false;
+        }finally {
+            myLock.unlock();
+        }
+    }
+
 }

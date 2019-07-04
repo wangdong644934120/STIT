@@ -120,6 +120,33 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:gravity="right"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:text="软件版本号：" />
+
+            <TextView
+                android:id="@+id/rjbbh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="20dp"
+                android:textSize="20dp"
+                android:textColor="@color/black"
+                android:gravity="left"/>
+
+        </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -220,21 +247,120 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/btnchoosefile"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:textSize="20dp"
-                android:background="@drawable/button_selector"
-                android:text="文件选择"
-                android:textColor="@color/colorWhite" />
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right|center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="固件升级：" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/etSJ"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
+                    android:text="" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnchoosefile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:textSize="20dp"
+                    android:background="@drawable/button_selector"
+                    android:text="文件选择"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/colorWhite" />
+
+            </LinearLayout>
 
 
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50px"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnsj"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:textSize="20dp"
+                android:background="@drawable/button_selector"
+                android:text="开始升级"
+
+                android:textColor="@color/colorWhite" />
+        </LinearLayout>
+
+         <LinearLayout
+            android:id="@+id/sjprogress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+             android:layout_marginLeft="20dp"
+             android:layout_marginRight="10dp"
+            android:gravity="center"
+             android:visibility="gone"
+            android:orientation="vertical">
+             <TextView
+                 android:id="@+id/tvsjjd"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"
+                 android:textSize="20dp"
+                 android:textColor="@color/black"
+                 android:text="0%"
+                 android:gravity="center"/>
+             <ProgressBar
+                 android:id="@+id/progressBar"
+                 style="?android:attr/progressBarStyleHorizontal"
+                 android:min="0"
+                 android:max="100"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

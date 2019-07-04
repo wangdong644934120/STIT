@@ -31,7 +31,9 @@ public class Cache {
     public static Handler myHandleSick;  //患者界面的患者信息显示handle
     public static Handler myHandleAccess;//耗材确认界面的handle
     public static Handler myHandlePD;   //盘点结果显示handle
+    public static Handler myHandleDevice;//设备信息界面显示handle
     public static boolean getPersonCard;//是否是人员界面要卡号
+    public static boolean isFirstStart;//是否是首次启动
     public static int getHCCS=0;  //0--关门盘存，1-耗材初始时要数据线，2-主界面盘点要数据,-加载界面盘点所有耗材
     public static HashMap<String,String> HCCSMap=new HashMap<String,String>(); //key-card,value-wz
     public static int mztcgq=2;//门状态传感器  1--开，0--关
@@ -54,6 +56,7 @@ public class Cache {
     public static String cpxlh="";//产品序列号
     public static String yjbbh="";//硬件版本号
     public static String gjbbh="";//固件版本号
+    public static String apkversion="";//apk版本号
     public static int pc=1; //盘存方式  0-全盘，1-触发
     public static int pccs=5;   //盘存次数
     public static int pcjg=5;   //盘存时间间隔
@@ -76,5 +79,6 @@ public class Cache {
     public static String operatorCode=""; //操作员编号
     public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
     public static int isPCNow=0;//正在盘存标签，0-未盘存，1-正在盘存
+    public static boolean deviceCommunication=true;
 
 }

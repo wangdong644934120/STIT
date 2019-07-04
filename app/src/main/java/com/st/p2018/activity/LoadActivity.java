@@ -1,7 +1,10 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
@@ -106,9 +109,13 @@ public class LoadActivity extends Activity {
     class MainThread extends Thread{
         public void run(){
                 try{
-                    Utils.getPingYin("张");
+                    Cache.isFirstStart=true;
                     initDataBase();
                     initAppName();
+                    if( Cache.chooseSick.equals("1")){
+                        Utils.getPingYin("张");
+                    }
+                    getAppVersionName(LoadActivity.this);
                     initExternal();
                     Intent intent = new Intent(LoadActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -162,4 +169,20 @@ public class LoadActivity extends Activity {
 
         }
     }
+
+    /**
+     * 返回当前程序版本名
+     */
+    private  void getAppVersionName(Context context) {
+
+        try {
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            Cache.apkversion = pi.versionName;
+            logger.info("apk程序版本号："+Cache.apkversion);
+        } catch (Exception e) {
+            logger.error("获取apk程序版本号出错",e);
+        }
+    }
+
 }

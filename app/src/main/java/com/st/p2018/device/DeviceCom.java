@@ -51,13 +51,20 @@ public class DeviceCom extends Thread{
             logger.info("报警:获取工作模式失败");
         }
        new DataThread().start();
-        if(Cache.external){
+        //如果连接第三方平台并且是首次启动需要先盘点数据
+        if(Cache.external && Cache.isFirstStart){
             Cache.getHCCS=3;
             if(HCProtocol.ST_GetAllCard()){
                 logger.info("加载界面下发获取所有耗材成功");
             }else{
                 logger.info("加载界面下发获取所有耗材失败");
             }
+        }
+        Cache.isFirstStart=false;
+
+        //如果设备信息界面已经打开，需要重新更新界面显示信息，主要是固件升级时候使用
+        if(Cache.myHandleDevice!=null){
+            sendDevice();
         }
 
     }
@@ -76,6 +83,7 @@ public class DeviceCom extends Thread{
                 Cache.gx=gx;
             }
             //产品序列号
+            Cache.cpxlh="";
             byte[] cpxlh = new byte[6];
             System.arraycopy(data, 5, cpxlh, 0, 6);
             for(byte b : cpxlh){
@@ -149,5 +157,13 @@ public class DeviceCom extends Thread{
         data.putString("gx","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
+    }
+    //设备信息显示界面
+    private  void sendDevice(){
+        Message message = Message.obtain(Cache.myHandleDevice);
+        Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+        data.putString("show","1");
+        message.setData(data);
+        Cache.myHandleDevice.sendMessage(message);
     }
 }

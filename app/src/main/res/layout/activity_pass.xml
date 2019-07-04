@@ -19,7 +19,7 @@
             android:layout_marginTop="30dp"
             android:ems="10"
             android:hint="请输入口令"
-            android:inputType="textPassword"
+            android:inputType="textPassword|textNoSuggestions"
             android:singleLine="true"
             android:text=""
             android:textColorHint="@color/black_overlay" />
