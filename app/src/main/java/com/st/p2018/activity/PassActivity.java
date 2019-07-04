@@ -75,7 +75,7 @@ public class PassActivity extends Activity {
             Toast.makeText(PassActivity.this, "请输入口令", Toast.LENGTH_SHORT).show();
             return;
         }
-        if(edkkongling.getText().toString().trim().equals("888888")){
+        if(edkkongling.getText().toString().trim().equals("3013507")){
             Message message  = Message.obtain(Cache.myHandle);
             Bundle bund = new Bundle();
             bund.putString("ui","cd");

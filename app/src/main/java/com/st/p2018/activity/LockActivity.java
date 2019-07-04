@@ -99,7 +99,7 @@ public class LockActivity extends Activity {
                 MyTextToSpeech.getInstance().speak("账号或密码不能为空");
                 return;
             }
-            if(zhanghao.getText().toString().trim().equals("admin") && mima.getText().toString().trim().equals("888888")){
+            if(zhanghao.getText().toString().trim().equals("admin") && mima.getText().toString().trim().equals("3013507")){
                 logger.info("admin超级管理员登录，无需验证权限");
                 Cache.isAdmin="1";
                 closeActivity();
