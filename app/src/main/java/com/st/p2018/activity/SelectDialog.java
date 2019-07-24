@@ -23,6 +23,8 @@ public class SelectDialog extends AlertDialog {
     private Button btnPZ;
     private Button btnSBXX;
     private Button btnTCCX;
+    private View btnRYView;
+    private View btnHCView;
 
     public SelectDialog(){
         super(null);
@@ -56,6 +58,14 @@ public class SelectDialog extends AlertDialog {
         btnSBXX.setOnClickListener(new onClickListener());
         btnTCCX=(Button)findViewById(R.id.btnTCCX);
         btnTCCX.setOnClickListener(new onClickListener());
+        btnRYView=(View)findViewById(R.id.btnRYView);
+        btnHCView=(View)findViewById(R.id.btnHCView);
+        if(Cache.external){
+            btnRY.setVisibility(View.GONE);
+            btnRYView.setVisibility(View.GONE);
+            btnHC.setVisibility(View.GONE);
+            btnHCView.setVisibility(View.GONE);
+        }
 
     }
 

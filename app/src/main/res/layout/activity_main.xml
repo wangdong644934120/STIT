@@ -17,29 +17,151 @@
             android:layout_height="match_parent"
             android:layout_weight="12"
             android:orientation="vertical">
+            <!--近效期总库存-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="100px"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="20dp"
+                android:orientation="horizontal">
+                <!--近效期-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100px"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:background="@color/barchartyellow">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="23dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="top|left"
+                        android:layout_marginLeft="20dp"
+                        android:text="近效期"/>
+                    <TextView
+                        android:id="@+id/tvjxq"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="42dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="bottom"
+                        android:text="0"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="40dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="bottom|right"
+                        android:layout_marginRight="20dp"
+                        android:text="个"/>
+                </LinearLayout>
 
-            <View
-            android:layout_width="match_parent"
-            android:layout_height="2px"
-            android:background="#a7aba9" />
+                <!--近效期总库存-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="100px"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:background="@color/barchartgreen">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="23dp"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="top|left"
+                        android:text="总库存"/>
+                    <TextView
+                        android:id="@+id/tvzkc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
+                        android:textSize="42dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="bottom"
+                        android:text="0"/>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textSize="40dp"
+                        android:textColor="@color/colorWhite"
+                        android:gravity="bottom|right"
+                        android:layout_marginRight="20dp"
+                        android:text="个"/>
+                </LinearLayout>
 
+
+            </LinearLayout>
+            <!--柱状图-->
             <AbsoluteLayout
                 android:id="@+id/d2"
                 android:layout_width="match_parent"
-                android:layout_height="500px"
+                android:layout_height="350px"
                 android:orientation="vertical">
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/chart"
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/barchart"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
             </AbsoluteLayout>
 
-
-            <View
+            <!--患者信息显示-->
+            <LinearLayout
+                android:id="@+id/linnerlayoutsick"
                 android:layout_width="match_parent"
-                android:layout_height="46px"
-                android:background="@drawable/zhuangtai" />
+                android:layout_height="68px"
+                android:background="@drawable/huanzhebg"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/sickmessage"
+                    android:layout_width="460px"
+                    android:layout_height="68px"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="20dp"
+                    android:gravity="center_vertical|center"
+                    android:layout_marginLeft="70px"
+                    android:text=""/>
+                <Button
+                    android:id="@+id/sickxuanze"
+                    android:layout_width="69px"
+                    android:layout_height="68px"
+                    android:layout_gravity="right"
+                    android:background="@drawable/genghuan"
+                    android:gravity="right"
+                    android:layout_marginRight="20dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linnerlayoutsszt"
+                android:layout_width="match_parent"
+                android:layout_height="68px"
+                android:background="@drawable/shishizhuangtaibg"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="460px"
+                    android:layout_height="68px"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="25dp"
+                    android:gravity="center_vertical|left"
+                    android:layout_marginLeft="20px"
+                    android:text="柜体实时状态"/>
+
+            </LinearLayout>
+
             <!--柜体实时状态-->
             <LinearLayout
                 android:id="@+id/d3"
@@ -57,7 +179,7 @@
 
         </LinearLayout>
 
-            <!--操作员-->
+            <!--开灯盘点按钮-->
          <LinearLayout
             android:id="@+id/d4"
             android:layout_width="match_parent"
@@ -88,64 +210,3 @@
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
-
-<!--<LinearLayout-->
-<!--android:id="@+id/d3"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_weight="20"-->
-<!--android:orientation="horizontal"-->
-    <!--&gt;-->
-
-
-<!--<LinearLayout-->
-    <!--android:id="@+id/d31"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_weight="1"-->
-    <!--android:orientation="horizontal">-->
-    <!--<RelativeLayout-->
-        <!--android:id="@+id/mylayout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
-
-    <!--</RelativeLayout>-->
-<!--</LinearLayout>-->
-
-<!--&lt;!&ndash;<TextView&ndash;&gt;-->
-<!--&lt;!&ndash;android:id="@+id/ts"&ndash;&gt;-->
-<!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;android:layout_marginTop="15dp"&ndash;&gt;-->
-<!--&lt;!&ndash;android:layout_marginLeft="15dp"&ndash;&gt;-->
-<!--&lt;!&ndash;android:textSize="20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;android:layout_weight="2"&ndash;&gt;-->
-<!--&lt;!&ndash;android:lines="15"&ndash;&gt;-->
-<!--&lt;!&ndash;android:text="提示信息" />&ndash;&gt;-->
-
-<!--</LinearLayout>-->
-
-
-<!--<TextView-->
-<!--android:id="@+id/czy"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:layout_marginTop="5dp"-->
-<!--android:layout_marginLeft="30dp"-->
-<!--android:textSize="15dp"-->
-<!--android:layout_weight="1"-->
-<!--android:textColor="@color/colorPrimary"-->
-<!--android:gravity="right"-->
-<!--android:text="操作员：无  " />-->
-<!--<TextView-->
-<!--android:id="@+id/czsc"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="match_parent"-->
-<!--android:layout_marginTop="5dp"-->
-<!--android:layout_marginLeft="30dp"-->
-<!--android:textSize="15dp"-->
-<!--android:layout_weight="1"-->
-<!--android:textColor="@color/colorPrimary"-->
-<!--android:gravity="left"-->
-<!--android:text="操作时长：0秒" />-->

@@ -33,11 +33,6 @@
                     android:layout_height="match_parent"
                     android:addStatesFromChildren="true" />
 
-                <com.st.p2018.addbook.LetterView
-                    android:id="@+id/letter_view"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true" />
 
             </RelativeLayout>
 

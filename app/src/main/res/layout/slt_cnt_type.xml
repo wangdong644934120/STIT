@@ -24,6 +24,7 @@
             android:gravity="left|center_vertical"
             android:id="@+id/btnRY"></Button>
         <View
+            android:id="@+id/btnRYView"
             android:layout_width="match_parent"
             android:layout_height="2px"
             android:background="#a7aba9" />
@@ -40,6 +41,7 @@
             android:layout_width="fill_parent"
             android:id="@+id/btnHC"></Button>
         <View
+            android:id="@+id/btnHCView"
             android:layout_width="match_parent"
             android:layout_height="2px"
             android:background="#a7aba9" />

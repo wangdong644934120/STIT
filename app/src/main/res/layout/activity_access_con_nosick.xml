@@ -18,16 +18,16 @@
             android:layout_height="50px"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="10px"
-            android:background="@color/lowergray"
             android:visibility="gone"
+            android:background="@color/lowergray"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
                 android:gravity="right|center_vertical"
+                android:layout_marginLeft="30dp"
                 android:text="患者:"
                 android:textColor="@color/black"
                 android:textSize="20dp" />
@@ -37,29 +37,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="1"
                 android:gravity="left|center_vertical"
                 android:text=""
                 android:textColor="@color/black"
                 android:textSize="20dp" />
 
-            <Button
-                android:id="@+id/btngg"
-                android:layout_width="80px"
-                android:layout_height="match_parent"
-                android:layout_marginRight="10px"
-                android:layout_weight="1"
-                android:background="@color/blue"
-                android:gravity="center"
-                android:text="更改"
-                android:textColor="@color/colorWhite"
-                android:textSize="20dp" />
+
         </LinearLayout>
+
         <!--存取信息展示区-->
         <LinearLayout
             android:id="@+id/linnerLayouttxl"
             android:layout_width="match_parent"
-            android:layout_height="885px"
+            android:layout_height="880px"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -78,15 +68,35 @@
                     android:layout_marginTop="10px"
                     android:background="@color/loweryellow"
                     android:orientation="horizontal">
-
+                    <Button
+                        android:id="@+id/btnsaveSC"
+                        android:layout_width="80px"
+                        android:layout_height="35px"
+                        android:background="@color/blue"
+                        android:textColor="@color/colorWhite"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center|center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:text="删除"
+                        android:textSize="20dp" />
+                    <Button
+                        android:id="@+id/btnsaveHF"
+                        android:layout_width="80px"
+                        android:layout_height="35px"
+                        android:background="@color/blue"
+                        android:textColor="@color/colorWhite"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center|center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:text="恢复"
+                        android:textSize="20dp" />
                     <TextView
                         android:id="@+id/savecount"
                         android:layout_width="match_parent"
                         android:layout_height="52px"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:gravity="left|center_vertical"
+                        android:layout_marginRight="15dp"
+                        android:gravity="right|center_vertical"
                         android:text="共存放0个"
                         android:textColor="@color/colorWhite"
                         android:textSize="25dp"
@@ -95,7 +105,7 @@
                 <!--存放信息内容展示-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="387px"
+                    android:layout_height="380px"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
@@ -105,7 +115,7 @@
                     <com.bin.david.form.core.SmartTable
                         android:id="@+id/tablesave"
                         android:layout_width="match_parent"
-                        android:layout_height="360px"
+                        android:layout_height="370px"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
@@ -129,15 +139,35 @@
                     android:layout_marginTop="10px"
                     android:background="@color/lowergreen"
                     android:orientation="horizontal">
-
+                    <Button
+                        android:id="@+id/btnOutSC"
+                        android:layout_width="80px"
+                        android:layout_height="35px"
+                        android:background="@color/blue"
+                        android:textColor="@color/colorWhite"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center|center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:text="删除"
+                        android:textSize="20dp" />
+                    <Button
+                        android:id="@+id/btnOutHF"
+                        android:layout_width="80px"
+                        android:layout_height="35px"
+                        android:background="@color/blue"
+                        android:textColor="@color/colorWhite"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center|center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:text="恢复"
+                        android:textSize="20dp" />
                     <TextView
                         android:id="@+id/outcount"
                         android:layout_width="match_parent"
                         android:layout_height="52px"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="1"
-                        android:gravity="left|center_vertical"
+                        android:layout_marginRight="15dp"
+                        android:gravity="right|center_vertical"
                         android:text="共取出0个"
                         android:textColor="@color/colorWhite"
                         android:textSize="25dp"
@@ -146,7 +176,7 @@
                 <!--取出信息内容展示-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="387px"
+                    android:layout_height="380px"
                     android:layout_marginBottom="10dp"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="10dp"
@@ -156,7 +186,7 @@
                     <com.bin.david.form.core.SmartTable
                         android:id="@+id/tableout"
                         android:layout_width="match_parent"
-                        android:layout_height="360px"
+                        android:layout_height="370px"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginTop="10dp"
@@ -171,7 +201,7 @@
         <LinearLayout
             android:id="@+id/loadaccesstxl"
             android:layout_width="match_parent"
-            android:layout_height="885px"
+            android:layout_height="880px"
             android:gravity="center"
             android:orientation="vertical"
             android:visibility="visible">
@@ -183,7 +213,7 @@
 
         </LinearLayout>
 
-        <!--正确错误按钮展示-->
+        <!--确认取消按钮展示-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100px"
@@ -201,7 +231,7 @@
                 android:gravity="center"
                 android:background="@color/blue"
                 android:textColor="@color/colorWhite"
-                android:text="正确"
+                android:text="确认"
                 android:layout_marginRight="2px"
                 android:textSize="20dp" />
 
@@ -214,7 +244,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="2px"
                 android:gravity="center"
-                android:text="有误"
+                android:text="取消"
                 android:textSize="20dp" />
         </LinearLayout>
 

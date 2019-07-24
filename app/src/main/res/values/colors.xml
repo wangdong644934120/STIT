@@ -18,4 +18,6 @@
     <color name="btnpress">#e2a010</color>
     <color name="jxqyellow">#d6c404</color>
     <color name="number">#458B00</color>
+    <color name="barchartyellow">#deb200</color>
+    <color name="barchartgreen">#087628</color>
 </resources>

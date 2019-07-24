@@ -8,17 +8,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/login"
+        android:background="@drawable/denglubg"
         android:gravity="center"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/tvxtmc"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:text=""
+            android:layout_marginTop="-260dp"
+            android:textSize="60dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textColor="@color/colorWhite"
+            />
 
         <EditText
             android:id="@+id/zhanghao"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:ems="10"
-            android:layout_marginTop="-115dp"
+            android:layout_marginTop="175dp"
             android:layout_marginLeft="120dp"
             android:layout_marginRight="120dp"
             android:hint="用户名"

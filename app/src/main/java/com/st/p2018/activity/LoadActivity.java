@@ -112,9 +112,6 @@ public class LoadActivity extends Activity {
                     Cache.isFirstStart=true;
                     initDataBase();
                     initAppName();
-                    if( Cache.chooseSick.equals("1")){
-                        Utils.getPingYin("张");
-                    }
                     getAppVersionName(LoadActivity.this);
                     initExternal();
                     Intent intent = new Intent(LoadActivity.this, MainActivity.class);

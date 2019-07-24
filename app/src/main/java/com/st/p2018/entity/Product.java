@@ -17,9 +17,8 @@ public class Product implements Serializable {
     private String yxrq; //有效日期
     private String syts; //剩余天数
     private String epc; //耗材epc
-    private String szwz; //所在位置
+    private String location; //所在位置
     private String operation; //操作
-
 
     public String getPp() {
         return pp;
@@ -61,12 +60,12 @@ public class Product implements Serializable {
         this.syts = syts;
     }
 
-    public String getSzwz() {
-        return szwz;
+    public String getLocation() {
+        return location;
     }
 
-    public void setSzwz(String szwz) {
-        this.szwz = szwz;
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getEpc() {

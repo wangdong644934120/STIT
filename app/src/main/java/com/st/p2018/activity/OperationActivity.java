@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -11,7 +12,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bin.david.form.core.SmartTable;
+import com.bin.david.form.core.TableConfig;
+import com.bin.david.form.data.CellInfo;
 import com.bin.david.form.data.Column;
+import com.bin.david.form.data.format.bg.BaseCellBackgroundFormat;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.st.p2018.dao.ProductDao;
@@ -36,6 +40,7 @@ public class OperationActivity extends Activity {
     private TextView tvfh;
     private TextView tvtitle;
     private Logger logger = Logger.getLogger(this.getClass());
+    private String ceng="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,33 +53,36 @@ public class OperationActivity extends Activity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
         try{
             Intent intent = getIntent();
-            String yxqFlag = intent.getStringExtra("yxq");
-            String title = intent.getStringExtra("title");
+            ceng = intent.getStringExtra("ceng");
+
             initView();
 
-            tvtitle.setText(title);
+            tvtitle.setText(ceng+"层");
 
             if(Cache.external){
                 Column<String> column1 = new Column<>("品牌", "pp");
                 Column<String> column2 = new Column<>("名称", "mc");
                 Column<String> column3 = new Column<>("效期批次", "xqpc");
                 //Column<String> column4 = new Column<>("剩余天数", "yxrq");
-                Column<String> column5 = new Column<>("位置(层/抽)", "szwz");
-                if(yxqFlag.contains("已过期")){
-                   yxqFlag="ygq";
-                }else if(yxqFlag.contains("近效期")){
-                    yxqFlag="jxq";
-                }else if(yxqFlag.contains("远效期")){
-                   yxqFlag="yxq";
+                Column<String> column5 = new Column<>("位置(层)", "location");
+                //Column<String> column6=new Column<String>("近效期","")
+
+                List<Product> list=new ArrayList<>();
+                if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getJxq()!=null){
+                    list.addAll(Cache.mapTotal.get(ceng).getJxq());
                 }
+                if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getQt()!=null){
+                    list.addAll(Cache.mapTotal.get(ceng).getQt());
+                }
+
                 //表格数据 datas是需要填充的数据
-                TableData<Product> tableData = new TableData<Product>("", Cache.mapTotal.get(yxqFlag), column1, column2, column3,  column5);
+                TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,  column5);
                 //设置数据
                 table = findViewById(R.id.table);
                 table.setTableData(tableData);
             }else{
                 //普通列
-                Column<String> column1 = new Column<>("品牌", "pp");
+               /* Column<String> column1 = new Column<>("品牌", "pp");
                 Column<String> column2 = new Column<>("种类", "type");
                 Column<String> column3 = new Column<>("规格", "gg");
                 Column<String> column4 = new Column<>("有效日期", "yxrq");
@@ -86,7 +94,7 @@ public class OperationActivity extends Activity {
                 TableData<ProductQuery> tableData = new TableData<ProductQuery>("", list, column1, column2, column3, column4, column5, column6);
                 //设置数据
                 table = findViewById(R.id.table);
-                table.setTableData(tableData);
+                table.setTableData(tableData);*/
             }
 
             table.getConfig().setShowXSequence(false);
@@ -95,6 +103,16 @@ public class OperationActivity extends Activity {
             table.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
             table.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
             table.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
+            table.getConfig().setContentBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {     //设置隔行变色
+                @Override
+                public int getBackGroundColor(CellInfo cellInfo) {
+                    if (cellInfo.position<Cache.mapTotal.get(ceng).getJxq().size()) {
+                        return ContextCompat.getColor(OperationActivity.this, R.color.jxqyellow);
+                    } else {
+                        return TableConfig.INVALID_COLOR;
+                    }
+                }
+            });
         }catch (Exception e){
             logger.error("初始化时出错",e);
         }

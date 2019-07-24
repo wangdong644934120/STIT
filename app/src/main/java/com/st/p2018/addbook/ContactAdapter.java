@@ -3,6 +3,7 @@ package com.st.p2018.addbook;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,8 +45,12 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void handleContact() {
+        resultList = new ArrayList<>();
+        for(int i=0;i<mContactNames.size();i++){
+            resultList.add(new Contact(mContactNames.get(i), ITEM_TYPE.ITEM_TYPE_CONTACT.ordinal()));
+        }
 
-        mContactList = new ArrayList<>();
+        /*mContactList = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
 
         for (int i = 0; i < mContactNames.size(); i++) {
@@ -77,7 +82,7 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
 
             resultList.add(new Contact(map.get(name), ITEM_TYPE.ITEM_TYPE_CONTACT.ordinal()));
-        }
+        }*/
     }
 
     @Override
@@ -92,9 +97,11 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CharacterHolder) {
-            ((CharacterHolder) holder).mTextView.setText(resultList.get(position).getmName());
+            ((CharacterHolder) holder).mTextView.setText(Html.fromHtml(resultList.get(position).getmName()));
+
         } else if (holder instanceof ContactHolder) {
-            ((ContactHolder) holder).mTextView.setText(resultList.get(position).getmName());
+            ((ContactHolder) holder).mTextView.setText(Html.fromHtml(resultList.get(position).getmName()));
+
         }
     }
 
@@ -105,18 +112,15 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public int getItemCount() {
-        return resultList == null ? 0 : resultList.size();
+       return resultList == null ? 0 : resultList.size();
     }
 
     public class CharacterHolder extends RecyclerView.ViewHolder {
         TextView mTextView;
 
-
         CharacterHolder(View view) {
             super(view);
-
             mTextView = (TextView) view.findViewById(R.id.character);
-
         }
     }
 
@@ -127,7 +131,6 @@ public class ContactAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             mTextView = (TextView) view.findViewById(R.id.contact_name);
 
             LinearLayout ll = (LinearLayout)view.findViewById(R.id.txl);
-
 
             ll.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v,MotionEvent event) {

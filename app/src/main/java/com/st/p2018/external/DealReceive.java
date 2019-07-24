@@ -7,20 +7,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
-import com.st.p2018.externalentity.ExternalPorduct;
-import com.st.p2018.entity.PDEntity;
+import com.st.p2018.externalentity.ActionProduct;
 import com.st.p2018.entity.Product;
-import com.st.p2018.externalentity.ActionTotal_TotalMessage;
+import com.st.p2018.externalentity.ExternalSick;
+import com.st.p2018.externalentity.ProductExpire;
+import com.st.p2018.externalentity.ProductSearch;
+import com.st.p2018.externalentity.Sick;
+import com.st.p2018.externalentity.TotalMessage;
+import com.st.p2018.externalentity.TotalProduct;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.CacheSick;
 import com.st.p2018.util.MyTextToSpeech;
-
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -64,7 +64,6 @@ public class DealReceive extends Thread{
                     String code=jsonData.get("code")==null?"":jsonData.get("code").toString();
                     String tzz=jsonData.get("tzz")==null?"":jsonData.get("tzz").toString();
                     dealPerson(type,code,tzz,number);
-
                     break;
                 case "power":
                     //指纹或刷卡返回
@@ -104,15 +103,19 @@ public class DealReceive extends Thread{
                     openLight(number,data);
                     break;
                 case "patient":
-                    number=jsonData.get("number")==null?"":jsonData.get("number").toString();
-                    data=jsonData.get("data")==null?"":jsonData.get("data").toString();
                     dealSick(number,value);
                     break;
                 case "patientproduct":
-
+                    dealTotal(number,value);
                     break;
                 case "total":
                     dealTotal(number,value);
+                    break;
+                case "productsearch":
+                    dealProductSearch(number,value);
+                    break;
+                case "productexpire":
+                    dealProductExpire(number,value);
                     break;
                 default:
                     String sendValue="{\"order\":\""+order+"\",\"number\":\""+number+"\",\"message\":\"1\"}";
@@ -481,21 +484,14 @@ public class DealReceive extends Thread{
     /**
      * 处理患者信息
      * @param number
-     * @param value
+     * @param data
      */
-    private void dealSick(String number,String value){
+    private void dealSick(String number,String data){
         CacheSick.clear();
         try{
-            JSONObject jsonObject=new JSONObject(value);
-            JSONArray jsonArray=jsonObject.getJSONArray("data");
-            for(int i=0;i<jsonArray.length();i++){
-                JSONObject obj=jsonArray.getJSONObject(i);
-                String time=obj.getString("time");
-                String name=obj.getString("name");
-                String code=obj.getString("code");
-                String dept=obj.getString("dept");
-                String operaid=obj.getString("operaid");
-                CacheSick.add(time,name,code,dept,operaid);
+            ExternalSick externalSick= JSON.parseObject(data, new TypeReference<ExternalSick>(){});
+            for(Sick sick : externalSick.getData()){
+                CacheSick.add(sick.getTime(),sick.getName(),sick.getCode(),sick.getDept(),sick.getOperaid(),sick.getOperaname());
             }
             //通知患者选择界面显示数据
             if(Cache.chooseSick.equals("1")){
@@ -524,10 +520,10 @@ public class DealReceive extends Thread{
     private void dealPorduct(String number,String value){
         try{
             long start=System.currentTimeMillis();
-            ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
+            ActionProduct actionProduct = JSON.parseObject(value, new TypeReference<ActionProduct>(){});
 
-            if(externalPorduct.getData()!=null){
-                for(Product product :externalPorduct.getData().getAction()){
+            if(actionProduct.getData()!=null){
+                for(Product product :actionProduct.getData()){
                     if(product.getOperation().equals("存")){
                         Cache.listOperaSave.add(product);
                     }else if(product.getOperation().equals("取")){
@@ -544,37 +540,44 @@ public class DealReceive extends Thread{
             }else{
                 logger.info("耗材确认界面已经关闭，无需展示数据");
             }
-
-
             logger.info("耗材操作统计耗时:"+(System.currentTimeMillis()-start));
-            start=System.currentTimeMillis();
-
-            Cache.mapTotal.put("jxq",new ArrayList<Product>());
-            Cache.mapTotal.put("yxq",new ArrayList<Product>());
-            Cache.mapTotal.put("ygq",new ArrayList<Product>());
-            if(externalPorduct.getData()!=null){
-                for(ActionTotal_TotalMessage totalMessage : externalPorduct.getData().getTotal()){
-                    if(totalMessage.getXq().equals("近效期")){
-                        Cache.mapTotal.get("jxq").addAll(totalMessage.getData());
-                    }else if(totalMessage.getXq().equals("远效期")){
-                        Cache.mapTotal.get("yxq").addAll(totalMessage.getData());
-                    }else if(totalMessage.getXq().equals("已过期")){
-                        Cache.mapTotal.get("ygq").addAll(totalMessage.getData());
-                    }
-                }
-            }
-
-            Message messageInitXQ = Message.obtain(Cache.myHandle);
-            Bundle bundInitXQ = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-            bundInitXQ.putString("initJXQExternal","1");
-            messageInitXQ.setData(bundInitXQ);
-            Cache.myHandle.sendMessage(messageInitXQ);
-            logger.info("耗材效期统计耗时:"+(System.currentTimeMillis()-start));
         }catch (Exception e){
             logger.error("处理服务器返回的耗材数据出错",e);
         }
 
 
+    }
+
+    /**
+     * 患者耗材查询
+     * @param number
+     * @param value
+     */
+    private void dealProductSearch(String number,String value){
+        ProductSearch productSearch=JSON.parseObject(value,new TypeReference<ProductSearch>(){});
+        CacheSick.listEP.clear();
+        CacheSick.listEP.addAll(productSearch.getData());
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle bund = new Bundle();
+        bund.putString("ui","productsearch");
+        message.setData(bund);
+        Cache.myHandle.sendMessage(message);
+    }
+
+    /**
+     * 过期耗材
+     * @param number
+     * @param value
+     */
+    private void dealProductExpire(String number,String value){
+        ProductExpire productExpire =JSON.parseObject(value,new TypeReference<ProductExpire>(){});
+        CacheSick.listExpire.clear();
+        CacheSick.listExpire.addAll(productExpire.getData());
+        Message message = Message.obtain(Cache.myHandle);
+        Bundle bund = new Bundle();
+        bund.putString("ui","productexpire");
+        message.setData(bund);
+        Cache.myHandle.sendMessage(message);
     }
 
     /**
@@ -586,37 +589,31 @@ public class DealReceive extends Thread{
         long start=System.currentTimeMillis();
         try{
             Cache.mapPD.clear();
-            Cache.mapTotal.put("jxq",new ArrayList<Product>());
-            Cache.mapTotal.put("yxq",new ArrayList<Product>());
-            Cache.mapTotal.put("ygq",new ArrayList<Product>());
-            ExternalPorduct externalPorduct = JSON.parseObject(value, new TypeReference<ExternalPorduct>(){});
+            TotalProduct totalProduct = JSON.parseObject(value, new TypeReference<TotalProduct>(){});
             logger.info("耗材统计解析耗时:"+(System.currentTimeMillis()-start));
 
-            if(externalPorduct.getData()!=null){
-                for(ActionTotal_TotalMessage totalMessage :externalPorduct.getData().getTotal()){
-                    String xq="jxq";
-                    if(totalMessage.getXq().equals("近效期")){
-                        xq="jxq";
-                    }else if(totalMessage.getXq().equals("远效期")){
-                        xq="yxq";
-                    }else if(totalMessage.getXq().equals("已过期")){
-                        xq="ygq";
+            if(totalProduct.getData()!=null){
+                for(TotalMessage totalMessage :totalProduct.getData()){
+                    if(totalMessage.getLocation().equals("1")){
+                        Cache.mapTotal.put("1",totalMessage);
                     }
-                    Cache.mapTotal.get(xq).addAll(totalMessage.getData());
-                    for(Product product : totalMessage.getData()){
-                        initXQ(totalMessage.getXq(),product);
+                    if(totalMessage.getLocation().equals("2")){
+                        Cache.mapTotal.put("2",totalMessage);
                     }
-                }
-            }
+                    if(totalMessage.getLocation().equals("3")){
+                        Cache.mapTotal.put("3",totalMessage);
+                    }
+                    if(totalMessage.getLocation().equals("4")){
+                        Cache.mapTotal.put("4",totalMessage);
+                    }
+                    if(totalMessage.getLocation().equals("5")){
+                        Cache.mapTotal.put("5",totalMessage);
+                    }
+                    if(totalMessage.getLocation().equals("6")){
+                        Cache.mapTotal.put("6",totalMessage);
+                    }
 
-            if(Cache.myHandlePD!=null){
-                Message message = Message.obtain(Cache.myHandlePD);
-                Bundle bund = new Bundle();
-                bund.putString("show","1");
-                message.setData(bund);
-                Cache.myHandlePD.sendMessage(message);
-            }else{
-                logger.info("盘点界面已经关闭，取消信息显示");
+                }
             }
 
             Message messageInitXQ = Message.obtain(Cache.myHandle);
@@ -635,7 +632,7 @@ public class DealReceive extends Thread{
      * @param xq
      * @param product
      */
-    private void initXQ(String xq,Product product){
+   /* private void initXQ(String xq,Product product){
         if(xq.equals("近效期")){
             if(Cache.mapPD.get(product.getSzwz())==null){
                 PDEntity pdEntity=new PDEntity();
@@ -664,6 +661,6 @@ public class DealReceive extends Thread{
                 Cache.mapPD.get(product.getSzwz()).setYgq(pdEntity.getYgq()+1);
             }
         }
-    }
+    }*/
 
 }

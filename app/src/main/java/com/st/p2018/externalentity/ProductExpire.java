@@ -1,16 +1,17 @@
 package com.st.p2018.externalentity;
 
-import java.io.Serializable;
+import com.st.p2018.entity.Product;
+
+import java.util.List;
 
 /**
- * Created by Administrator on 2019/6/10.
+ * 过期耗材
  */
 
-public class ExternalPorduct implements Serializable {
+public class ProductExpire {
     private String order;
     private String number;
-    private ExternalPorduct_ActionTotal data;
-
+    private List<Product> data;
 
     public String getOrder() {
         return order;
@@ -28,13 +29,11 @@ public class ExternalPorduct implements Serializable {
         this.number = number;
     }
 
-    public ExternalPorduct_ActionTotal getData() {
+    public List<Product> getData() {
         return data;
     }
 
-    public void setData(ExternalPorduct_ActionTotal data) {
+    public void setData(List<Product> data) {
         this.data = data;
     }
-
-
 }

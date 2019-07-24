@@ -4,75 +4,69 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.MPPointF;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-import com.st.p2018.dao.PZDao;
-import com.st.p2018.dao.ProductDao;
-import com.st.p2018.database.DatabaseManager;
-import com.st.p2018.database.UpdateDB;
 import com.st.p2018.device.DeviceCom;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
-import com.st.p2018.util.LogUtil;
+import com.st.p2018.util.CacheSick;
 
 import com.st.p2018.util.MySpeechUtil;
 import com.st.p2018.util.MyTextToSpeech;
-import com.st.p2018.util.Utils;
 
 
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
+import java.util.Set;
+import java.util.UUID;
 
 
 public class MainActivity extends Activity {
 
-    private PieChart mChart;
+    private BarChart barChart;
     private Button tvD;
-    ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
     private RelativeLayout rl;
 
     private ImageView ivh1;
@@ -88,19 +82,17 @@ public class MainActivity extends Activity {
     private TextView tvczsc;
     private TextView tvmzt;
     private TextView tvdeng;
-    private TextView tvtj;
+    private TextView tvSickMessage;
     private TextView tvappTitle;
-
+    private TextView tvjxq;
+    private TextView tvzkc;
+    private Button btnsickxuanze;
     private Button btnKD;
     private Button btnPD;
 
-    final static int COUNTS = 5;// 点击次数
-    final static long DURATION = 3000;// 规定有效时间
-    long[] mHits = new long[COUNTS];
-
     private CZSCShow czscShow=null;
     private boolean czscflag=true;
-    Logger logger;
+    private Logger logger =Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,11 +106,9 @@ public class MainActivity extends Activity {
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        logger =Logger.getLogger(this.getClass());
         initView();
         initSpeechPlug();
         Cache.myContext = this;
-        initJXQData();
         new DeviceCom().start();
         if(Cache.lockScreen.equals("1")){
             logger.info("配置了锁屏");
@@ -129,6 +119,12 @@ public class MainActivity extends Activity {
 
     private void initView() {
         try{
+            if(Cache.chooseSick.equals("1")){
+                LinearLayout linner=(LinearLayout)findViewById(R.id.linnerlayoutsick);
+                linner.setVisibility(View.VISIBLE);
+                LinearLayout linnerZT=(LinearLayout)findViewById(R.id.linnerlayoutsszt);
+                linnerZT.setVisibility(View.GONE);
+            }
             tvappTitle=(TextView)findViewById(R.id.apptitle);
             btnKD=(Button)findViewById(R.id.kaideng);
             btnKD.setOnClickListener(new onClickListener());
@@ -137,10 +133,18 @@ public class MainActivity extends Activity {
             rl=(RelativeLayout)findViewById(R.id.mylayout);
             tvD=(Button)findViewById(R.id.dian);
             tvD.setOnClickListener(new onClickListener());
-            mChart = (PieChart) findViewById(R.id.chart);
-            initPieChart();
+            barChart = (BarChart) findViewById(R.id.barchart);
+
+            btnsickxuanze=(Button)findViewById(R.id.sickxuanze);
+            btnsickxuanze.setOnClickListener(new onClickListener());
+            tvSickMessage=(TextView)findViewById(R.id.sickmessage);
+            tvSickMessage.setOnClickListener(new onClickListener());
+            tvjxq=(TextView)findViewById(R.id.tvjxq);
+            tvzkc=(TextView)findViewById(R.id.tvzkc);
+            initBarChart();
             initHandler();
             initGXQT();
+            tvSickMessage.setText(CacheSick.sickChoose);
         }catch (Exception e){
             logger.error("显示view出错",e);
         }
@@ -194,7 +198,9 @@ public class MainActivity extends Activity {
                                 startActivity(intent);
                             }
                             if(bundle.getString("ui").toString().equals("sick")){
+                                //登录验证成功打开患者选择界面
                                 Intent intent = new Intent(MainActivity.this, SickActivity.class);
+                                intent.putExtra("sickgg","1");
                                 startActivity(intent);
                             }
                             if(bundle.getString("ui").toString().equals("access")){
@@ -242,6 +248,10 @@ public class MainActivity extends Activity {
                             }
                             if(bundle.getString("ui").toString().equals("connectfail")){
                                 Toast.makeText(MainActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                            }
+                            if(bundle.getString("ui").toString().equals("productsearch")){
+                                Intent intent = new Intent(MainActivity.this, ProductSearchActivity.class);
+                                startActivity(intent);
                             }
                         }
                         //缩略图更新
@@ -401,12 +411,13 @@ public class MainActivity extends Activity {
                             }
                         }
                         if(bundle.getString("initJXQ")!=null){
-                            initJXQData();
-                            mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+                            //initJXQData();
+                            barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
                         if(bundle.getString("initJXQExternal")!=null){
-                            setData(new HashMap<String, String>());
-                            mChart.animateY(500, Easing.EasingOption.EaseInCirc);
+                            //setData(new HashMap<String, String>());
+                            setDataBarChart();
+                            barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
                         if(bundle.getString("record")!=null){
                             Intent intent = new Intent(MainActivity.this, RecordActivity.class);
@@ -438,8 +449,11 @@ public class MainActivity extends Activity {
                         }
                         if(bundle.getString("appname")!=null){
                             tvappTitle.setText(bundle.getString("appname").toString());
-                            mChart.setCenterText(generateCenterSpannableText(Cache.appcode));
-                            initJXQData();
+                            /*barChart.setCenterText(generateCenterSpannableText(Cache.appcode));
+                            initJXQData();*/
+                        }
+                        if(bundle.getString("sickgg")!=null){
+                            tvSickMessage.setText(CacheSick.sickChoose);
                         }
                     }catch(Exception ex){
                         logger.error("handler内显示出错",ex);
@@ -461,7 +475,7 @@ public class MainActivity extends Activity {
     /**
      * 单击事件监听
      *
-     * @author dinghaoyang
+     * @author
      */
     public class onClickListener implements View.OnClickListener {
 
@@ -504,8 +518,6 @@ public class MainActivity extends Activity {
                         }
                     }else{
                         String app =getResources().getText(R.string.app_name).toString();
-
-                        int a=0;
                         boolean bl=HCProtocol.ST_OpenLight();
                         if(bl){
                             MyTextToSpeech.getInstance().speak("灯已开");
@@ -518,12 +530,18 @@ public class MainActivity extends Activity {
 
                     break;
                 case R.id.pandian:
-                    if(Cache.mztcgq==1){
+                    if(!Cache.external){
+                        return;
+                    }
+
+
+/*                    if(Cache.mztcgq==1){
                         //当前为开门状态禁止盘点
                         MyTextToSpeech.getInstance().speak("请关闭柜门");
                         Toast.makeText(MainActivity.this, "请关闭柜门", Toast.LENGTH_SHORT).show();
                         return;
-                    }
+                    }*/
+
                     Cache.getHCCS=2;
                     if(HCProtocol.ST_GetAllCard()){
                     }else{
@@ -532,6 +550,19 @@ public class MainActivity extends Activity {
                     }
 
                     break;
+                case R.id.sickxuanze:
+                    Intent intent = new Intent(MainActivity.this, SickActivity.class);
+                    intent.putExtra("sickgg","2");
+                    startActivity(intent);
+                    break;
+                case R.id.sickmessage:
+                    if(tvSickMessage.getText().equals("")){
+                        return;
+                    }
+                    String patient=CacheSick.getSickMessAndID().get(CacheSick.sickChoose)==null?"":CacheSick.getSickMessAndID().get(CacheSick.sickChoose);
+                    String send="{\"order\":\"productsearch\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+patient+"\"}";
+                    SocketClient.send(send);
+                    break;
                 default:
                     break;
             }
@@ -539,78 +570,254 @@ public class MainActivity extends Activity {
 
     }
 
-    private void initPieChart() {
-        try{
-            mChart.setUsePercentValues(true);
-            mChart.getDescription().setEnabled(false);
-            mChart.getDescription().setTextSize(20f);
-            mChart.setExtraOffsets(5, 10, 5, 5);
 
-            mChart.setDragDecelerationFrictionCoef(0.95f);
+    private void initBarChart(){
 
-            mChart.setCenterText(generateCenterSpannableText(Cache.appcode));
+        barChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
+        barChart.setDrawValueAboveBar(true);//true文字绘画在bar上
+        barChart.getDescription().setEnabled(false);
+        barChart.setMaxVisibleValueCount(60);
+        barChart.setPinchZoom(false);//false只能单轴缩放
+        barChart.setDrawGridBackground(false);
+        barChart.setScaleEnabled(false);
+        IAxisValueFormatter xAxisFormatter = new MyAxisValueFormatter();
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setLabelCount(7);
+        xAxis.setValueFormatter(xAxisFormatter);
+        xAxis.setTextSize(20f);
 
-            mChart.setDrawHoleEnabled(true);
-            mChart.setHoleColor(Color.WHITE);
-            mChart.setEntryLabelTextSize(30f);
-            mChart.setTransparentCircleColor(Color.WHITE);
-            mChart.setTransparentCircleAlpha(110);
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setLabelCount(8, false);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setSpaceTop(15f);
+        leftAxis.setTextSize(15f);
+        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-            mChart.setHoleRadius(40f);
-            mChart.setTransparentCircleRadius(61f);
-            mChart.setDrawCenterText(true);
+        YAxis rightAxis = barChart.getAxisRight();
+        rightAxis.setDrawGridLines(false);
+//        rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(8, false);
+//        rightAxis.setValueFormatter(custom);
+        rightAxis.setSpaceTop(15f);
+        rightAxis.setTextSize(15f);
+        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-            mChart.setRotationAngle(0);
-            // enable rotation of the chart by touch
-            mChart.setRotationEnabled(true);
-            mChart.setHighlightPerTapEnabled(true);
+        Legend l = barChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(false);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setFormSize(15f);
+        l.setTextSize(20f);
+        l.setXEntrySpace(8f);
+        l.setEnabled(true);
+        barChart.setOnChartValueSelectedListener(new BarCharLinster());
 
-
-            HashMap map = new HashMap();
-            map.put("ygq","已过期(0个)");
-            map.put("jxq","近效期(0个)");
-            map.put("yxq","远效期(0个)");
-            setData(map);
-            mChart.animateY(1400, Easing.EasingOption.EaseInOutQuad);
-            // mChart.spin(2000, 0, 360);
-            mChart.setOnChartValueSelectedListener(new PieCharLinster());
-
-            Legend l = mChart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l.setOrientation(Legend.LegendOrientation.VERTICAL);
-            l.setDrawInside(false);
-            l.setXEntrySpace(10f);
-            l.setYEntrySpace(0f);
-            l.setYOffset(0f);
-            l.setTextSize(15f);
-            l.setEnabled(false);
-
-            // entry label styling
-            mChart.setEntryLabelColor(Color.WHITE);
-            //mChart.setEntryLabelTypeface(mTfRegular);
-            mChart.setEntryLabelTextSize(20f);
-
-        }catch (Exception e){
-            logger.error("初始化chart显示出错",e);
-        }
+        setEmptyData();
     }
 
-    private void setData(HashMap<String,String> map) {
+    /**
+     * 显示图标数据
+     */
+    private void setDataBarChart() {
+        try{
+            int kc=0;
+            ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
+            if(Cache.mapTotal.get("1")!=null){
+                kc=kc+Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size();
+                yValskc.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size()));
+            }else{
+                if(Cache.gcqy1){
+                    yValskc.add(new BarEntry(1, 0));
+                }
+            }
+            if(Cache.mapTotal.get("2")!=null){
+                kc=kc+Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size();
+                yValskc.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size()));
+            }else{
+                if(Cache.gcqy2){
+                    yValskc.add(new BarEntry(2, 0));
+                }
+            }
+            if(Cache.mapTotal.get("3")!=null){
+                kc=kc+Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size();
+                yValskc.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size()));
+            }else{
+                if(Cache.gcqy3){
+                    yValskc.add(new BarEntry(3, 0));
+                }
+            }
+            if(Cache.mapTotal.get("4")!=null){
+                kc=kc+Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size();
+                yValskc.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size()));
+            }else{
+                if(Cache.gcqy4){
+                    yValskc.add(new BarEntry(4, 0));
+                }
+            }
+            if(Cache.mapTotal.get("5")!=null){
+                kc=kc+Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size();
+                yValskc.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size()));
+            }else{
+                if(Cache.gcqy5){
+                    yValskc.add(new BarEntry(5, 0));
+                }
+            }
+            if(Cache.mapTotal.get("6")!=null){
+                kc=kc+Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size();
+                yValskc.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size()));
+            }else{
+                if(Cache.gcqy6){
+                    yValskc.add(new BarEntry(6, 0));
+                }
+            }
+
+
+            BarDataSet set1;
+            set1 = new BarDataSet(yValskc, "库存");
+            set1.setDrawIcons(false);
+            set1.setColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueFormatter(new MyBValueFormatter());
+
+            ArrayList<BarEntry> yValsjxq = new ArrayList<BarEntry>();
+
+            int jxq=0;
+            if(Cache.mapTotal.get("1")!=null){
+                jxq=jxq+Cache.mapTotal.get("1").getJxq().size();
+                yValsjxq.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()));
+            }else{
+                if(Cache.gcqy1){
+                    yValsjxq.add(new BarEntry(1, 0));
+                }
+            }
+            if(Cache.mapTotal.get("2")!=null){
+                jxq=jxq+Cache.mapTotal.get("2").getJxq().size();
+                yValsjxq.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()));
+            }
+            else{
+                if(Cache.gcqy2){
+                    yValsjxq.add(new BarEntry(2, 0));
+                }
+            }
+            if(Cache.mapTotal.get("3")!=null){
+                jxq=jxq+Cache.mapTotal.get("3").getJxq().size();
+                yValsjxq.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()));
+            }else{
+                if(Cache.gcqy3){
+                    yValsjxq.add(new BarEntry(3, 0));
+                }
+            }
+            if(Cache.mapTotal.get("4")!=null){
+                jxq=jxq+Cache.mapTotal.get("4").getJxq().size();
+                yValsjxq.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()));
+            }else{
+                if(Cache.gcqy4){
+                    yValsjxq.add(new BarEntry(4, 0));
+                }
+            }
+            if(Cache.mapTotal.get("5")!=null){
+                jxq=jxq+Cache.mapTotal.get("5").getJxq().size();
+                yValsjxq.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()));
+            }else{
+                if(Cache.gcqy5){
+                    yValsjxq.add(new BarEntry(5, 0));
+                }
+            }
+            if(Cache.mapTotal.get("6")!=null){
+                jxq=jxq+Cache.mapTotal.get("6").getJxq().size();
+                yValsjxq.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()));
+            }else{
+                if(Cache.gcqy6){
+                    yValsjxq.add(new BarEntry(6, 0));
+                }
+            }
+
+
+            BarDataSet set2;
+            set2 = new BarDataSet(yValsjxq, "近效期");
+            set2.setDrawIcons(false);
+            set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
+            set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
+            set2.setValueFormatter(new MyBValueFormatter());
+
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+            dataSets.add(set2);
+
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(30f);
+            data.setBarWidth(0.5f);
+
+            barChart.setData(data);
+            tvjxq.setText(String.valueOf(jxq));
+            tvzkc.setText(String.valueOf(kc));
+        }catch (Exception e){
+            logger.error("显示图表数据出错",e);
+        }
+
+    }
+
+    /**
+     * 设置图标默认空
+     */
+    private void setEmptyData(){
+        ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
+        yValskc.add(new BarEntry(1,0));
+        yValskc.add(new BarEntry(2,0));
+        yValskc.add(new BarEntry(3,0));
+        yValskc.add(new BarEntry(4,0));
+        yValskc.add(new BarEntry(5,0));
+        if(!Cache.gx.equals("Ⅰ型")){
+            yValskc.add(new BarEntry(6,0));
+        }
+
+        BarDataSet set1;
+        set1 = new BarDataSet(yValskc, "库存");
+        set1.setDrawIcons(false);
+        set1.setColor(Color.rgb(0x08,0x76,0x28));
+        set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
+        set1.setValueFormatter(new MyBValueFormatter());
+
+        BarDataSet set2;
+        set2 = new BarDataSet(yValskc, "近效期");
+        set2.setDrawIcons(false);
+        set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
+        set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
+        set2.setValueFormatter(new MyBValueFormatter());
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
+        dataSets.add(set2);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(30f);
+        data.setBarWidth(0.5f);
+
+        barChart.setData(data);
+    }
+
+
+
+   /* private void setDataPieChart(HashMap<String,String> map) {
         try{
             if(Cache.external){
-                String ygq=Cache.mapTotal.get("ygq")==null?"0":String.valueOf(Cache.mapTotal.get("ygq").size());
+               *//* String ygq=Cache.mapTotal.get("ygq")==null?"0":String.valueOf(Cache.mapTotal.get("ygq").size());
                 String jxq=Cache.mapTotal.get("jxq")==null?"0":String.valueOf(Cache.mapTotal.get("jxq").size());
                 String yxq=Cache.mapTotal.get("yxq")==null?"0":String.valueOf(Cache.mapTotal.get("yxq").size());
                 map.put("ygq","已过期("+ygq+"个)");
                 map.put("jxq","近效期("+jxq+"个)");
-                map.put("yxq","远效期("+yxq+"个)");
-                if(tvtj!=null){
-                    tvtj.setText("数量统计："+String.valueOf(Integer.valueOf(ygq)+Integer.valueOf(jxq)+Integer.valueOf(yxq)));
-                }
+                map.put("yxq","远效期("+yxq+"个)");*//*
+
 
             }
             entries.clear();
+            *//**//*map.put("jxq","近效期（5）个");
+            map.put("yxq","库存（200）个");/*//*
             entries.add(new PieEntry(1, map.get("ygq").toString()));
             entries.add(new PieEntry(1,  map.get("jxq").toString()));
             entries.add(new PieEntry(1,  map.get("yxq").toString()));
@@ -637,17 +844,17 @@ public class MainActivity extends Activity {
             data.setValueTextSize(20f);
             data.setValueTextColor(Color.WHITE);
             //data.setValueTypeface(mTfLight);
-            mChart.setData(data);
+            barChart.setData(data);
 
             // undo all highlights
-            mChart.highlightValues(null);
+            barChart.highlightValues(null);
 
-            mChart.invalidate();
+            barChart.invalidate();
         }catch (Exception e){
             logger.error("设置chart显示内容出错",e);
         }
 
-    }
+    }*/
 
     //显示柜型中其他内容
     private void initGXQT(){
@@ -722,14 +929,14 @@ public class MainActivity extends Activity {
             tvdeng.setLayoutParams(params);
             rl.addView(tvdeng);
 
-            params = new RelativeLayout.LayoutParams(150, 82);
+/*            params = new RelativeLayout.LayoutParams(150, 82);
             params.setMargins(405, 300, 0, 0);
             tvtj = new TextView(this);
             tvtj.setText("数量统计：...");
             tvtj.setTextColor(Color.WHITE);
             tvtj.setTextSize(18);
             tvtj.setLayoutParams(params);
-            rl.addView(tvtj);
+            rl.addView(tvtj);*/
         }catch (Exception e){
             logger.error("初始化柜子其他图片出错",e);
         }
@@ -953,6 +1160,20 @@ public class MainActivity extends Activity {
         }
     }
 
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
+
+        private DecimalFormat mFormat;
+
+        public MyAxisValueFormatter() {
+            mFormat = new DecimalFormat("###,###,###,##0.0");
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+            return String.valueOf((int)value)+"层";
+        }
+    }
+
     public class MyBValueFormatter implements IValueFormatter {
 
         public MyBValueFormatter() {
@@ -964,7 +1185,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    public class MyAxisValueFormatter implements IAxisValueFormatter {
+   /* public class MyAxisValueFormatter implements IAxisValueFormatter {
 
         private DecimalFormat mFormat;
 
@@ -977,7 +1198,7 @@ public class MainActivity extends Activity {
             //return mFormat.format(value) + " $";
             return String.valueOf((int)value)+"个";
         }
-    }
+    }*/
 
     public class Day1AxisValueFormatter implements IAxisValueFormatter {
         HashMap<Float,String> fs ;
@@ -1032,15 +1253,17 @@ public class MainActivity extends Activity {
         @Override
         public void onValueSelected(Entry e, Highlight h) {
 
-//            BarEntry p = (BarEntry)e;
-//            String type=fs.get(p.getX());
-//            Intent intent = new Intent(MainActivity.this, ProductActivity.class);
-//            intent.putExtra("type",type);
-//            intent.putExtra("time",yxqjx);
-//            startActivity(intent);
+            BarEntry p = (BarEntry)e;
 
-            Intent intent = new Intent(MainActivity.this,OperationActivity.class);
+
+//            String type=fs.get(p.getX());
+            Intent intent = new Intent(MainActivity.this, OperationActivity.class);
+            intent.putExtra("ceng",String.valueOf((int)e.getX()));
+//            intent.putExtra("time",yxqjx);
             startActivity(intent);
+
+            /*Intent intent = new Intent(MainActivity.this,OperationActivity.class);
+            startActivity(intent);*/
         }
 
         @Override
@@ -1049,9 +1272,9 @@ public class MainActivity extends Activity {
         }
     }
     //初始化效期数据，连接的是本地的数据库
-    private void initJXQData(){
+    /*private void initJXQData(){
         try{
-            mChart.setCenterText(generateCenterSpannableText(Cache.appcode));
+            barChart.setCenterText(generateCenterSpannableText(Cache.appcode));
             ProductDao productDao= new ProductDao();
             List<HashMap<String,String>> list = productDao.getProductByJXQ();
             int ygq=0;
@@ -1081,20 +1304,9 @@ public class MainActivity extends Activity {
         }catch (Exception e){
             logger.error("初始化效期出错",e);
         }
-    }
+    }*/
 
-    private void continuousClick(int count, long time) {
-        //每次点击时，数组向前移动一位
-        System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
-        //为数组最后一位赋值
-        mHits[mHits.length - 1] = SystemClock.uptimeMillis();
-        if (mHits[0] >= (SystemClock.uptimeMillis() - DURATION)) {
-            mHits = new long[COUNTS];//重新初始化数组
-            Toast.makeText(this, "连续点击了5次,程序退出", Toast.LENGTH_LONG).show();
-            android.os.Process.killProcess(android.os.Process.myPid());
 
-        }
-    }
 
     @Override
     protected void onDestroy(){
@@ -1181,6 +1393,87 @@ public class MainActivity extends Activity {
             proc.waitFor();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    //-------------------------
+    //发送数据到第三方平台
+    private void sendExternalProduct(String order){
+        //发送数据到第三方平台
+        HashMap<String,String> map =new HashMap<String,String>();
+        if(SocketClient.socket!=null){
+            Set<String> pr=map.keySet();
+            HashMap<String,List<String>> mapJSON=new HashMap<String,List<String>>(); //key--location，List--耗材EPC
+
+            if(Cache.pc==0){
+                //如果是全部盘存，则将所有位置的标签耗材都要发送（可能该层耗材被全部拿走）
+                int cs=0;
+                if(Cache.gcqy1){
+                    cs=1;
+                }
+                if(Cache.gcqy2){
+                    cs=2;
+                }
+                if(Cache.gcqy3){
+                    cs=3;
+                }
+                if(Cache.gcqy4){
+                    cs=4;
+                }
+                if(Cache.gcqy5){
+                    cs=5;
+                }
+                if(Cache.gcqy6){
+                    cs=6;
+                }
+                for(int i=1;i<=cs;i++){
+                    mapJSON.put(String.valueOf(i),new ArrayList<String>());
+                }
+            }else if(Cache.pc==1){
+                //如果是触发盘存，则需要将所有触发的红外所在层的标签发送（可能该层耗材被全部拿走）
+                for(String cf : Cache.cfpdcs){
+                    if(cf.equals("0")){
+                        continue;
+                    }
+                    mapJSON.put(cf,new ArrayList<String>());
+                }
+                Cache.cfpdcs.clear();
+            }
+
+            for(String p : pr){
+                if(mapJSON.get(map.get(p))==null){
+                    List<String> listP = new ArrayList<String>();
+                    listP.add(p);
+                    mapJSON.put(map.get(p),listP);
+                }else{
+                    mapJSON.get(map.get(p)).add(p);
+                }
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("{\"order\":\""+order+"\",\"code\":\""+Cache.appcode+"\",\"operator\":\""+Cache.operatorCode+"\",\"number\":\"");
+            sb.append(UUID.randomUUID().toString()).append("\",\"data\":[");
+            Set<String> location = mapJSON.keySet();
+            for(String loa : location){
+                sb.append("{\"location\":\"").append(loa).append("\",");
+                sb.append("\"data\":[");
+                List<String> listCard= mapJSON.get(loa);
+                if(!listCard.isEmpty()){
+                    for(String card : listCard){
+                        sb.append("\"").append(card).append("\",");
+                    }
+                    sb.deleteCharAt(sb.length()-1).append("]},");
+                }else{
+                    sb.append("]},");
+                }
+
+            }
+            if(!location.isEmpty()){
+                sb.deleteCharAt(sb.length()-1);
+            }
+            sb.append("]}");
+            String sendValue=sb.toString();
+            map.clear();
+            SocketClient.send(sendValue);
         }
     }
 

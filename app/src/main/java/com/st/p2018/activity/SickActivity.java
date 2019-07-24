@@ -40,7 +40,6 @@ public class SickActivity extends Activity {
     private RecyclerView contactList;
     private List<String> contactNames;
     private LinearLayoutManager layoutManager;
-    private LetterView letterView;
     private ContactAdapter adapter;
     private TextView tvfh;
     private TextView tvtitle;
@@ -50,7 +49,7 @@ public class SickActivity extends Activity {
     private RelativeLayout relativeLayout;
     private LinearLayout layoutLoad;
     private Logger logger = Logger.getLogger(SickActivity.class);
-    private boolean sickgg=false;
+    private String sickgg=""; //1-主界面点击更改患者，2-耗材确认界面更改患者
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +79,9 @@ public class SickActivity extends Activity {
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
-            if(getIntent().getSerializableExtra("sickgg")!=null){
-                sickgg=(Boolean)getIntent().getSerializableExtra("sickgg");
+
+            if(getIntent().getStringExtra("sickgg")!=null){
+                sickgg=(String)getIntent().getStringExtra("sickgg");
             }
             getSick();
             Cache.myHandleSick = new Handler() {
@@ -97,21 +97,10 @@ public class SickActivity extends Activity {
             };
 
             contactList = (RecyclerView) findViewById(R.id.contact_list);
-            letterView = (LetterView) findViewById(R.id.letter_view);
             layoutManager = new LinearLayoutManager(this);
             contactList.setLayoutManager(layoutManager);
             contactList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-            letterView.setCharacterListener(new LetterView.CharacterClickListener() {
-                @Override
-                public void clickCharacter(String character) {
-                    layoutManager.scrollToPositionWithOffset(adapter.getScrollPosition(character), 0);
-                }
 
-                @Override
-                public void clickArrow() {
-                    layoutManager.scrollToPositionWithOffset(0, 0);
-                }
-            });
         }catch (Exception e){
             logger.error("初始化view出错",e);
         }
@@ -156,23 +145,30 @@ public class SickActivity extends Activity {
      */
     private void sickOK(){
         try{
-            //通过点击更改按钮打开的界面
-            if(sickgg){
-                Message message = Message.obtain(Cache.myHandleAccess);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                bund.putString("sickgg","1");
-                message.setData(bund);
-                Cache.myHandleAccess.sendMessage(message);
-            }else{
+            //修改主界面显示内容
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();
+            bund.putString("sickgg","4");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+            if(sickgg.equals("1")){
                 if(HCProtocol.ST_OpenDoor()){
                     logger.info("下发开门成功");
-                    //sendCZY(data);
                     MyTextToSpeech.getInstance().speak("门已开");
                 }else{
                     logger.info("下发开门失败");
                     MyTextToSpeech.getInstance().speak("开门失败");
                 }
             }
+            if(sickgg.equals("3")){
+                //通过点击耗材确认界面的更改按钮打开
+                message = Message.obtain(Cache.myHandleAccess);
+                bund = new Bundle();
+                bund.putString("sickgg","4");
+                message.setData(bund);
+                Cache.myHandleAccess.sendMessage(message);
+            }
+
         }catch (Exception e){
             logger.error("患者存在点击确认按钮后出错",e);
         }
@@ -185,10 +181,8 @@ public class SickActivity extends Activity {
      * 取消选择
      */
     private void sickCancle(){
-        //通过点击更改按钮打开的界面
-        if(sickgg){
-
-        }else{
+        //1- 验证登录成功，2-主界面点击更改按钮，3-耗材确认界面点击更改按钮
+        if(sickgg.equals("1")){
             CacheSick.sickChoose="";
             if(HCProtocol.ST_OpenDoor()){
                 logger.info("下发开门成功");
@@ -198,6 +192,7 @@ public class SickActivity extends Activity {
                 MyTextToSpeech.getInstance().speak("开门失败");
             }
             Cache.myHandleSick=null;
+        }else{
         }
         //关闭界面
         SickActivity.this.finish();

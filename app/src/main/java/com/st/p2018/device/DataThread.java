@@ -450,11 +450,11 @@ public class DataThread extends Thread {
                         //打开耗材统计界面
                         Message message = Message.obtain(Cache.myHandle);
                         Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                        bund.putString("ui","pd");
+                        bund.putString("ui","access");
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
                         //连接第三方平台
-                        sendExternalProduct("total");
+                        sendExternalProduct("product");
                     }else{
                         //从本地数据库读取数据进行处理
                         Cache.HCCSMap=(HashMap<String,String>)map.clone();

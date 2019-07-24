@@ -57,6 +57,8 @@ public class PDActivity extends Activity {
     private RelativeLayout rl;
     private ImageView ivGif;
     private LinearLayout layoutLoad;
+    private BarChart mChart;
+
     private Logger logger = Logger.getLogger(this.getClass());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +79,13 @@ public class PDActivity extends Activity {
             tvfh.setOnClickListener(new onClickListener());
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("盘点结果");
-            ivGif=(ImageView)findViewById(R.id.imageview1);
+            mChart=(BarChart)findViewById(R.id.barchart);
+/*            ivGif=(ImageView)findViewById(R.id.imageview1);
             layoutLoad=(LinearLayout)findViewById(R.id.loadpdtxl);
             rl=(RelativeLayout)findViewById(R.id.layoutpd);
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-            Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
+            Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);*/
 
             Cache.myHandlePD = new Handler() {
                 @Override
@@ -97,7 +100,77 @@ public class PDActivity extends Activity {
                     }
                 }
             };
+            mChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
+            mChart.setDrawValueAboveBar(true);//true文字绘画在bar上
 
+
+
+            mChart.getDescription().setEnabled(false);
+
+            // if more than 60 entries are displayed in the chart, no values will be
+            // drawn
+            mChart.setMaxVisibleValueCount(60);
+
+            // scaling can now only be done on x- and y-axis separately
+            mChart.setPinchZoom(false);//false只能单轴缩放
+
+            mChart.setDrawGridBackground(false);
+            mChart.setScaleEnabled(false);
+            // mChart.setDrawYLabels(false);
+
+            IAxisValueFormatter xAxisFormatter = new MyAxisValueFormatter();
+            //
+            XAxis xAxis = mChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setTypeface(mTfLight);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // only intervals of 1 day
+            xAxis.setLabelCount(7);
+            xAxis.setValueFormatter(xAxisFormatter);
+            xAxis.setTextSize(20f);
+
+            //        IAxisValueFormatter custom = new MyAxisValueFormatter();
+//
+            YAxis leftAxis = mChart.getAxisLeft();
+//        leftAxis.setTypeface(mTfLight);
+            leftAxis.setLabelCount(8, false);
+//        leftAxis.setValueFormatter(custom);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setTextSize(15f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            YAxis rightAxis = mChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+//        rightAxis.setTypeface(mTfLight);
+            rightAxis.setLabelCount(8, false);
+//        rightAxis.setValueFormatter(custom);
+            rightAxis.setSpaceTop(15f);
+            rightAxis.setTextSize(15f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+
+            Legend l = mChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(15f);
+            l.setTextSize(20f);
+            l.setXEntrySpace(8f);
+            l.setEnabled(true);
+
+
+            // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+            // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
+            // "def", "ghj", "ikl", "mno" });
+
+//        XYMarkerView mv = new XYMarkerView(this, xAxisFormatter);
+//        mv.setChartView(mChart); // For bounds control
+//        mChart.setMarker(mv); // Set the marker to the chart
+
+            setData();
 
         }catch(Exception e){
             logger.error("初始化界面出错",e);
@@ -353,4 +426,74 @@ public class PDActivity extends Activity {
 
     }
 
+
+
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
+
+    private DecimalFormat mFormat;
+
+    public MyAxisValueFormatter() {
+        mFormat = new DecimalFormat("###,###,###,##0.0");
+    }
+
+    @Override
+    public String getFormattedValue(float value, AxisBase axis) {
+        //return mFormat.format(value) + " $";
+        return "第"+String.valueOf((int)value)+"层";
+    }
+}
+
+//    public class MyBValueFormatter implements IValueFormatter {
+//
+//        public MyBValueFormatter() {
+//        }
+//
+//        @Override
+//        public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+//            return String.valueOf("第"+(int) entry.getY()+"层");
+//
+//        }
+//    }
+
+    private void setData() {
+
+        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+        yVals1.add(new BarEntry(1, 200));
+        yVals1.add(new BarEntry(2, 180));
+        yVals1.add(new BarEntry(3, 50));
+        yVals1.add(new BarEntry(4, 100));
+        yVals1.add(new BarEntry(5, 200));
+
+        BarDataSet set1;
+        set1 = new BarDataSet(yVals1, "库存");
+        set1.setDrawIcons(false);
+        set1.setColor(Color.rgb(0x08,0x76,0x28));
+        set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
+
+
+        ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
+        yVals2.add(new BarEntry(1, 98));
+        yVals2.add(new BarEntry(2, 18));
+        yVals2.add(new BarEntry(3, 5));
+        yVals2.add(new BarEntry(4, 10));
+        yVals2.add(new BarEntry(5, 20));
+
+        BarDataSet set2;
+        set2 = new BarDataSet(yVals2, "近效期");
+        set2.setDrawIcons(false);
+        set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
+        set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
+
+
+        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+        dataSets.add(set1);
+        dataSets.add(set2);
+
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(30f);
+        data.setBarWidth(0.5f);
+
+        mChart.setData(data);
+
+    }
 }

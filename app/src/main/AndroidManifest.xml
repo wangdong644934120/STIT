@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.st.p2018.stit"
     android:versionCode="1"
-    android:versionName="1.0.52">
+    android:versionName="1.0.53">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -124,12 +124,12 @@
         <activity android:name="com.st.p2018.activity.SickActivity" />
         <activity android:name="com.st.p2018.activity.LockActivity" />
         <activity android:name="com.st.p2018.activity.AccessConActivity" />
-        <activity android:name="com.st.p2018.activity.PassActivity"
-            android:label="权限核验"
+        <activity
+            android:name="com.st.p2018.activity.PassActivity"
             android:colorMode="default"
-            android:theme="@style/powerstyle">
-
-        </activity>
+            android:label="权限核验"
+            android:theme="@style/powerstyle"></activity>
+        <activity android:name="com.st.p2018.activity.ProductSearchActivity"></activity>
     </application>
 
 </manifest>
