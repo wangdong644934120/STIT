@@ -14,7 +14,7 @@ import com.bin.david.form.data.Column;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.st.p2018.entity.Product;
-import com.st.p2018.externalentity.ExternalPorduct;
+
 import com.st.p2018.stit.R;
 import com.st.p2018.util.CacheSick;
 import org.apache.log4j.Logger;
@@ -37,7 +37,7 @@ public class ProductSearchActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
-        try{
+       /* try{
             initView();
             tvtitle.setText("关联耗材");
             Column<String> column1 = new Column<>("品牌", "pp");
@@ -58,7 +58,7 @@ public class ProductSearchActivity extends Activity {
             table.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
         }catch (Exception e){
             logger.error("初始化时出错",e);
-        }
+        }*/
 
     }
 
