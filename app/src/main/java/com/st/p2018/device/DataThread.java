@@ -40,27 +40,27 @@ public class DataThread extends Thread {
         productDao=new ProductDao();
         while(Cache.deviceCommunication){
             try {
-                    HashMap<String, String> map = HCProtocol.ST_GetWorkState();
-                    if (map.get("skq") != null) {
-                        alaSKQ(map.get("skq").toString());
+                    HashMap<String, String> mapWorkState = HCProtocol.ST_GetWorkState();
+                    if (mapWorkState.get("skq") != null) {
+                        alaSKQ(mapWorkState.get("skq").toString());
                     }
-                    if (map.get("zwcgq") != null) {
-                        alaZWCGQ(map.get("zwcgq").toString());
+                    if (mapWorkState.get("zwcgq") != null) {
+                        alaZWCGQ(mapWorkState.get("zwcgq").toString());
                     }
-                    if (map.get("mztcgq") != null ) {
-                       alaMZTCGQ(map.get("mztcgq").toString());
+                    if (mapWorkState.get("mztcgq") != null ) {
+                       alaMZTCGQ(mapWorkState.get("mztcgq").toString());
                     }
-                    if (map.get("dks") != null ) {
-                       alaDKS(map.get("dks").toString());
+                    if (mapWorkState.get("dks") != null ) {
+                       alaDKS(mapWorkState.get("dks").toString());
                     }
-                    if (map.get("hwxckg") != null ) {
-                        alaHWXCKG(map.get("hwxckg").toString());
+                    if (mapWorkState.get("hwxckg") != null ) {
+                        alaHWXCKG(mapWorkState.get("hwxckg").toString());
                     }
-                    if (map.get("zmd") != null ) {
-                       alaZMD(map.get("zmd").toString());
+                    if (mapWorkState.get("zmd") != null ) {
+                       alaZMD(mapWorkState.get("zmd").toString());
                     }
-                    if (map.get("rfid") != null ) {
-                        alaRFID(map.get("rfid").toString());
+                    if (mapWorkState.get("rfid") != null ) {
+                        alaRFID(mapWorkState.get("rfid").toString());
                     }
 
                 }catch(Exception e){
@@ -384,7 +384,7 @@ public class DataThread extends Thread {
                 openJD();
             }else if(data.equals("01")){
                 //有标签数据
-                //logger.info("正在盘存标签有标签数据");
+                logger.info("正在盘存标签有标签数据");
                 openJD();
                 getCard();
             }
@@ -405,23 +405,10 @@ public class DataThread extends Thread {
                 //关闭盘存进度
                 closeJD();
                 logger.info("获取标签个数："+map.size());
-                /*HashMap<String,Integer> mapCS= new HashMap<String,Integer>();
-                Set<String> keys = map.keySet();
-                for(String key : keys){
-                    if(mapCS.get(map.get(key))==null){
-                        mapCS.put(map.get(key),1);
-                    }else{
-                        mapCS.put(map.get(key),mapCS.get(map.get(key))+1);
-                    }
-                }
-                Set<String> keysCS=mapCS.keySet();
-                for(String key : keysCS){
-                    logger.info("第"+key+"层："+mapCS.get(key));
-                }*/
 
                 //对标签数据进行处理
                 if(Cache.getHCCS==0){
-                    //关门盘点数据
+                    //0--关门盘存
                     if(Cache.external){
                         Cache.listOperaOut.clear();
                         Cache.listOperaSave.clear();
@@ -439,13 +426,13 @@ public class DataThread extends Thread {
                         new DataDeal(mapBQ).start();
                     }
                 }else if(Cache.getHCCS==1){
-                    //耗材初始化要数据
+                    //1-耗材初始时要数据线
                     Cache.HCCSMap=(HashMap<String,String>)map.clone();
                     map.clear();
                     sendHCCS();
                     Cache.getHCCS=0;
                 }else if(Cache.getHCCS==2){
-                    //主界面盘点要数据
+                    //2-主界面盘点要数据
                     if(Cache.external){
                         //打开耗材统计界面
                         Message message = Message.obtain(Cache.myHandle);
@@ -463,7 +450,7 @@ public class DataThread extends Thread {
                     }
                     Cache.getHCCS=0;
                 } else if(Cache.getHCCS==3){
-                    //界面加载时要数据
+                    //加载界面盘点所有耗材
                     if(Cache.external){
                         sendExternalProduct("total");
                     }

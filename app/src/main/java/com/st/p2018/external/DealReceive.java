@@ -519,6 +519,28 @@ public class DealReceive extends Thread{
      */
     private void dealPorduct(String number,String value){
         try{
+            JSONObject jsonData = new JSONObject(value);
+            String msg =jsonData.get("message")==null?"":jsonData.get("message").toString();
+            if(!msg.equals("0")){
+                //数据返回错误
+                String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
+                for(int i=0;i<30;i++){
+                    if(Cache.myHandleAccess==null){
+                        Thread.sleep(100);
+                    }else{
+                        break;
+                    }
+                }
+                if(Cache.myHandleAccess!=null){
+                    Message message = Message.obtain(Cache.myHandleAccess);
+                    Bundle bund = new Bundle();
+                    bund.putString("ui","alert");
+                    bund.putString("data",data);
+                    message.setData(bund);
+                    Cache.myHandleAccess.sendMessage(message);
+                }
+                return;
+            }
             long start=System.currentTimeMillis();
             ActionProduct actionProduct = JSON.parseObject(value, new TypeReference<ActionProduct>(){});
 
@@ -529,6 +551,13 @@ public class DealReceive extends Thread{
                     }else if(product.getOperation().equals("取")){
                         Cache.listOperaOut.add(product);
                     }
+                }
+            }
+            for(int i=0;i<30;i++){
+                if(Cache.myHandleAccess==null){
+                    Thread.sleep(100);
+                }else{
+                    break;
                 }
             }
             if(Cache.myHandleAccess!=null){
@@ -589,6 +618,7 @@ public class DealReceive extends Thread{
         long start=System.currentTimeMillis();
         try{
             Cache.mapPD.clear();
+            Cache.mapTotal.clear();
             TotalProduct totalProduct = JSON.parseObject(value, new TypeReference<TotalProduct>(){});
             logger.info("耗材统计解析耗时:"+(System.currentTimeMillis()-start));
 

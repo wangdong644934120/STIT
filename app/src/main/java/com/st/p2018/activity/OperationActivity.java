@@ -35,7 +35,7 @@ import java.util.TimeZone;
 
 public class OperationActivity extends Activity {
 
-    //点击饼图打开界面
+    //点击柱状图打开界面
     private SmartTable table;
     private TextView tvfh;
     private TextView tvtitle;

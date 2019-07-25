@@ -1,6 +1,8 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -142,6 +144,34 @@ public class AccessConActivity extends Activity {
                         layoutLoad.setVisibility(View.GONE);
                         linearLayout.setVisibility(View.VISIBLE);
 
+                    }
+                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("alert")){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(AccessConActivity.this);
+                        builder.setIcon(android.R.drawable.ic_dialog_info);
+                        builder.setTitle("提示");
+                        builder.setMessage(bundle.getString("data"));
+                        builder.setCancelable(false);
+
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Cache.myHandleAccess=null;
+                                AccessConActivity.this.finish();
+                                if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                                    Message message = Message.obtain(Cache.myHandle);
+                                    Bundle bund = new Bundle();
+                                    bund.putString("ui","lock");
+                                    message.setData(bund);
+                                    Cache.myHandle.sendMessage(message);
+                                }
+                            }
+                        });
+                       /* builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });*/
+                        builder.create().show();
                     }
 
 

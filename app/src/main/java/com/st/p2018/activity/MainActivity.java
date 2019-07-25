@@ -246,6 +246,7 @@ public class MainActivity extends Activity {
                                 });
                                 builder.create().show();
                             }
+
                             if(bundle.getString("ui").toString().equals("connectfail")){
                                 Toast.makeText(MainActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
                             }
@@ -474,8 +475,6 @@ public class MainActivity extends Activity {
 
     /**
      * 单击事件监听
-     *
-     * @author
      */
     public class onClickListener implements View.OnClickListener {
 
@@ -570,9 +569,10 @@ public class MainActivity extends Activity {
 
     }
 
-
+    /**
+     * 初始化图表控件
+     */
     private void initBarChart(){
-
         barChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
         barChart.setDrawValueAboveBar(true);//true文字绘画在bar上
         barChart.getDescription().setEnabled(false);
