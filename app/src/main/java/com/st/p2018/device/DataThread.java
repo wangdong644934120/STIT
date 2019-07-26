@@ -7,6 +7,7 @@ import com.st.p2018.dao.EventDao;
 import com.st.p2018.dao.PersonDao;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.Event;
+import com.st.p2018.entity.Product;
 import com.st.p2018.entity.ProductRecord;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.util.Cache;
@@ -412,7 +413,6 @@ public class DataThread extends Thread {
                     if(Cache.external){
                         Cache.listOperaOut.clear();
                         Cache.listOperaSave.clear();
-
                         //打开耗材确认界面
                         Message message = Message.obtain(Cache.myHandle);
                         Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
@@ -647,7 +647,6 @@ public class DataThread extends Thread {
     private  void sendJXQ(){
         Message message = Message.obtain(Cache.myHandle);
         Bundle data = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-
         data.putString("initJXQ","1");
         message.setData(data);
         Cache.myHandle.sendMessage(message);
@@ -667,27 +666,33 @@ public class DataThread extends Thread {
 
     //盘点主界面
     private  void sendPDZJM(){
-        //打开盘点主界面
-        Message message = Message.obtain(Cache.myHandle);
-        Bundle data = new Bundle();
-        data.putString("pdzjm","1");
-        message.setData(data);
-        Cache.myHandle.sendMessage(message);
         try{
-            Thread.sleep(1000);
+            //打开盘点主界面
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle data = new Bundle();
+            data.putString("pdzjm","1");
+            message.setData(data);
+            Cache.myHandle.sendMessage(message);
+/*            for(int i=0;i<30;i++){
+                if(Cache.myHandlePD==null){
+                    Thread.sleep(100);
+                    continue;
+                }else{
+                    break;
+                }
+            }
+
+            //更新主界面数据
+            if(Cache.myHandlePD!=null){
+                message = Message.obtain(Cache.myHandlePD);
+                Bundle bund = new Bundle();
+                bund.putString("show","1");
+                message.setData(bund);
+                Cache.myHandlePD.sendMessage(message);
+            }*/
         }catch (Exception e){
-
+            logger.error("打开盘点主界面出错",e);
         }
-
-        //更新主界面数据
-        if(Cache.myHandlePD!=null){
-            message = Message.obtain(Cache.myHandlePD);
-            Bundle bund = new Bundle();
-            bund.putString("show","1");
-            message.setData(bund);
-            Cache.myHandlePD.sendMessage(message);
-        }
-
     }
     //发送关闭锁屏
     private  void sendCloseLockScreen(){
@@ -753,26 +758,28 @@ public class DataThread extends Thread {
                if(!map.get("wz").toString().equals("0") && !dealKeys.contains(map.get("card").toString())){
                    //标签被取出
                    mapSave.put(map.get("card").toString(),"0");
-                   Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
+                   Cache.listOperaOut.add(getProduct(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
+
                }
                //存放标签
                if(map.get("wz").toString().equals("0") && dealKeys.contains(map.get("card").toString())){
                    //标签被存放
                    mapSave.put(map.get("card").toString(),mapDeal.get(map.get("card").toString()).toString());
-                   Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
+                   //Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
+                   Cache.listOperaSave.add(getProduct(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
                }
                //标签未动
                if(dealKeys.contains(map.get("card").toString())){
                    if(!map.get("wz").toString().equals("0") && !mapDeal.get(map.get("card").toString()).equals(map.get("wz").toString())){
                        //标签位置更换
                        mapSave.put(map.get("card").toString(),mapDeal.get(map.get("card").toString()));
-                       Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
-                       Cache.listPR.add(new ProductRecord(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
+                       Cache.listOperaOut.add(getProduct(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"取出",map.get("wz").toString()));
+                       Cache.listOperaSave.add(getProduct(map.get("pp").toString(),map.get("zl").toString(),map.get("gg").toString(),"存放",mapDeal.get(map.get("card").toString()).toString()));
                    }
                }
            }
            //界面显示内容
-            startRecord();
+            //startRecord();
             //数据库更新内容
             Set<String> updatesKey=mapSave.keySet();
             for(String key : updatesKey){
@@ -780,6 +787,11 @@ public class DataThread extends Thread {
             }
             //初始化近效期图示
             sendJXQ();
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("ui","accesslocal");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
         }
     }
 
@@ -845,5 +857,15 @@ public class DataThread extends Thread {
            }
         }
         return bl;
+    }
+
+    private Product getProduct(String pp,String zl,String gg,String oprea,String wz){
+        Product product = new Product();
+        product.setLocation(wz);
+        product.setXqpc(gg);
+        product.setMc(zl);
+        product.setPp(pp);
+        product.setOperation(oprea);
+        return product;
     }
 }

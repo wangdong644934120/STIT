@@ -42,9 +42,12 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.st.p2018.dao.ProductDao;
 import com.st.p2018.device.DeviceCom;
 import com.st.p2018.device.HCProtocol;
+import com.st.p2018.entity.Product;
 import com.st.p2018.external.SocketClient;
+import com.st.p2018.externalentity.TotalMessage;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.st.p2018.util.CacheSick;
@@ -68,7 +71,6 @@ public class MainActivity extends Activity {
     private BarChart barChart;
     private Button tvD;
     private RelativeLayout rl;
-
     private ImageView ivh1;
     private ImageView ivh2;
     private ImageView ivh3;
@@ -77,7 +79,6 @@ public class MainActivity extends Activity {
     private ImageView ivh6;
     private ImageView ivmen;
     private ImageView ivdeng;
-
     private TextView tvczy;
     private TextView tvczsc;
     private TextView tvmzt;
@@ -104,8 +105,12 @@ public class MainActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
-        String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-
+        //String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+        if(!Cache.external){
+            //如果没有连接第三方平台，无法启用锁屏
+            Cache.chooseSick="0";
+            Cache.lockScreen="0";
+        }
         initView();
         initSpeechPlug();
         Cache.myContext = this;
@@ -113,10 +118,12 @@ public class MainActivity extends Activity {
         if(Cache.lockScreen.equals("1")){
             logger.info("配置了锁屏");
         }
+        if(!Cache.external){
+            initJXQData();
+        }
 
     }
-
-
+    //界面显示
     private void initView() {
         try{
             if(Cache.chooseSick.equals("1")){
@@ -145,6 +152,7 @@ public class MainActivity extends Activity {
             initHandler();
             initGXQT();
             tvSickMessage.setText(CacheSick.sickChoose);
+
         }catch (Exception e){
             logger.error("显示view出错",e);
         }
@@ -205,6 +213,10 @@ public class MainActivity extends Activity {
                             }
                             if(bundle.getString("ui").toString().equals("access")){
                                 Intent intent = new Intent(MainActivity.this, AccessConActivity.class);
+                                startActivity(intent);
+                            }
+                            if(bundle.getString("ui").toString().equals("accesslocal")){
+                                Intent intent = new Intent(MainActivity.this, AccessConLocalActivity.class);
                                 startActivity(intent);
                             }
                             if(bundle.getString("ui").toString().equals("lock")){
@@ -412,8 +424,8 @@ public class MainActivity extends Activity {
                             }
                         }
                         if(bundle.getString("initJXQ")!=null){
-                            //initJXQData();
-                            barChart.animateY(500, Easing.EasingOption.EaseInCirc);
+                            initJXQData();
+                            //barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
                         if(bundle.getString("initJXQExternal")!=null){
                             //setData(new HashMap<String, String>());
@@ -446,7 +458,8 @@ public class MainActivity extends Activity {
                         }
                         if(bundle.getString("pdzjm")!=null){
                             //显示盘点结果
-                            pdshow();
+                            Intent intent = new Intent(MainActivity.this, PDActivity.class);
+                            startActivity(intent);
                         }
                         if(bundle.getString("appname")!=null){
                             tvappTitle.setText(bundle.getString("appname").toString());
@@ -471,7 +484,6 @@ public class MainActivity extends Activity {
     private void displayToast(String s) {
         Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
-
 
     /**
      * 单击事件监听
@@ -529,18 +541,6 @@ public class MainActivity extends Activity {
 
                     break;
                 case R.id.pandian:
-                    if(!Cache.external){
-                        return;
-                    }
-
-
-/*                    if(Cache.mztcgq==1){
-                        //当前为开门状态禁止盘点
-                        MyTextToSpeech.getInstance().speak("请关闭柜门");
-                        Toast.makeText(MainActivity.this, "请关闭柜门", Toast.LENGTH_SHORT).show();
-                        return;
-                    }*/
-
                     Cache.getHCCS=2;
                     if(HCProtocol.ST_GetAllCard()){
                     }else{
@@ -624,6 +624,20 @@ public class MainActivity extends Activity {
      * 显示图标数据
      */
     private void setDataBarChart() {
+        if(!Cache.gcqy1){
+            try{
+                for(int i=1;i<15;i++){
+                    if(Cache.gcqy1){
+                        break;
+                    }else{
+                        Thread.sleep(500);
+                    }
+                }
+            }catch (Exception e){
+
+            }
+
+        }
         try{
             int kc=0;
             ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
@@ -801,61 +815,6 @@ public class MainActivity extends Activity {
         barChart.setData(data);
     }
 
-
-
-   /* private void setDataPieChart(HashMap<String,String> map) {
-        try{
-            if(Cache.external){
-               *//* String ygq=Cache.mapTotal.get("ygq")==null?"0":String.valueOf(Cache.mapTotal.get("ygq").size());
-                String jxq=Cache.mapTotal.get("jxq")==null?"0":String.valueOf(Cache.mapTotal.get("jxq").size());
-                String yxq=Cache.mapTotal.get("yxq")==null?"0":String.valueOf(Cache.mapTotal.get("yxq").size());
-                map.put("ygq","已过期("+ygq+"个)");
-                map.put("jxq","近效期("+jxq+"个)");
-                map.put("yxq","远效期("+yxq+"个)");*//*
-
-
-            }
-            entries.clear();
-            *//**//*map.put("jxq","近效期（5）个");
-            map.put("yxq","库存（200）个");/*//*
-            entries.add(new PieEntry(1, map.get("ygq").toString()));
-            entries.add(new PieEntry(1,  map.get("jxq").toString()));
-            entries.add(new PieEntry(1,  map.get("yxq").toString()));
-
-            PieDataSet dataSet = new PieDataSet(entries, "");
-            dataSet.setDrawIcons(false);
-            dataSet.setSliceSpace(3f);
-            dataSet.setIconsOffset(new MPPointF(0, 40));
-            dataSet.setSelectionShift(5f);
-            dataSet.setValueTextSize(20f);
-            // add a lot of colors
-            dataSet.setColor(Color.GRAY);
-
-            ArrayList<Integer> colors = new ArrayList<Integer>();
-            colors.add(Color.RED);
-            colors.add(Color.rgb(238,242,14));
-            colors.add(Color.rgb(135,162,86));
-
-            dataSet.setColors(colors);
-
-            PieData data = new PieData(dataSet);
-            //data.setValueFormatter(new PercentFormatter());
-            data.setValueFormatter(new MyValueFormatter());
-            data.setValueTextSize(20f);
-            data.setValueTextColor(Color.WHITE);
-            //data.setValueTypeface(mTfLight);
-            barChart.setData(data);
-
-            // undo all highlights
-            barChart.highlightValues(null);
-
-            barChart.invalidate();
-        }catch (Exception e){
-            logger.error("设置chart显示内容出错",e);
-        }
-
-    }*/
-
     //显示柜型中其他内容
     private void initGXQT(){
         try{
@@ -1026,6 +985,7 @@ public class MainActivity extends Activity {
 
     }
 
+    //初始化柜型位置
     private List<Integer> initXY(int yxcs){
         List<Integer> list = new ArrayList<Integer>();
         if(yxcs==1){
@@ -1185,21 +1145,6 @@ public class MainActivity extends Activity {
         }
     }
 
-   /* public class MyAxisValueFormatter implements IAxisValueFormatter {
-
-        private DecimalFormat mFormat;
-
-        public MyAxisValueFormatter() {
-            mFormat = new DecimalFormat("###,###,###,##0.0");
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-            //return mFormat.format(value) + " $";
-            return String.valueOf((int)value)+"个";
-        }
-    }*/
-
     public class Day1AxisValueFormatter implements IAxisValueFormatter {
         HashMap<Float,String> fs ;
 
@@ -1272,41 +1217,49 @@ public class MainActivity extends Activity {
         }
     }
     //初始化效期数据，连接的是本地的数据库
-    /*private void initJXQData(){
+    private void initJXQData(){
         try{
-            barChart.setCenterText(generateCenterSpannableText(Cache.appcode));
-            ProductDao productDao= new ProductDao();
-            List<HashMap<String,String>> list = productDao.getProductByJXQ();
-            int ygq=0;
-            int jxq=0;
-            int yxq=0;
-            long current = System.currentTimeMillis();
-            long dt = current/(1000*3600*24)*(1000*3600*24) - TimeZone.getDefault().getRawOffset();
-            long t7=dt+1000*3600*24*7;
+            Cache.mapTotal.clear();
+
+            ProductDao productDao=new ProductDao();
+            List<HashMap<String,String>> list=productDao.getProductByJXQ();
             for(HashMap map : list){
-                //已过期  小于当前时间
-                //近效期  当天0点到7天后24点
-                //远效期  8天后0点后
-                if(Long.valueOf(map.get("yxq").toString())<dt){
-                    ygq=ygq+1;
-                }else if(Long.valueOf(map.get("yxq").toString())>=dt && Long.valueOf(map.get("yxq").toString())<t7){
-                    jxq=jxq+1;
-                }else if(Long.valueOf(map.get("yxq").toString())>=t7){
-                    yxq=yxq+1;
+                TotalMessage totalMessage;
+                if(Cache.mapTotal.get(map.get("wz").toString())==null){
+                    totalMessage=new TotalMessage();
+                    getTotal(totalMessage,map);
+                    Cache.mapTotal.put(map.get("wz").toString(),totalMessage);
+                }else{
+                    totalMessage=Cache.mapTotal.get(map.get("wz").toString());
+                    getTotal(totalMessage,map);
                 }
             }
-            HashMap map = new HashMap();
-            map.put("ygq","已过期("+ygq+"个)");
-            map.put("jxq","近效期("+jxq+"个)");
-            map.put("yxq","远效期("+yxq+"个)");
-            setData(map);
-            tvtj.setText("数量统计："+(ygq+jxq+yxq)+"个");
+            setDataBarChart();
         }catch (Exception e){
             logger.error("初始化效期出错",e);
         }
-    }*/
+    }
 
-
+    /**
+     * 构建统计信息
+     */
+    private void getTotal(TotalMessage totalMessage,HashMap map){
+        totalMessage.setLocation(map.get("wz").toString());
+        Product product=new Product();
+        product.setPp(map.get("pp").toString());
+        product.setMc(map.get("zl").toString());
+        product.setYxrq(map.get("yxq").toString());
+        product.setXqpc(map.get("gg").toString());
+        product.setEpc(map.get("card").toString());
+        product.setLocation(map.get("wz").toString());
+        if(System.currentTimeMillis()-Long.valueOf(map.get("yxq").toString())>30*24*60*60*1000){
+            //非近效期耗材
+            totalMessage.getQt().add(product);
+        }else{
+            //近效期耗材
+            totalMessage.getJxq().add(product);
+        }
+    }
 
     @Override
     protected void onDestroy(){
@@ -1378,11 +1331,6 @@ public class MainActivity extends Activity {
 
     }
 
-    private void pdshow(){
-        Intent intent = new Intent(MainActivity.this, PDActivity.class);
-        startActivity(intent);
-    }
-
     /**
      * 打开状态栏
      */
@@ -1396,8 +1344,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    //-------------------------
-    //发送数据到第三方平台
+    /**
+     * 发送数据到第三方平台
+     */
     private void sendExternalProduct(String order){
         //发送数据到第三方平台
         HashMap<String,String> map =new HashMap<String,String>();

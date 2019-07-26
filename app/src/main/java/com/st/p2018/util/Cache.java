@@ -64,13 +64,13 @@ public class Cache {
     public static String ServerIP="";  //连接服务器地址
     public static int ServerPort=0;   //连接服务器端口号
     public static String threadFlag="";    //与第三方平台通讯线程标志
-    public static String lockScreen="1";  //是否启用锁屏功能，0-不启用，1-启用
+    public static String lockScreen="0";  //是否启用锁屏功能，0-不启用，1-启用
     public static String chooseSick="0"; //是否启用选择患者功能，0-不启用，1-启用
     public static List<Product> listOperaSave=new ArrayList<Product>();  //护士存操作缓存
     public static List<Product> listOperaOut=new ArrayList<Product>();  //护士取操作缓存
     public static HashMap<String,TotalMessage> mapTotal=new HashMap<String,TotalMessage>(); //第三方平台获取到的效期统计信息
     public static String operatorCode=""; //操作员编号
-    public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
+    //public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
     public static int isPCNow=0;//正在盘存标签，0-未盘存，1-正在盘存
     public static boolean deviceCommunication=true;
 

@@ -128,8 +128,9 @@
             android:name="com.st.p2018.activity.PassActivity"
             android:colorMode="default"
             android:label="权限核验"
-            android:theme="@style/powerstyle"></activity>
-        <activity android:name="com.st.p2018.activity.ProductSearchActivity"></activity>
+            android:theme="@style/powerstyle" />
+        <activity android:name="com.st.p2018.activity.ProductSearchActivity" />
+        <activity android:name="com.st.p2018.activity.AccessConLocalActivity"></activity>
     </application>
 
 </manifest>

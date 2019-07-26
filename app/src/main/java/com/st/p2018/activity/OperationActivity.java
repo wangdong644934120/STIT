@@ -54,48 +54,28 @@ public class OperationActivity extends Activity {
         try{
             Intent intent = getIntent();
             ceng = intent.getStringExtra("ceng");
-
             initView();
-
             tvtitle.setText(ceng+"层");
+            Column<String> column1 = new Column<>("品牌", "pp");
+            Column<String> column2 = new Column<>("名称", "mc");
+            Column<String> column3 = new Column<>("效期批次", "xqpc");
+            //Column<String> column4 = new Column<>("剩余天数", "yxrq");
+            Column<String> column5 = new Column<>("位置(层)", "location");
+            //Column<String> column6=new Column<String>("近效期","")
 
-            if(Cache.external){
-                Column<String> column1 = new Column<>("品牌", "pp");
-                Column<String> column2 = new Column<>("名称", "mc");
-                Column<String> column3 = new Column<>("效期批次", "xqpc");
-                //Column<String> column4 = new Column<>("剩余天数", "yxrq");
-                Column<String> column5 = new Column<>("位置(层)", "location");
-                //Column<String> column6=new Column<String>("近效期","")
-
-                List<Product> list=new ArrayList<>();
-                if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getJxq()!=null){
-                    list.addAll(Cache.mapTotal.get(ceng).getJxq());
-                }
-                if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getQt()!=null){
-                    list.addAll(Cache.mapTotal.get(ceng).getQt());
-                }
-
-                //表格数据 datas是需要填充的数据
-                TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,  column5);
-                //设置数据
-                table = findViewById(R.id.table);
-                table.setTableData(tableData);
-            }else{
-                //普通列
-               /* Column<String> column1 = new Column<>("品牌", "pp");
-                Column<String> column2 = new Column<>("种类", "type");
-                Column<String> column3 = new Column<>("规格", "gg");
-                Column<String> column4 = new Column<>("有效日期", "yxrq");
-                Column<String> column5 = new Column<>("剩余天数", "syts");
-                Column<String> column6 = new Column<>("位置(层/抽)", "wz");
-
-                List<ProductQuery> list =getdata(yxqFlag);
-                //表格数据 datas是需要填充的数据
-                TableData<ProductQuery> tableData = new TableData<ProductQuery>("", list, column1, column2, column3, column4, column5, column6);
-                //设置数据
-                table = findViewById(R.id.table);
-                table.setTableData(tableData);*/
+            List<Product> list=new ArrayList<>();
+            if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getJxq()!=null){
+                list.addAll(Cache.mapTotal.get(ceng).getJxq());
             }
+            if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getQt()!=null){
+                list.addAll(Cache.mapTotal.get(ceng).getQt());
+            }
+
+            //表格数据 datas是需要填充的数据
+            TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,  column5);
+            //设置数据
+            table = findViewById(R.id.table);
+            table.setTableData(tableData);
 
             table.getConfig().setShowXSequence(false);
             table.getConfig().setShowYSequence(false);

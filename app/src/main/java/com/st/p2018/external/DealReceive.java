@@ -617,7 +617,6 @@ public class DealReceive extends Thread{
     private void dealTotal(String number,String value){
         long start=System.currentTimeMillis();
         try{
-            Cache.mapPD.clear();
             Cache.mapTotal.clear();
             TotalProduct totalProduct = JSON.parseObject(value, new TypeReference<TotalProduct>(){});
             logger.info("耗材统计解析耗时:"+(System.currentTimeMillis()-start));

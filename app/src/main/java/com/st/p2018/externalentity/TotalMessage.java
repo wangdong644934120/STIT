@@ -2,6 +2,7 @@ package com.st.p2018.externalentity;
 
 import com.st.p2018.entity.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,8 +11,8 @@ import java.util.List;
 
 public class TotalMessage {
     private String location;
-    private List<Product> jxq;
-    private List<Product> qt;
+    private List<Product> jxq=new ArrayList<Product>();
+    private List<Product> qt=new ArrayList<Product>();
 
     public String getLocation() {
         return location;
