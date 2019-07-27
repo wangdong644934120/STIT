@@ -66,7 +66,8 @@ public class SocketClient extends Thread {
      * 发送数据
      * @param value
      */
-    public static void send(String value ) {
+    public static boolean send(String value ) {
+        boolean bl=false;
         try{
             myLock.lock();
             value="%start%"+value+"%end%";
@@ -76,21 +77,26 @@ public class SocketClient extends Thread {
                     outStream.write(value.getBytes("UTF-8"));
                     outStream.flush();
                     logger.info("发送完成");
+                    bl=true;
 
                 }else {
                     logger.info("连接失败，不发送数据了:"+value);
+                    bl=false;
                     closeSocket();
                 }
 
             } catch (IOException e) {
+                bl=false;
                 logger.error("发送数据出错",e);
             }
         }catch (Exception e){
+            bl=false;
             logger.error("发送数据出错",e);
         }finally {
             myLock.unlock();
-        }
 
+        }
+        return bl;
 
     }
 

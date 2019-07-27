@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.st.p2018.dao.ExternalPowerDao;
+import com.st.p2018.device.HCProtocol;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
@@ -18,6 +20,8 @@ import com.st.p2018.util.MyTextToSpeech;
 
 import org.apache.log4j.Logger;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class LockActivity extends Activity {
@@ -107,8 +111,22 @@ public class LockActivity extends Activity {
             }
             String data=zhanghao.getText().toString().trim()+"+"+mima.getText().toString().trim();
             String sendValue="{\"order\":\"power\",\"type\":\"3\",\"code\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\",\"data\":\""+data+"\"}";
-            if(sendExternal(sendValue)){
-                return;
+            if(Cache.external) {
+                boolean bl = sendExternal(sendValue);
+                if (!bl) {
+                    //发送失败，判断本地是否存在刷卡记录，存在则开门
+                    ExternalPowerDao powerDao = new ExternalPowerDao();
+                    List<HashMap<String, String>> listPower = powerDao.getPower(data, "3");
+                    if (listPower != null && !listPower.isEmpty()) {
+                        logger.info("第三方平台权限核验失败，本地用户名密码核验结果：" + listPower.get(0).get("code"));
+                        //下发开门指令
+                        if (HCProtocol.ST_OpenDoor()) {
+                            logger.info("下发开门成功");
+                        }
+                    } else {
+                        logger.info("第三方平台权限核验失败，本地用户名密码核验失败");
+                    }
+                }
             }
         }catch (Exception e){
             logger.error("登录验证出错",e);
@@ -120,12 +138,9 @@ public class LockActivity extends Activity {
 
     private boolean sendExternal(String sendValue){
         boolean bl=false;
-        if(Cache.external){
-            bl=true;
-            //发送数据到第三方平台
-            if(SocketClient.socket!=null){
-                SocketClient.send(sendValue);
-            }
+        //发送数据到第三方平台
+        if(SocketClient.socket!=null){
+            bl=SocketClient.send(sendValue);
         }
         return bl;
     }

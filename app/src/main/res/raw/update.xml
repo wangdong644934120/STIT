@@ -33,6 +33,9 @@
             'eventType' varchar(36) DEFAULT NULL,'content' varchar(36) DEFAULT NULL,'wz' varchar(36) DEFAULT NULL,
             'time' bigint(8) DEFAULT NULL,PRIMARY KEY ('id'))
         </update>
+        <update>
+            CREATE TABLE 'stit_t_externalpower' ('id' varchar(36) NOT NULL DEFAULT '','name' varchar(50) DEFAULT '','code' varchar(50) DEFAULT '','card' varchar(50) DEFAULT '', 'type' varchar(2) DEFAULT'')
+        </update>
 
     </update_1>
 </updateAll>

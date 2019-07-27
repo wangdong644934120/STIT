@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.os.Message;
 
 import com.st.p2018.dao.EventDao;
+import com.st.p2018.dao.ExternalPowerDao;
 import com.st.p2018.dao.PersonDao;
 import com.st.p2018.dao.ProductDao;
 import com.st.p2018.entity.Event;
@@ -89,9 +90,25 @@ public class DataThread extends Thread {
             logger.info("获取到卡号:"+card);
             //判断是否发送到第三方平台
             String sendValue="{\"order\":\"power\",\"type\":\"2\",\"code\":\""+Cache.appcode+"\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
-            if(sendExternal(sendValue)){
+            if(Cache.external){
+                boolean bl=sendExternal(sendValue);
+                if(!bl){
+                    //发送失败，判断本地是否存在刷卡记录，存在则开门
+                    ExternalPowerDao powerDao = new ExternalPowerDao();
+                    List<HashMap<String,String>> listPower=powerDao.getPower(card,"2");
+                    if(listPower!=null && !listPower.isEmpty()){
+                        logger.info("第三方平台权限核验失败，本地刷卡核验结果："+listPower.get(0).get("code"));
+                        //下发开门指令
+                        if(HCProtocol.ST_OpenDoor()){
+                            logger.info("下发开门成功");
+                        }
+                    }else{
+                        logger.info("第三方平台权限核验失败，本地刷卡核验失败");
+                    }
+                }
                 return;
             }
+
             if(Cache.getPersonCard){
                 logger.info("人员管理界面要卡号，不进行权限判断");
                 sendKH(card);
@@ -142,7 +159,22 @@ public class DataThread extends Thread {
             logger.info("指纹编号转十进制结果："+card);
             //判断是否发送到第三方平台
             String sendValue="{\"order\":\"power\",\"type\":\"1\",\"code\":\"" + Cache.appcode + "\",\"number\":\""+UUID.randomUUID().toString()+"\",\"data\":\""+card+"\"}";
-            if(sendExternal(sendValue)){
+            if(Cache.external){
+                boolean bl=sendExternal(sendValue);
+                if(!bl){
+                    //发送失败，判断本地是否存在刷卡记录，存在则开门
+                    ExternalPowerDao powerDao = new ExternalPowerDao();
+                    List<HashMap<String,String>> listPower=powerDao.getPower(card,"1");
+                    if(listPower!=null && !listPower.isEmpty()){
+                        logger.info("第三方平台权限核验失败，本地指纹核验结果："+listPower.get(0).get("code"));
+                        //下发开门指令
+                        if(HCProtocol.ST_OpenDoor()){
+                            logger.info("下发开门成功");
+                        }
+                    }else{
+                        logger.info("第三方平台权限核验失败，本地指纹核验失败");
+                    }
+                }
                 return;
             }
             if(Cache.isPCNow==1){
@@ -849,13 +881,10 @@ public class DataThread extends Thread {
 
     private boolean sendExternal(String sendValue){
         boolean bl=false;
-        if(Cache.external){
-            bl=true;
-            //发送数据到第三方平台
-           if(SocketClient.socket!=null){
-               SocketClient.send(sendValue);
-           }
-        }
+        //发送数据到第三方平台
+       if(SocketClient.socket!=null){
+           bl=SocketClient.send(sendValue);
+       }
         return bl;
     }
 

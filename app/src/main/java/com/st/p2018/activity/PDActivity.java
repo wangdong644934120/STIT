@@ -45,7 +45,6 @@ public class PDActivity extends Activity {
     private TextView tvfh;
     private TextView tvtitle;
     private BarChart barChart;
-    private TextView tvjxq;
     private TextView tvzkc;
     private SmartTable tableEPC;
     private TextView tvceng;
@@ -70,7 +69,6 @@ public class PDActivity extends Activity {
             tvtitle=(TextView)findViewById(R.id.title);
             tvtitle.setText("盘点结果");
             tvceng=(TextView)findViewById(R.id.tvceng);
-            tvjxq=(TextView)findViewById(R.id.jxqtj);
             tvzkc=(TextView)findViewById(R.id.kctj);
             barChart=(BarChart)findViewById(R.id.barchart);
             barChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
@@ -175,6 +173,7 @@ public class PDActivity extends Activity {
 
         }
     }
+
     private void show(){
         getDataFromLocal();
         setData();
@@ -290,14 +289,84 @@ public class PDActivity extends Activity {
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
         //return mFormat.format(value) + " $";
-        return "第"+String.valueOf((int)value)+"层";
+        return String.valueOf((int)value)+"层";
     }
 }
 
     private void setData() {
 
         try{
-            int kc=0;
+            Set<String> dealKeys=Cache.HCCSMap.keySet();
+            HashMap<String,Integer> mapTJ=new HashMap<String,Integer>();
+            for(String card : dealKeys){
+                String ceng=Cache.HCCSMap.get(card).toString();
+                if(mapTJ.get(ceng)==null){
+                    mapTJ.put(ceng,1);
+                }else {
+                    mapTJ.put(ceng,mapTJ.get(ceng)+1);
+                }
+            }
+            ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
+            if(Cache.gcqy1){
+                if(mapTJ.get("1")!=null){
+                    yValskc.add(new BarEntry(1, mapTJ.get("1")));
+                }else{
+                    yValskc.add(new BarEntry(1, 0));
+                }
+            }
+            if(Cache.gcqy2){
+                if(mapTJ.get("2")!=null){
+                    yValskc.add(new BarEntry(2, mapTJ.get("2")));
+                }else{
+                    yValskc.add(new BarEntry(2, 0));
+                }
+            }
+            if(Cache.gcqy3){
+                if(mapTJ.get("3")!=null){
+                    yValskc.add(new BarEntry(3, mapTJ.get("3")));
+                }else{
+                    yValskc.add(new BarEntry(3, 0));
+                }
+            }
+            if(Cache.gcqy4){
+                if(mapTJ.get("4")!=null){
+                    yValskc.add(new BarEntry(4, mapTJ.get("4")));
+                }else{
+                    yValskc.add(new BarEntry(4, 0));
+                }
+            }
+            if(Cache.gcqy5){
+                if(mapTJ.get("5")!=null){
+                    yValskc.add(new BarEntry(5, mapTJ.get("5")));
+                }else{
+                    yValskc.add(new BarEntry(5, 0));
+                }
+            }
+
+            if(Cache.gcqy6){
+                if(mapTJ.get("6")!=null){
+                    yValskc.add(new BarEntry(6, mapTJ.get("6")));
+                }else{
+                    yValskc.add(new BarEntry(6, 0));
+                }
+            }
+
+
+            BarDataSet set1;
+            set1 = new BarDataSet(yValskc, "EPC统计");
+            set1.setDrawIcons(false);
+            set1.setColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueFormatter(new MyBValueFormatter());
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(30f);
+            data.setBarWidth(0.5f);
+            barChart.setData(data);
+            tvzkc.setText(String.valueOf(dealKeys.size()));
+
+            /*int kc=0;
             ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
             if(Cache.mapTotal.get("1")!=null){
                 kc=kc+Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size();
@@ -426,8 +495,7 @@ public class PDActivity extends Activity {
             data.setBarWidth(0.5f);
 
             barChart.setData(data);
-            tvjxq.setText(String.valueOf(jxq));
-            tvzkc.setText(String.valueOf(kc));
+            tvzkc.setText(String.valueOf(kc));*/
         }catch (Exception e){
             logger.error("显示图表数据出错",e);
         }
