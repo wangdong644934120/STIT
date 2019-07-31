@@ -36,6 +36,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.st.p2018.entity.Product;
 import com.st.p2018.external.SocketClient;
+import com.st.p2018.externalentity.ExternalPower;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.bin.david.form.core.SmartTable;
@@ -45,6 +46,8 @@ import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 
@@ -73,6 +76,8 @@ public class AccessConActivity extends Activity {
     private Button btnSaveHF;
     private Button btnOutSC;
     private Button btnOutHF;
+    private boolean blThread=true;
+    private boolean autoClose=true; //自动关闭
 
 
     @Override
@@ -122,7 +127,7 @@ public class AccessConActivity extends Activity {
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
-
+            new CloseActivityThread().start();
             tvSick.setText(CacheSick.sickChoose);
             Cache.myHandleAccess= new Handler() {
                 @Override
@@ -135,6 +140,7 @@ public class AccessConActivity extends Activity {
                     }
                     //显示耗材存取情况信息
                     if(bundle.getString("show")!=null){
+                        autoClose=false;
                         btnZQ.setEnabled(true);
                         btnYW.setEnabled(true);
                         tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
@@ -145,7 +151,8 @@ public class AccessConActivity extends Activity {
                         linearLayout.setVisibility(View.VISIBLE);
 
                     }
-                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("alert")){
+                  /*  if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("alert")){
+                        autoClose=false;
                         AlertDialog.Builder builder = new AlertDialog.Builder(AccessConActivity.this);
                         builder.setIcon(android.R.drawable.ic_dialog_info);
                         builder.setTitle("提示");
@@ -166,12 +173,15 @@ public class AccessConActivity extends Activity {
                                 }
                             }
                         });
-                       /* builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        });*/
+
                         builder.create().show();
+                    }*/
+                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("connectfail")){
+                        Toast.makeText(AccessConActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                    }
+                    if(bundle.getString("alert")!=null){
+                        Toast toast=Toast.makeText(AccessConActivity.this,bundle.getString("alert").toString(),Toast.LENGTH_LONG);
+                        showMyToast(toast,10*1000);
                     }
 
 
@@ -183,8 +193,17 @@ public class AccessConActivity extends Activity {
                     super.handleMessage(msg);
                     Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
                     //提示信息
-                    if (bundle.getString("value") != null) {
-                        btnZQ.setText(bundle.getString("value"));
+                    if (bundle.getString("close") != null) {
+                        logger.info("超时30秒未返回数据，自动关闭耗材确认界面");
+                        Cache.myHandleAccess=null;
+                        AccessConActivity.this.finish();
+                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                            Message message = Message.obtain(Cache.myHandle);
+                            Bundle bund = new Bundle();
+                            bund.putString("ui","lock");
+                            message.setData(bund);
+                            Cache.myHandle.sendMessage(message);
+                        }
                     }
                 }};
         }catch (Exception e){
@@ -361,6 +380,7 @@ public class AccessConActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btnzq:
                     btnZQ.setPressed(true);
+                    blThread=false;
                     sendQR("0");
                     CacheSick.sickChoose="";
                     Message message = Message.obtain(Cache.myHandle);
@@ -372,6 +392,7 @@ public class AccessConActivity extends Activity {
                     break;
                 case R.id.btnyw:
                     btnYW.setPressed(true);
+                    blThread=false;
                     //关闭界面
                     Cache.myHandleAccess=null;
                     AccessConActivity.this.finish();
@@ -382,9 +403,20 @@ public class AccessConActivity extends Activity {
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
                     }
+                    if(Cache.mztcgq==0){
+                        //门为关状态，清空患者信息
+                        CacheSick.sickChoose="";
+                        message = Message.obtain(Cache.myHandle);
+                        bund = new Bundle();
+                        bund.putString("sickgg","4");
+                        message.setData(bund);
+                        Cache.myHandle.sendMessage(message);
+
+                    }
                     btnYW.setPressed(false);
                     break;
                 case R.id.fh:
+                    blThread=false;
                     Cache.myHandleAccess=null;
                     AccessConActivity.this.finish();
                     if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
@@ -491,9 +523,48 @@ public class AccessConActivity extends Activity {
         }catch (Exception e){
             logger.error("发送耗材数据出错",e);
         }
-
-
-
     }
 
+    class CloseActivityThread extends Thread{
+        public void run(){
+            int i=0;
+            while(blThread){
+                try{
+                    if(i>60 && autoClose){
+                        Message message = Message.obtain(myHandler);
+                        Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                        bund.putString("close","ok");
+                        message.setData(bund);
+                        myHandler.sendMessage(message);
+                        break;
+                    }else{
+                        i=i+1;
+                    }
+                }catch (Exception e){
+                }
+                try{
+                    Thread.sleep(500);
+                }catch (Exception e){
+
+                }
+            }
+        }
+    }
+
+    public void showMyToast(final Toast toast, final int cnt) {
+        final Timer timer =new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        }, cnt );
+    }
 }

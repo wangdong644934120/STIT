@@ -102,8 +102,6 @@ public class SocketClient extends Thread {
 
     class SHThread extends Thread{
         public void run() {
-            //是否连接成功标志，0-失败，1-成功
-            int successFlag=0;
             while(true) {
                 try {
                     if (socket == null || socket.isClosed()) {
@@ -111,7 +109,6 @@ public class SocketClient extends Thread {
                         //socket = new Socket(Cache.ServerIP, Cache.ServerPort);
                         socket.connect(new InetSocketAddress(Cache.ServerIP, Cache.ServerPort), 3000);
                         logger.info("连接第三方平台成功：ip"+Cache.ServerIP+" 端口号："+Cache.ServerPort);
-                        successFlag=1;
                         inStream = socket.getInputStream();
                         outStream = socket.getOutputStream();
                         //数据接收线程
@@ -124,22 +121,36 @@ public class SocketClient extends Thread {
                     }
 
                 }catch(Exception e) {
-                    if(Cache.myHandle!=null){
+                    logger.info("连接第三方平台失败");
+                    socket=null;
+                    if(Cache.myHandleAccess!=null){
+                        Message message = Message.obtain(Cache.myHandleAccess);
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","connectfail");
+                        message.setData(bund);
+                        Cache.myHandleAccess.sendMessage(message);
+                    }else if(Cache.myHandleLockScreen!=null){
+                        Message message = Message.obtain(Cache.myHandleLockScreen);
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","connectfail");
+                        message.setData(bund);
+                        Cache.myHandleLockScreen.sendMessage(message);
+                    }else if(Cache.myHandleSick!=null){
+                        Message message = Message.obtain(Cache.myHandleSick);
+                        Bundle bund = new Bundle();
+                        bund.putString("ui","connectfail");
+                        message.setData(bund);
+                        Cache.myHandleSick.sendMessage(message);
+                    }else if(Cache.myHandle!=null){
                         Message message = Message.obtain(Cache.myHandle);
                         Bundle bund = new Bundle();
                         bund.putString("ui","connectfail");
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
-                        if(successFlag==1){
-                            logger.info("连接第三方平台失败");
-                            successFlag=0;
-                        }
-
-                        socket=null;
                     }
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 }catch(Exception e) {
 
                 }

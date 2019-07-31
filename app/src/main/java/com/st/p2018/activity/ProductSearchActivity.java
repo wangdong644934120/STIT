@@ -37,9 +37,9 @@ public class ProductSearchActivity extends Activity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
         //使用布局文件来定义标题栏
         getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
-       /* try{
+       try{
             initView();
-            tvtitle.setText("关联耗材");
+            tvtitle.setText("患者关联耗材");
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
             Column<String> column3 = new Column<>("效期批次", "xqpc");
@@ -58,7 +58,7 @@ public class ProductSearchActivity extends Activity {
             table.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
         }catch (Exception e){
             logger.error("初始化时出错",e);
-        }*/
+        }
 
     }
 

@@ -73,5 +73,6 @@ public class Cache {
     //public static HashMap<String,PDEntity> mapPD=new HashMap<String,PDEntity>(); //key wz,value 统计  主动盘点统计界面数据结构
     public static int isPCNow=0;//正在盘存标签，0-未盘存，1-正在盘存
     public static boolean deviceCommunication=true;
+    public static boolean autoClose=true;
 
 }

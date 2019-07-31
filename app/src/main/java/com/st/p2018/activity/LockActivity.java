@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 public class LockActivity extends Activity {
@@ -56,6 +58,13 @@ public class LockActivity extends Activity {
                     //提示信息
                     if (bundle.getString("close") != null) {
                         closeActivity();
+                    }
+                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("connectfail")){
+                        Toast.makeText(LockActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                    }
+                    if(bundle.getString("alert")!=null){
+                        Toast toast=Toast.makeText(LockActivity.this,bundle.getString("alert").toString(),Toast.LENGTH_LONG);
+                        showMyToast(toast,10*1000);
                     }
                 }
             };
@@ -116,7 +125,7 @@ public class LockActivity extends Activity {
                 if (!bl) {
                     //发送失败，判断本地是否存在刷卡记录，存在则开门
                     ExternalPowerDao powerDao = new ExternalPowerDao();
-                    List<HashMap<String, String>> listPower = powerDao.getPower(data, "3");
+                    List<HashMap<String, String>> listPower = powerDao.getPower(data, "","3");
                     if (listPower != null && !listPower.isEmpty()) {
                         logger.info("第三方平台权限核验失败，本地用户名密码核验结果：" + listPower.get(0).get("code"));
                         //下发开门指令
@@ -148,5 +157,21 @@ public class LockActivity extends Activity {
     public void closeActivity(){
         Cache.myHandleLockScreen=null;
         this.finish();
+    }
+    public void showMyToast(final Toast toast, final int cnt) {
+        final Timer timer =new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        }, cnt );
     }
 }

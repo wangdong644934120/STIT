@@ -28,10 +28,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.log4j.Logger;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 
@@ -92,6 +95,13 @@ public class SickActivity extends Activity {
                     //提示信息
                     if (bundle.getString("show") != null) {
                         showSick();
+                    }
+                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("connectfail")){
+                        Toast.makeText(SickActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
+                    }
+                    if(bundle.getString("alert")!=null){
+                        Toast toast=Toast.makeText(SickActivity.this,bundle.getString("alert").toString(),Toast.LENGTH_LONG);
+                        showMyToast(toast,10*1000);
                     }
                 }
             };
@@ -239,5 +249,21 @@ public class SickActivity extends Activity {
             }
         }
         return bl;
+    }
+    public void showMyToast(final Toast toast, final int cnt) {
+        final Timer timer =new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        }, cnt );
     }
 }

@@ -13,13 +13,14 @@ public class ExternalPowerDao {
 
     /**
      * 从本地获取权限
-     * @param card 卡号或指纹编号
+     * @param card1 卡号或指纹编号十进制或十六进制
+     * @param card2 卡号或指纹编号
      * @param type 1-指纹，2-刷卡，3-用户名和密码
      * @return
      */
-    public List<HashMap<String, String>> getPower(String card, String type) {
-        String sql="select * from stit_t_externalpower where card=? and type=?";
-        String[] args = new String[]{card,type};
+    public List<HashMap<String, String>> getPower(String card1,String card2, String type) {
+        String sql="select * from stit_t_externalpower where (card=? or card=? ) and type=?";
+        String[] args = new String[]{card1,card2,type};
         return DataBaseExec.execQueryForMap(sql, args);
     }
 

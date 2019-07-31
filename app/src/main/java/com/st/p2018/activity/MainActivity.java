@@ -57,12 +57,15 @@ import com.st.p2018.util.MyTextToSpeech;
 
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.chainsaw.Main;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
 
 
@@ -468,6 +471,12 @@ public class MainActivity extends Activity {
                         }
                         if(bundle.getString("sickgg")!=null){
                             tvSickMessage.setText(CacheSick.sickChoose);
+                        }
+                        if(bundle.getString("alert")!=null){
+                            Toast toast=Toast.makeText(MainActivity.this,bundle.getString("alert").toString(),Toast.LENGTH_LONG);
+                            showMyToast(toast,10*1000);
+                            //Toast.makeText(MainActivity.this, bundle.getString("alert").toString(), Toast.LENGTH_SHORT).show();
+
                         }
                     }catch(Exception ex){
                         logger.error("handler内显示出错",ex);
@@ -1426,4 +1435,20 @@ public class MainActivity extends Activity {
         }
     }
 
+    public void showMyToast(final Toast toast, final int cnt) {
+        final Timer timer =new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.show();
+            }
+        },0,3000);
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                toast.cancel();
+                timer.cancel();
+            }
+        }, cnt );
+    }
 }

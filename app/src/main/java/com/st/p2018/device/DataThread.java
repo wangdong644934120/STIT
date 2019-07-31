@@ -95,9 +95,11 @@ public class DataThread extends Thread {
                 if(!bl){
                     //发送失败，判断本地是否存在刷卡记录，存在则开门
                     ExternalPowerDao powerDao = new ExternalPowerDao();
-                    List<HashMap<String,String>> listPower=powerDao.getPower(card,"2");
+                    String cardShi=String.valueOf(Long.parseLong(card,16));
+                    List<HashMap<String,String>> listPower=powerDao.getPower(card,cardShi,"2");
                     if(listPower!=null && !listPower.isEmpty()){
                         logger.info("第三方平台权限核验失败，本地刷卡核验结果："+listPower.get(0).get("code"));
+                        colseScreen();
                         //下发开门指令
                         if(HCProtocol.ST_OpenDoor()){
                             logger.info("下发开门成功");
@@ -164,9 +166,10 @@ public class DataThread extends Thread {
                 if(!bl){
                     //发送失败，判断本地是否存在刷卡记录，存在则开门
                     ExternalPowerDao powerDao = new ExternalPowerDao();
-                    List<HashMap<String,String>> listPower=powerDao.getPower(card,"1");
+                    List<HashMap<String,String>> listPower=powerDao.getPower(card,"","1");
                     if(listPower!=null && !listPower.isEmpty()){
                         logger.info("第三方平台权限核验失败，本地指纹核验结果："+listPower.get(0).get("code"));
+                        colseScreen();
                         //下发开门指令
                         if(HCProtocol.ST_OpenDoor()){
                             logger.info("下发开门成功");
@@ -896,5 +899,19 @@ public class DataThread extends Thread {
         product.setPp(pp);
         product.setOperation(oprea);
         return product;
+    }
+
+    private void colseScreen(){
+        if(Cache.lockScreen.equals("1")){
+            if(Cache.myHandleLockScreen==null){
+                logger.info("handle关闭锁屏发送失败");
+                return;
+            }
+            Message message = Message.obtain(Cache.myHandleLockScreen);
+            Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+            bund.putString("close","ok");
+            message.setData(bund);
+            Cache.myHandleLockScreen.sendMessage(message);
+        }
     }
 }

@@ -5,10 +5,12 @@ import android.os.Message;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.st.p2018.dao.ExternalPowerDao;
 import com.st.p2018.dao.PZDao;
 import com.st.p2018.device.HCProtocol;
 import com.st.p2018.externalentity.ActionProduct;
 import com.st.p2018.entity.Product;
+import com.st.p2018.externalentity.ExternalPower;
 import com.st.p2018.externalentity.ExternalSick;
 import com.st.p2018.externalentity.ProductExpire;
 import com.st.p2018.externalentity.ProductSearch;
@@ -21,6 +23,9 @@ import com.st.p2018.util.MyTextToSpeech;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -68,8 +73,8 @@ public class DealReceive extends Thread{
                 case "power":
                     //指纹或刷卡返回
                     number=jsonData.get("number")==null?"":jsonData.get("number").toString();
-                    data=jsonData.get("data")==null?"":jsonData.get("data").toString();
-                    getPower(number,data);
+                    //data=jsonData.get("data")==null?"":jsonData.get("data").toString();
+                    getPower(number,value);
                     break;
                 case "product":
                     dealPorduct(number,value);
@@ -429,52 +434,59 @@ public class DealReceive extends Thread{
      */
     private void getPower(String number,String data){
         try{
-            if(data.equals("") || data.toLowerCase().equals("null")){
+            ExternalPower externalPower = JSON.parseObject(value, new TypeReference<ExternalPower>(){});
+            if(externalPower.getData()!=null && !externalPower.getData().getCard().equals("")
+                    && !externalPower.getData().getCode().equals("")
+                    && !externalPower.getData().getName().equals("")
+                    && !externalPower.getData().getType().equals("")){
+                if(Cache.isPCNow==1){
+                    logger.info("正在盘存，禁止开门");
+                    return;
+                }
+
+                //关闭锁屏界面
+                if(Cache.lockScreen.equals("1")){
+                    if(Cache.myHandleLockScreen==null){
+                        logger.info("handle关闭锁屏发送失败");
+                        return;
+                    }
+                    Message message = Message.obtain(Cache.myHandleLockScreen);
+                    Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                    bund.putString("close","ok");
+                    message.setData(bund);
+                    Cache.myHandleLockScreen.sendMessage(message);
+                }
+                if(Cache.chooseSick.equals("1")){
+                    if(Cache.myHandle==null){
+                        logger.info("handle打开患者选择界面发送失败");
+                        return;
+                    }
+                    Message message = Message.obtain(Cache.myHandle);
+                    Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                    bund.putString("ui","sick");
+                    message.setData(bund);
+                    Cache.myHandle.sendMessage(message);
+                }
+                Cache.operatorCode=externalPower.getData().getCode();
+                sendCZY(externalPower.getData().getName());
+
+                if(Cache.chooseSick.equals("0")){
+                    logger.info("未配置患者选择，核验成功直接打开柜门");
+                    HCProtocol.ST_OpenDoor();
+                }
+                MyTextToSpeech.getInstance().speak(externalPower.getData().getName()+"核验成功");
+                //判断本地是否存在该记录，如果不存在则添加到本地
+                ExternalPowerDao epd=new ExternalPowerDao();
+                List<HashMap<String,String>> list=epd.getPower(externalPower.getData().getCard(),"",externalPower.getData().getType());
+                if(list==null || list.isEmpty()){
+                    //添加信息到本地
+                    epd.addPower(UUID.randomUUID().toString(),externalPower.getData().getName(),externalPower.getData().getCode(),externalPower.getData().getCard(),externalPower.getData().getType());
+                }
+            }else{
                 MyTextToSpeech.getInstance().speak("无开门权限");
-                return;
-            }
-            if(Cache.isPCNow==1){
-                logger.info("正在盘存，禁止开门");
-                return;
             }
 
-            //关闭锁屏界面
-            if(Cache.lockScreen.equals("1")){
-                if(Cache.myHandleLockScreen==null){
-                    logger.info("handle关闭锁屏发送失败");
-                    return;
-                }
-                Message message = Message.obtain(Cache.myHandleLockScreen);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                bund.putString("close","ok");
-                message.setData(bund);
-                Cache.myHandleLockScreen.sendMessage(message);
-            }
-            if(Cache.chooseSick.equals("1")){
-                if(Cache.myHandle==null){
-                    logger.info("handle打开患者选择界面发送失败");
-                    return;
-                }
-                Message message = Message.obtain(Cache.myHandle);
-                Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
-                bund.putString("ui","sick");
-                message.setData(bund);
-                Cache.myHandle.sendMessage(message);
-            }
-            String[] oprmess=data.split("\\+");
-            String name=data;
-            Cache.operatorCode=data;
-            if(oprmess.length==2){
-                name=oprmess[0];
-                Cache.operatorCode=oprmess[1];
-            }
-            sendCZY(name);
 
-            if(Cache.chooseSick.equals("0")){
-                logger.info("未配置患者选择，核验成功直接打开柜门");
-                HCProtocol.ST_OpenDoor();
-            }
-            MyTextToSpeech.getInstance().speak(name+"核验成功");
         }catch (Exception e){
             logger.error("获取权限出错",e);
         }
@@ -523,7 +535,7 @@ public class DealReceive extends Thread{
             String msg =jsonData.get("message")==null?"":jsonData.get("message").toString();
             if(!msg.equals("0")){
                 //数据返回错误
-                String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
+                /*String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
                 for(int i=0;i<30;i++){
                     if(Cache.myHandleAccess==null){
                         Thread.sleep(100);
@@ -538,7 +550,8 @@ public class DealReceive extends Thread{
                     bund.putString("data",data);
                     message.setData(bund);
                     Cache.myHandleAccess.sendMessage(message);
-                }
+                }*/
+                showError(jsonData.get("data")==null?"":jsonData.get("data").toString());
                 return;
             }
             long start=System.currentTimeMillis();
@@ -615,6 +628,34 @@ public class DealReceive extends Thread{
      * @param value
      */
     private void dealTotal(String number,String value){
+        try{
+            JSONObject jsonData = new JSONObject(value);
+            String msg =jsonData.get("message")==null?"":jsonData.get("message").toString();
+            if(!msg.equals("0")){
+                //数据返回错误
+                showError(jsonData.get("data")==null?"":jsonData.get("data").toString());
+                return;
+               /* String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
+                for(int i=0;i<30;i++){
+                    if(Cache.myHandleAccess==null){
+                        Thread.sleep(100);
+                    }else{
+                        break;
+                    }
+                }
+                if(Cache.myHandleAccess!=null){
+                    Message message = Message.obtain(Cache.myHandleAccess);
+                    Bundle bund = new Bundle();
+                    bund.putString("ui","alert");
+                    bund.putString("data",data);
+                    message.setData(bund);
+                    Cache.myHandleAccess.sendMessage(message);
+                }
+                return;*/
+            }
+        }catch (Exception e){
+
+        }
         long start=System.currentTimeMillis();
         try{
             Cache.mapTotal.clear();
@@ -641,7 +682,6 @@ public class DealReceive extends Thread{
                     if(totalMessage.getLocation().equals("6")){
                         Cache.mapTotal.put("6",totalMessage);
                     }
-
                 }
             }
 
@@ -656,40 +696,31 @@ public class DealReceive extends Thread{
         }
     }
 
-    /**
-     * 初始化效期
-     * @param xq
-     * @param product
-     */
-   /* private void initXQ(String xq,Product product){
-        if(xq.equals("近效期")){
-            if(Cache.mapPD.get(product.getSzwz())==null){
-                PDEntity pdEntity=new PDEntity();
-                pdEntity.setJxq(pdEntity.getJxq()+1);
-                Cache.mapPD.put(product.getSzwz(),pdEntity);
-            }else{
-                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
-                Cache.mapPD.get(product.getSzwz()).setJxq(pdEntity.getJxq()+1);
-            }
-        }else if(xq.equals("远效期")){
-            if(Cache.mapPD.get(product.getSzwz())==null){
-                PDEntity pdEntity=new PDEntity();
-                pdEntity.setYxq(pdEntity.getYxq()+1);
-                Cache.mapPD.put(product.getSzwz(),pdEntity);
-            }else{
-                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
-                Cache.mapPD.get(product.getSzwz()).setYxq(pdEntity.getYxq()+1);
-            }
-        }else if(xq.equals("已过期")){
-            if(Cache.mapPD.get(product.getSzwz())==null){
-                PDEntity pdEntity=new PDEntity();
-                pdEntity.setYgq(pdEntity.getYgq()+1);
-                Cache.mapPD.put(product.getSzwz(),pdEntity);
-            }else{
-                PDEntity pdEntity=Cache.mapPD.get(product.getSzwz());
-                Cache.mapPD.get(product.getSzwz()).setYgq(pdEntity.getYgq()+1);
-            }
-        }
-    }*/
-
+   private void showError(String error){
+       if(Cache.myHandleAccess!=null){
+           Message message = Message.obtain(Cache.myHandleAccess);
+           Bundle bund = new Bundle();
+           bund.putString("alert",error);
+           message.setData(bund);
+           Cache.myHandleAccess.sendMessage(message);
+       }else if(Cache.myHandleLockScreen!=null){
+           Message message = Message.obtain(Cache.myHandleLockScreen);
+           Bundle bund = new Bundle();
+           bund.putString("alert",error);
+           message.setData(bund);
+           Cache.myHandleLockScreen.sendMessage(message);
+       }else if(Cache.myHandleSick!=null){
+           Message message = Message.obtain(Cache.myHandleSick);
+           Bundle bund = new Bundle();
+           bund.putString("alert",error);
+           message.setData(bund);
+           Cache.myHandleSick.sendMessage(message);
+       }else if(Cache.myHandle!=null){
+           Message message = Message.obtain(Cache.myHandle);
+           Bundle bund = new Bundle();
+           bund.putString("alert",error);
+           message.setData(bund);
+           Cache.myHandle.sendMessage(message);
+       }
+   }
 }
