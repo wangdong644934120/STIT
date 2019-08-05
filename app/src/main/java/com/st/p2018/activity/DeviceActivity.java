@@ -45,6 +45,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -393,9 +395,6 @@ public class DeviceActivity extends Activity {
                         logger.info("下发升级开始指令返回："+bl);
                         if(bl){
                             progressBar.setProgress(1);
-
-                            /*percentCircle.setTargetPercent(1);
-                            percentCircle.update();*/
                             break;
                         }
                         try{
@@ -413,6 +412,8 @@ public class DeviceActivity extends Activity {
                     }else{
                         alltime=bySJ.length/32+1;
                     }
+                    logger.info("共需要发送次数："+alltime);
+                    //logger.info("升级文件内容："+Arrays.toString(bySJ));
 
                     for(int i=0;i<alltime;i++){
                         time=time+1;
@@ -430,6 +431,7 @@ public class DeviceActivity extends Activity {
                         }
                         while(true){
                             //下发升级
+                            //logger.info("第"+i+"次发送数据"+ Arrays.toString(bydata));
                             bl=HCProtocol.ST_NOWSJ(bydata);
                             if(bl){
                                 double di=i;
@@ -441,11 +443,16 @@ public class DeviceActivity extends Activity {
                                 progressBar.setProgress(bf);
                                 sendJD(bf);
                                 break;
+                            }else{
+                                logger.info("第"+(i+1)+"次发送数据无应答，重新发送"+ Arrays.toString(bydata));
+
                             }
                             try{
-                                Thread.sleep(1000);
+                                Thread.sleep(2000);
                             }catch (Exception e){
+
                             }
+
                         }
 
                     }

@@ -94,12 +94,12 @@ public class DeviceCom extends Thread{
 
             //硬件版本号
             byte[] yjbbh=new byte[1];
-            System.arraycopy(data,6,yjbbh,0,1);
+            System.arraycopy(data,11,yjbbh,0,1);
             Cache.yjbbh="V"+DataTypeChange.getHeight4(yjbbh[0])+"."+DataTypeChange.getLow4(yjbbh[0]);
             logger.info("硬件版本号："+Cache.yjbbh);
             //固件版本号
             byte[] gjbbh=new byte[1];
-            System.arraycopy(data,7,gjbbh,0,1);
+            System.arraycopy(data,12,gjbbh,0,1);
             Cache.gjbbh="V"+DataTypeChange.getHeight4(gjbbh[0])+"."+DataTypeChange.getLow4(gjbbh[0]);
             logger.info("固件版本号："+Cache.gjbbh);
 

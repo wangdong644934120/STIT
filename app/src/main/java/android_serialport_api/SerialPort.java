@@ -119,6 +119,49 @@ public class SerialPort {
 			mylock.unlock();
 		}
 	}
+	public byte[] sendAndGetFor100ms(byte[] cmd){
+		byte[] data=null;
+		try {
+			mylock.lock();
+			mFileOutputStream.write(cmd);
+			mFileOutputStream.flush();
+			Thread.sleep(100);
+			for(int i=0;i<18;i++){
+
+				ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
+				int recvlen = 0;
+				while (mFileInputStream.available()>0){
+					byte[] buf=new byte[1024];
+					int size = mFileInputStream.read(buf);
+					if (size > 0) {
+						mRecvData.put(buf, recvlen, size);
+						recvlen+=size;
+					}
+					Thread.sleep(10);
+				}
+				data=new byte[recvlen];
+				if(recvlen>0){
+					System.arraycopy(mRecvData.array(), 0, data, 0, recvlen);
+					break;
+				}else{
+					logger.info("i次数:"+i);
+					Thread.sleep(100);
+				}
+				/*if(data.length>0){
+					break;
+				}else{
+					Thread.sleep(100);
+				}*/
+			}
+
+			return data;
+		} catch (Exception ex) {
+			logger.error("串口读写出错",ex);
+			return null;
+		}finally{
+			mylock.unlock();
+		}
+	}
 	//发送数据等1秒重回读结果
 	public byte[] sendAndGetFor1Seconds(byte[] cmd){
 		byte[] data;
@@ -126,7 +169,7 @@ public class SerialPort {
 			mylock.lock();
 			mFileOutputStream.write(cmd);
 			mFileOutputStream.flush();
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
 			long TickCount = System.currentTimeMillis();
 			int recvlen = 0;
@@ -188,13 +231,13 @@ public class SerialPort {
 	}
 
 	//发送数据等3秒重回读结果
-	public byte[] sendAndGetFor3Seconds(byte[] cmd){
+	public byte[] sendAndGetFor1_5Seconds(byte[] cmd){
 		byte[] data;
 		try {
 			mylock.lock();
 			mFileOutputStream.write(cmd);
 			mFileOutputStream.flush();
-			Thread.sleep(3000);
+			Thread.sleep(1500);
 			ByteBuffer mRecvData = ByteBuffer.allocate(1024*4);
 			long TickCount = System.currentTimeMillis();
 			int recvlen = 0;
