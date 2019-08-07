@@ -84,6 +84,7 @@ public class DataThread extends Thread {
         skq = skq.substring(7, 8);
         if (skq.equals("1")) {
             logger.info("刷卡器有动作："+skq);
+            MyTextToSpeech.getInstance().speak("读卡完成");
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(0);
             card=card.toUpperCase();
@@ -153,6 +154,7 @@ public class DataThread extends Thread {
         //应该为11
         if (zwcgq.equals("01")) {
             logger.info("指纹模块有动作："+zwcgq);
+            MyTextToSpeech.getInstance().speak("识别完成");
             //指纹匹配成功，下发获取指纹编号
             //刷卡器有动作，下发获取刷卡信息指令
             String card=HCProtocol.ST_GetUser(1);
