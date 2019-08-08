@@ -29,7 +29,7 @@ public class HeartThread extends Thread {
             }
             try{
                 String number= UUID.randomUUID().toString();
-                String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"data\":\""+ Cache.appcode+"\"}";
+                String sendValue="{\"order\":\"heart\",\"number\":\""+number+"\",\"code\":\"" + Cache.appcode + "\",\"data\":\"\"}";
                 CacheSend.addSend(number,sendValue,SendMessage.HEART);
                 SocketClient.send(sendValue);
             }catch (Exception e){

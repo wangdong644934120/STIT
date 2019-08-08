@@ -213,7 +213,7 @@ public class SickActivity extends Activity {
      */
     private void getSick(){
         try{
-            String sendValue="{\"order\":\"patient\",\"data\":\""+Cache.appcode+"\",\"number\":\""+ UUID.randomUUID().toString()+"\"}";
+            String sendValue="{\"order\":\"patient\",\"code\":\"" + Cache.appcode + "\",\"data\":\"\",\"number\":\""+ UUID.randomUUID().toString()+"\"}";
             if(sendExternal(sendValue)){
                 return;
             }
