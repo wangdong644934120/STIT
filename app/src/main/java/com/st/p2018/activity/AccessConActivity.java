@@ -140,6 +140,7 @@ public class AccessConActivity extends Activity {
                     }
                     //显示耗材存取情况信息
                     if(bundle.getString("show")!=null){
+                        logger.info("开始更新界面显示信息");
                         autoClose=false;
                         btnZQ.setEnabled(true);
                         btnYW.setEnabled(true);
@@ -149,33 +150,9 @@ public class AccessConActivity extends Activity {
                         initOut();
                         layoutLoad.setVisibility(View.GONE);
                         linearLayout.setVisibility(View.VISIBLE);
+                        logger.info("更新界面显示信息完成");
 
                     }
-                  /*  if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("alert")){
-                        autoClose=false;
-                        AlertDialog.Builder builder = new AlertDialog.Builder(AccessConActivity.this);
-                        builder.setIcon(android.R.drawable.ic_dialog_info);
-                        builder.setTitle("提示");
-                        builder.setMessage(bundle.getString("data"));
-                        builder.setCancelable(false);
-
-                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Cache.myHandleAccess=null;
-                                AccessConActivity.this.finish();
-                                if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                                    Message message = Message.obtain(Cache.myHandle);
-                                    Bundle bund = new Bundle();
-                                    bund.putString("ui","lock");
-                                    message.setData(bund);
-                                    Cache.myHandle.sendMessage(message);
-                                }
-                            }
-                        });
-
-                        builder.create().show();
-                    }*/
                     if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("connectfail")){
                         Toast.makeText(AccessConActivity.this, "连接服务器失败", Toast.LENGTH_SHORT).show();
                     }
@@ -206,6 +183,7 @@ public class AccessConActivity extends Activity {
                         }
                     }
                 }};
+            logger.info("耗材确认界面初始化完成");
         }catch (Exception e){
             logger.error("初始化view出错",e);
         }
@@ -379,6 +357,7 @@ public class AccessConActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.btnzq:
+                    logger.info("耗材确认点击正确");
                     btnZQ.setPressed(true);
                     blThread=false;
                     sendQR("0");
@@ -391,6 +370,7 @@ public class AccessConActivity extends Activity {
                     btnZQ.setPressed(false);
                     break;
                 case R.id.btnyw:
+                    logger.info("耗材确认点击取消");
                     btnYW.setPressed(true);
                     blThread=false;
                     //关闭界面
@@ -536,6 +516,7 @@ public class AccessConActivity extends Activity {
                         bund.putString("close","ok");
                         message.setData(bund);
                         myHandler.sendMessage(message);
+                        logger.info("耗材确认自动退出线程退出了");
                         break;
                     }else{
                         i=i+1;

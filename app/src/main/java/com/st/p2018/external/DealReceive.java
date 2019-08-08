@@ -534,23 +534,8 @@ public class DealReceive extends Thread{
             JSONObject jsonData = new JSONObject(value);
             String msg =jsonData.get("message")==null?"":jsonData.get("message").toString();
             if(!msg.equals("0")){
+                logger.info("耗材处理返回错误数据");
                 //数据返回错误
-                /*String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
-                for(int i=0;i<30;i++){
-                    if(Cache.myHandleAccess==null){
-                        Thread.sleep(100);
-                    }else{
-                        break;
-                    }
-                }
-                if(Cache.myHandleAccess!=null){
-                    Message message = Message.obtain(Cache.myHandleAccess);
-                    Bundle bund = new Bundle();
-                    bund.putString("ui","alert");
-                    bund.putString("data",data);
-                    message.setData(bund);
-                    Cache.myHandleAccess.sendMessage(message);
-                }*/
                 showError(jsonData.get("data")==null?"":jsonData.get("data").toString());
                 return;
             }
@@ -573,12 +558,14 @@ public class DealReceive extends Thread{
                     break;
                 }
             }
+            Thread.sleep(1000);
             if(Cache.myHandleAccess!=null){
                 Message message = Message.obtain(Cache.myHandleAccess);
                 Bundle bund = new Bundle();
                 bund.putString("show","1");
                 message.setData(bund);
                 Cache.myHandleAccess.sendMessage(message);
+                logger.info("耗材确认界面，发送数据显示完成");
             }else{
                 logger.info("耗材确认界面已经关闭，无需展示数据");
             }
