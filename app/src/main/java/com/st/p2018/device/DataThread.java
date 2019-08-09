@@ -99,6 +99,7 @@ public class DataThread extends Thread {
                     String cardShi=String.valueOf(Long.parseLong(card,16));
                     List<HashMap<String,String>> listPower=powerDao.getPower(card,cardShi,"2");
                     if(listPower!=null && !listPower.isEmpty()){
+                        MyTextToSpeech.getInstance().speak("本机核验成功");
                         logger.info("第三方平台权限核验失败，本地刷卡核验结果："+listPower.get(0).get("code"));
                         colseScreen();
                         //下发开门指令
@@ -149,7 +150,7 @@ public class DataThread extends Thread {
         if (zwcgq.equals("10")) {
             //指纹匹配失败
             //sendCZY("");
-            MyTextToSpeech.getInstance().speak("识别失败");
+            MyTextToSpeech.getInstance().speak("请重按手指");
         }
         //应该为11
         if (zwcgq.equals("11")) {
@@ -170,6 +171,7 @@ public class DataThread extends Thread {
                     ExternalPowerDao powerDao = new ExternalPowerDao();
                     List<HashMap<String,String>> listPower=powerDao.getPower(card,"","1");
                     if(listPower!=null && !listPower.isEmpty()){
+                        MyTextToSpeech.getInstance().speak("本机核验成功");
                         logger.info("第三方平台权限核验失败，本地指纹核验结果："+listPower.get(0).get("code"));
                         colseScreen();
                         //下发开门指令
