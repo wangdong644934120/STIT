@@ -109,6 +109,8 @@ public class SocketClient extends Thread {
                         //socket = new Socket(Cache.ServerIP, Cache.ServerPort);
                         socket.connect(new InetSocketAddress(Cache.ServerIP, Cache.ServerPort), 3000);
                         logger.info("连接第三方平台成功：ip"+Cache.ServerIP+" 端口号："+Cache.ServerPort);
+                        logger.info("本机ip地址："+socket.getLocalAddress().getHostAddress());
+                        logger.info("本机端口号："+socket.getLocalPort());
                         inStream = socket.getInputStream();
                         outStream = socket.getOutputStream();
                         //数据接收线程

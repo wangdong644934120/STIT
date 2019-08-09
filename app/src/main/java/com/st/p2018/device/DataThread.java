@@ -148,11 +148,11 @@ public class DataThread extends Thread {
         }
         if (zwcgq.equals("10")) {
             //指纹匹配失败
-            sendCZY("");
-            MyTextToSpeech.getInstance().speak("此指纹无开门权限");
+            //sendCZY("");
+            MyTextToSpeech.getInstance().speak("识别失败");
         }
         //应该为11
-        if (zwcgq.equals("01")) {
+        if (zwcgq.equals("11")) {
             logger.info("指纹模块有动作："+zwcgq);
             MyTextToSpeech.getInstance().speak("识别完成");
             //指纹匹配成功，下发获取指纹编号
