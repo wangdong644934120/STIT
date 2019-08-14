@@ -73,7 +73,6 @@ public class DealReceive extends Thread{
                 case "power":
                     //指纹或刷卡返回
                     number=jsonData.get("number")==null?"":jsonData.get("number").toString();
-                    //data=jsonData.get("data")==null?"":jsonData.get("data").toString();
                     getPower(number,value);
                     break;
                 case "product":
@@ -622,26 +621,10 @@ public class DealReceive extends Thread{
                 //数据返回错误
                 showError(jsonData.get("data")==null?"":jsonData.get("data").toString());
                 return;
-               /* String data=jsonData.get("data")==null?"":jsonData.get("data").toString();
-                for(int i=0;i<30;i++){
-                    if(Cache.myHandleAccess==null){
-                        Thread.sleep(100);
-                    }else{
-                        break;
-                    }
-                }
-                if(Cache.myHandleAccess!=null){
-                    Message message = Message.obtain(Cache.myHandleAccess);
-                    Bundle bund = new Bundle();
-                    bund.putString("ui","alert");
-                    bund.putString("data",data);
-                    message.setData(bund);
-                    Cache.myHandleAccess.sendMessage(message);
-                }
-                return;*/
             }
         }catch (Exception e){
-
+            logger.error("返回错误数据，解析出错",e);
+            return;
         }
         long start=System.currentTimeMillis();
         try{
@@ -671,12 +654,19 @@ public class DealReceive extends Thread{
                     }
                 }
             }
+            logger.info("耗材缓存整理完成");
+            if(Cache.myHandle!=null){
+                logger.info("开始发送数据更新到主界面");
+                Message messageInitXQ = Message.obtain(Cache.myHandle);
+                Bundle bundInitXQ = new Bundle();
+                bundInitXQ.putString("initJXQExternal","1");
+                messageInitXQ.setData(bundInitXQ);
+                Cache.myHandle.sendMessage(messageInitXQ);
+                logger.info("发送数据更新到主界面完成");
+            }else{
+                logger.info("myHandle为空");
+            }
 
-            Message messageInitXQ = Message.obtain(Cache.myHandle);
-            Bundle bundInitXQ = new Bundle();
-            bundInitXQ.putString("initJXQExternal","1");
-            messageInitXQ.setData(bundInitXQ);
-            Cache.myHandle.sendMessage(messageInitXQ);
 
         }catch (Exception e){
             logger.error("初始化效期出错",e);

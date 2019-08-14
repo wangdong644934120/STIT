@@ -50,6 +50,7 @@ public class LoadActivity extends Activity {
         //加载日志
         LogUtil.initLog();// 初始log
         logger = Logger.getLogger(this.getClass());
+        logger.info("程序开始启动");
         initView();
         closeBar();
         new MainThread().start();

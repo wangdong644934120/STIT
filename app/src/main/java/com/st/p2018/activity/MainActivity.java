@@ -250,6 +250,7 @@ public class MainActivity extends Activity {
                                 builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        logger.info("点击并确认退出程序菜单");
                                         showBar();
                                         System.exit(0);
                                     }
@@ -431,7 +432,6 @@ public class MainActivity extends Activity {
                             //barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
                         if(bundle.getString("initJXQExternal")!=null){
-                            //setData(new HashMap<String, String>());
                             setDataBarChart();
                             barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
@@ -550,6 +550,7 @@ public class MainActivity extends Activity {
 
                     break;
                 case R.id.pandian:
+                    logger.info("点击盘点");
                     Cache.getHCCS=2;
                     if(HCProtocol.ST_GetAllCard()){
                     }else{
@@ -582,57 +583,63 @@ public class MainActivity extends Activity {
      * 初始化图表控件
      */
     private void initBarChart(){
-        barChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
-        barChart.setDrawValueAboveBar(true);//true文字绘画在bar上
-        barChart.getDescription().setEnabled(false);
-        barChart.setMaxVisibleValueCount(60);
-        barChart.setPinchZoom(false);//false只能单轴缩放
-        barChart.setDrawGridBackground(false);
-        barChart.setScaleEnabled(false);
-        IAxisValueFormatter xAxisFormatter = new MyAxisValueFormatter();
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-        xAxis.setValueFormatter(xAxisFormatter);
-        xAxis.setTextSize(20f);
+        try{
+            barChart.setDrawBarShadow(false);//true绘画的Bar有阴影。
+            barChart.setDrawValueAboveBar(true);//true文字绘画在bar上
+            barChart.getDescription().setEnabled(false);
+            barChart.setMaxVisibleValueCount(60);
+            barChart.setPinchZoom(false);//false只能单轴缩放
+            barChart.setDrawGridBackground(false);
+            barChart.setScaleEnabled(false);
+            IAxisValueFormatter xAxisFormatter = new MyAxisValueFormatter();
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // only intervals of 1 day
+            xAxis.setLabelCount(7);
+            xAxis.setValueFormatter(xAxisFormatter);
+            xAxis.setTextSize(20f);
 
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setLabelCount(8, false);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
-        leftAxis.setTextSize(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            YAxis leftAxis = barChart.getAxisLeft();
+            leftAxis.setLabelCount(8, false);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setTextSize(15f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        YAxis rightAxis = barChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
+            YAxis rightAxis = barChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
 //        rightAxis.setTypeface(mTfLight);
-        rightAxis.setLabelCount(8, false);
+            rightAxis.setLabelCount(8, false);
 //        rightAxis.setValueFormatter(custom);
-        rightAxis.setSpaceTop(15f);
-        rightAxis.setTextSize(15f);
-        rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+            rightAxis.setSpaceTop(15f);
+            rightAxis.setTextSize(15f);
+            rightAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
 
-        Legend l = barChart.getLegend();
-        l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(false);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(15f);
-        l.setTextSize(20f);
-        l.setXEntrySpace(8f);
-        l.setEnabled(true);
-        barChart.setOnChartValueSelectedListener(new BarCharLinster());
+            Legend l = barChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(15f);
+            l.setTextSize(20f);
+            l.setXEntrySpace(8f);
+            l.setEnabled(true);
+            barChart.setOnChartValueSelectedListener(new BarCharLinster());
 
-        setEmptyData();
+            setEmptyData();
+        }catch (Exception e){
+            logger.info("初始化图表控件出错",e);
+        }
+
     }
 
     /**
      * 显示图标数据
      */
     private void setDataBarChart() {
+        logger.info("更新图表数据");
         if(!Cache.gcqy1){
             try{
                 for(int i=1;i<15;i++){
@@ -643,62 +650,68 @@ public class MainActivity extends Activity {
                     }
                 }
             }catch (Exception e){
-
+                logger.error("柜层启用判断出错",e);
             }
 
         }
         try{
+            logger.info("开始整理图表库存显示信息");
             int kc=0;
             ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
-            if(Cache.mapTotal.get("1")!=null){
-                kc=kc+Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size();
-                yValskc.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size()));
-            }else{
-                if(Cache.gcqy1){
-                    yValskc.add(new BarEntry(1, 0));
+            try{
+                if(Cache.mapTotal.get("1")!=null){
+                    kc=kc+Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size();
+                    yValskc.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()+Cache.mapTotal.get("1").getQt().size()));
+                }else{
+                    if(Cache.gcqy1){
+                        yValskc.add(new BarEntry(1, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("2")!=null){
-                kc=kc+Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size();
-                yValskc.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size()));
-            }else{
-                if(Cache.gcqy2){
-                    yValskc.add(new BarEntry(2, 0));
+                if(Cache.mapTotal.get("2")!=null){
+                    kc=kc+Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size();
+                    yValskc.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()+Cache.mapTotal.get("2").getQt().size()));
+                }else{
+                    if(Cache.gcqy2){
+                        yValskc.add(new BarEntry(2, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("3")!=null){
-                kc=kc+Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size();
-                yValskc.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size()));
-            }else{
-                if(Cache.gcqy3){
-                    yValskc.add(new BarEntry(3, 0));
+                if(Cache.mapTotal.get("3")!=null){
+                    kc=kc+Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size();
+                    yValskc.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()+Cache.mapTotal.get("3").getQt().size()));
+                }else{
+                    if(Cache.gcqy3){
+                        yValskc.add(new BarEntry(3, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("4")!=null){
-                kc=kc+Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size();
-                yValskc.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size()));
-            }else{
-                if(Cache.gcqy4){
-                    yValskc.add(new BarEntry(4, 0));
+                if(Cache.mapTotal.get("4")!=null){
+                    kc=kc+Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size();
+                    yValskc.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()+Cache.mapTotal.get("4").getQt().size()));
+                }else{
+                    if(Cache.gcqy4){
+                        yValskc.add(new BarEntry(4, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("5")!=null){
-                kc=kc+Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size();
-                yValskc.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size()));
-            }else{
-                if(Cache.gcqy5){
-                    yValskc.add(new BarEntry(5, 0));
+                if(Cache.mapTotal.get("5")!=null){
+                    kc=kc+Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size();
+                    yValskc.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()+Cache.mapTotal.get("5").getQt().size()));
+                }else{
+                    if(Cache.gcqy5){
+                        yValskc.add(new BarEntry(5, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("6")!=null){
-                kc=kc+Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size();
-                yValskc.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size()));
-            }else{
-                if(Cache.gcqy6){
-                    yValskc.add(new BarEntry(6, 0));
+                if(Cache.mapTotal.get("6")!=null){
+                    kc=kc+Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size();
+                    yValskc.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()+Cache.mapTotal.get("6").getQt().size()));
+                }else{
+                    if(Cache.gcqy6){
+                        yValskc.add(new BarEntry(6, 0));
+                    }
                 }
+            }catch (Exception ex){
+                logger.error("整理图表库存显示信息出错",ex);
             }
 
+            logger.info("整理图表库存显示信息完成");
 
             BarDataSet set1;
             set1 = new BarDataSet(yValskc, "库存");
@@ -707,62 +720,115 @@ public class MainActivity extends Activity {
             set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
             set1.setValueFormatter(new MyBValueFormatter());
 
+            logger.info("开始整理图表近效期显示信息");
             ArrayList<BarEntry> yValsjxq = new ArrayList<BarEntry>();
-
             int jxq=0;
-            if(Cache.mapTotal.get("1")!=null){
-                jxq=jxq+Cache.mapTotal.get("1").getJxq().size();
-                yValsjxq.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()));
-            }else{
-                if(Cache.gcqy1){
-                    yValsjxq.add(new BarEntry(1, 0));
+            try{
+
+                if(Cache.mapTotal.get("1")!=null){
+                    jxq=jxq+Cache.mapTotal.get("1").getJxq().size();
+                    yValsjxq.add(new BarEntry(1, Cache.mapTotal.get("1").getJxq().size()));
+                }else{
+                    if(Cache.gcqy1){
+                        yValsjxq.add(new BarEntry(1, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("2")!=null){
-                jxq=jxq+Cache.mapTotal.get("2").getJxq().size();
-                yValsjxq.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()));
-            }
-            else{
-                if(Cache.gcqy2){
-                    yValsjxq.add(new BarEntry(2, 0));
+                if(Cache.mapTotal.get("2")!=null){
+                    jxq=jxq+Cache.mapTotal.get("2").getJxq().size();
+                    yValsjxq.add(new BarEntry(2, Cache.mapTotal.get("2").getJxq().size()));
                 }
-            }
-            if(Cache.mapTotal.get("3")!=null){
-                jxq=jxq+Cache.mapTotal.get("3").getJxq().size();
-                yValsjxq.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()));
-            }else{
-                if(Cache.gcqy3){
-                    yValsjxq.add(new BarEntry(3, 0));
+                else{
+                    if(Cache.gcqy2){
+                        yValsjxq.add(new BarEntry(2, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("4")!=null){
-                jxq=jxq+Cache.mapTotal.get("4").getJxq().size();
-                yValsjxq.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()));
-            }else{
-                if(Cache.gcqy4){
-                    yValsjxq.add(new BarEntry(4, 0));
+                if(Cache.mapTotal.get("3")!=null){
+                    jxq=jxq+Cache.mapTotal.get("3").getJxq().size();
+                    yValsjxq.add(new BarEntry(3, Cache.mapTotal.get("3").getJxq().size()));
+                }else{
+                    if(Cache.gcqy3){
+                        yValsjxq.add(new BarEntry(3, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("5")!=null){
-                jxq=jxq+Cache.mapTotal.get("5").getJxq().size();
-                yValsjxq.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()));
-            }else{
-                if(Cache.gcqy5){
-                    yValsjxq.add(new BarEntry(5, 0));
+                if(Cache.mapTotal.get("4")!=null){
+                    jxq=jxq+Cache.mapTotal.get("4").getJxq().size();
+                    yValsjxq.add(new BarEntry(4, Cache.mapTotal.get("4").getJxq().size()));
+                }else{
+                    if(Cache.gcqy4){
+                        yValsjxq.add(new BarEntry(4, 0));
+                    }
                 }
-            }
-            if(Cache.mapTotal.get("6")!=null){
-                jxq=jxq+Cache.mapTotal.get("6").getJxq().size();
-                yValsjxq.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()));
-            }else{
-                if(Cache.gcqy6){
-                    yValsjxq.add(new BarEntry(6, 0));
+                if(Cache.mapTotal.get("5")!=null){
+                    jxq=jxq+Cache.mapTotal.get("5").getJxq().size();
+                    yValsjxq.add(new BarEntry(5, Cache.mapTotal.get("5").getJxq().size()));
+                }else{
+                    if(Cache.gcqy5){
+                        yValsjxq.add(new BarEntry(5, 0));
+                    }
                 }
+                if(Cache.mapTotal.get("6")!=null){
+                    jxq=jxq+Cache.mapTotal.get("6").getJxq().size();
+                    yValsjxq.add(new BarEntry(6, Cache.mapTotal.get("6").getJxq().size()));
+                }else{
+                    if(Cache.gcqy6){
+                        yValsjxq.add(new BarEntry(6, 0));
+                    }
+                }
+            }catch (Exception ex){
+                logger.error("整理图表近效期显示信息出错",ex);
             }
 
+            logger.info("整理图表近效期显示信息完成");
 
             BarDataSet set2;
             set2 = new BarDataSet(yValsjxq, "近效期");
+            set2.setDrawIcons(false);
+            set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
+            set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
+            set2.setValueFormatter(new MyBValueFormatter());
+            logger.info("1BarDataSet初始化完成");
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(set1);
+            dataSets.add(set2);
+            logger.info("2dataset整理完成");
+            BarData data = new BarData(dataSets);
+            data.setValueTextSize(30f);
+            data.setBarWidth(0.5f);
+            logger.info("3bardata整理完成");
+            barChart.setData(data);
+            logger.info("4barchar数据更新完成");
+            tvjxq.setText(String.valueOf(jxq));
+            tvzkc.setText(String.valueOf(kc));
+        }catch (Exception e){
+            logger.error("显示图表数据出错",e);
+        }
+
+    }
+
+    /**
+     * 设置图标默认空
+     */
+    private void setEmptyData(){
+        try{
+            ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
+            yValskc.add(new BarEntry(1,0));
+            yValskc.add(new BarEntry(2,0));
+            yValskc.add(new BarEntry(3,0));
+            yValskc.add(new BarEntry(4,0));
+            yValskc.add(new BarEntry(5,0));
+            if(!Cache.gx.equals("Ⅰ型")){
+                yValskc.add(new BarEntry(6,0));
+            }
+
+            BarDataSet set1;
+            set1 = new BarDataSet(yValskc, "库存");
+            set1.setDrawIcons(false);
+            set1.setColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
+            set1.setValueFormatter(new MyBValueFormatter());
+
+            BarDataSet set2;
+            set2 = new BarDataSet(yValskc, "近效期");
             set2.setDrawIcons(false);
             set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
             set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
@@ -777,51 +843,10 @@ public class MainActivity extends Activity {
             data.setBarWidth(0.5f);
 
             barChart.setData(data);
-            tvjxq.setText(String.valueOf(jxq));
-            tvzkc.setText(String.valueOf(kc));
         }catch (Exception e){
-            logger.error("显示图表数据出错",e);
+            logger.error("设置图表默认为空出错",e);
         }
 
-    }
-
-    /**
-     * 设置图标默认空
-     */
-    private void setEmptyData(){
-        ArrayList<BarEntry> yValskc = new ArrayList<BarEntry>();
-        yValskc.add(new BarEntry(1,0));
-        yValskc.add(new BarEntry(2,0));
-        yValskc.add(new BarEntry(3,0));
-        yValskc.add(new BarEntry(4,0));
-        yValskc.add(new BarEntry(5,0));
-        if(!Cache.gx.equals("Ⅰ型")){
-            yValskc.add(new BarEntry(6,0));
-        }
-
-        BarDataSet set1;
-        set1 = new BarDataSet(yValskc, "库存");
-        set1.setDrawIcons(false);
-        set1.setColor(Color.rgb(0x08,0x76,0x28));
-        set1.setValueTextColor(Color.rgb(0x08,0x76,0x28));
-        set1.setValueFormatter(new MyBValueFormatter());
-
-        BarDataSet set2;
-        set2 = new BarDataSet(yValskc, "近效期");
-        set2.setDrawIcons(false);
-        set2.setColor(Color.rgb(0XDE, 0xb2, 0x00));
-        set2.setValueTextColor(Color.rgb(0XDE, 0xb2, 0x00));
-        set2.setValueFormatter(new MyBValueFormatter());
-
-        ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-        dataSets.add(set1);
-        dataSets.add(set2);
-
-        BarData data = new BarData(dataSets);
-        data.setValueTextSize(30f);
-        data.setBarWidth(0.5f);
-
-        barChart.setData(data);
     }
 
     //显示柜型中其他内容
@@ -856,7 +881,6 @@ public class MainActivity extends Activity {
             params = new RelativeLayout.LayoutParams(150, 82);
             params.setMargins(30, 300, 0, 0);
             tvmzt = new TextView(this);
-//        tvmzt.setText("");
             tvmzt.setText("门状态：…");
             tvmzt.setTextColor(Color.WHITE);
             tvmzt.setTextSize(18);
@@ -873,7 +897,6 @@ public class MainActivity extends Activity {
             params = new RelativeLayout.LayoutParams(250, 82);
             params.setMargins(190, 150, 0, 0);
             tvczsc = new TextView(this);
-//        tvczsc.setText("");
             tvczsc.setText("操作时长：00:00");
             tvczsc.setTextColor(Color.WHITE);
             tvczsc.setTextSize(18);
@@ -890,21 +913,12 @@ public class MainActivity extends Activity {
             params = new RelativeLayout.LayoutParams(150, 82);
             params.setMargins(200, 300, 0, 0);
             tvdeng = new TextView(this);
-//        tvdeng.setText("");
             tvdeng.setText("灯状态：…");
             tvdeng.setTextColor(Color.WHITE);
             tvdeng.setTextSize(18);
             tvdeng.setLayoutParams(params);
             rl.addView(tvdeng);
 
-/*            params = new RelativeLayout.LayoutParams(150, 82);
-            params.setMargins(405, 300, 0, 0);
-            tvtj = new TextView(this);
-            tvtj.setText("数量统计：...");
-            tvtj.setTextColor(Color.WHITE);
-            tvtj.setTextSize(18);
-            tvtj.setLayoutParams(params);
-            rl.addView(tvtj);*/
         }catch (Exception e){
             logger.error("初始化柜子其他图片出错",e);
         }
@@ -1109,11 +1123,6 @@ public class MainActivity extends Activity {
         s.setSpan(new RelativeSizeSpan(5f), 0, value.length(), 0);
         s.setSpan(new StyleSpan(Typeface.BOLD), 0, value.length(), 0);
         s.setSpan(new ForegroundColorSpan(Color.argb(255,0x45,0x8b,0x00)), 0, value.length(), 0);
-
-        //Typeface.NORMAL  #458B00
-//        s.setSpan(new RelativeSizeSpan(.8f), 14, s.length() - 15, 0);
-//        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 14, s.length(), 0);
-//        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 14, s.length(), 0);
         return s;
     }
 
@@ -1206,18 +1215,10 @@ public class MainActivity extends Activity {
 
         @Override
         public void onValueSelected(Entry e, Highlight h) {
-
             BarEntry p = (BarEntry)e;
-
-
-//            String type=fs.get(p.getX());
             Intent intent = new Intent(MainActivity.this, OperationActivity.class);
             intent.putExtra("ceng",String.valueOf((int)e.getX()));
-//            intent.putExtra("time",yxqjx);
             startActivity(intent);
-
-            /*Intent intent = new Intent(MainActivity.this,OperationActivity.class);
-            startActivity(intent);*/
         }
 
         @Override
@@ -1253,21 +1254,26 @@ public class MainActivity extends Activity {
      * 构建统计信息
      */
     private void getTotal(TotalMessage totalMessage,HashMap map){
-        totalMessage.setLocation(map.get("wz").toString());
-        Product product=new Product();
-        product.setPp(map.get("pp").toString());
-        product.setMc(map.get("zl").toString());
-        product.setYxrq(map.get("yxq").toString());
-        product.setXqpc(map.get("gg").toString());
-        product.setEpc(map.get("card").toString());
-        product.setLocation(map.get("wz").toString());
-        if(System.currentTimeMillis()-Long.valueOf(map.get("yxq").toString())>30*24*60*60*1000){
-            //非近效期耗材
-            totalMessage.getQt().add(product);
-        }else{
-            //近效期耗材
-            totalMessage.getJxq().add(product);
+        try{
+            totalMessage.setLocation(map.get("wz").toString());
+            Product product=new Product();
+            product.setPp(map.get("pp").toString());
+            product.setMc(map.get("zl").toString());
+            product.setYxrq(map.get("yxq").toString());
+            product.setXqpc(map.get("gg").toString());
+            product.setEpc(map.get("card").toString());
+            product.setLocation(map.get("wz").toString());
+            if(System.currentTimeMillis()-Long.valueOf(map.get("yxq").toString())>30*24*60*60*1000){
+                //非近效期耗材
+                totalMessage.getQt().add(product);
+            }else{
+                //近效期耗材
+                totalMessage.getJxq().add(product);
+            }
+        }catch (Exception e){
+            logger.error("构建统计信息出错",e);
         }
+
     }
 
     @Override
@@ -1290,9 +1296,6 @@ public class MainActivity extends Activity {
                     message.setData(data);
                     Cache.myHandle.sendMessage(message);
                     time=time+1;
-                    /*if(time/600>0 && time%600==0){
-                        HCProtocol.ST_GetAllCard();
-                    }*/
                 }catch (Exception e){
                     logger.error(e);
                 }
@@ -1451,4 +1454,5 @@ public class MainActivity extends Activity {
             }
         }, cnt );
     }
+
 }

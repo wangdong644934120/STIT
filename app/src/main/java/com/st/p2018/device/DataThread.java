@@ -83,6 +83,15 @@ public class DataThread extends Thread {
     private void alaSKQ(String skq){
         skq = skq.substring(7, 8);
         if (skq.equals("1")) {
+            if(Cache.myHandleAccess!=null){
+                logger.info("关闭存取确认界面");
+                //存取确认界面为打开状态,将其关闭
+                Message message = Message.obtain(Cache.myHandleAccess);
+                Bundle bund = new Bundle();
+                bund.putString("ui","close");
+                message.setData(bund);
+                Cache.myHandleAccess.sendMessage(message);
+            }
             logger.info("刷卡器有动作："+skq);
             MyTextToSpeech.getInstance().speak("读卡完成");
             //刷卡器有动作，下发获取刷卡信息指令
@@ -150,10 +159,20 @@ public class DataThread extends Thread {
         if (zwcgq.equals("10")) {
             //指纹匹配失败
             //sendCZY("");
+            logger.info("请重按手指");
             MyTextToSpeech.getInstance().speak("请重按手指");
         }
         //应该为11
         if (zwcgq.equals("11")) {
+            if(Cache.myHandleAccess!=null){
+                logger.info("关闭存取确认界面");
+                //存取确认界面为打开状态,将其关闭
+                Message message = Message.obtain(Cache.myHandleAccess);
+                Bundle bund = new Bundle();
+                bund.putString("ui","close");
+                message.setData(bund);
+                Cache.myHandleAccess.sendMessage(message);
+            }
             logger.info("指纹模块有动作："+zwcgq);
             MyTextToSpeech.getInstance().speak("识别完成");
             //指纹匹配成功，下发获取指纹编号

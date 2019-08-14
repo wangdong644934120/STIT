@@ -84,17 +84,21 @@ public class AccessConActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-        if(Cache.chooseSick.equals("1")){
-            setContentView(R.layout.activity_access_con_sick);
-        }else{
-            setContentView(R.layout.activity_access_con_nosick);
-        }
+        try{
+            if(Cache.chooseSick.equals("1")){
+                setContentView(R.layout.activity_access_con_sick);
+            }else{
+                setContentView(R.layout.activity_access_con_nosick);
+            }
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
-        //使用布局文件来定义标题栏
-        getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
-        initView();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);// 设置全屏
+            //使用布局文件来定义标题栏
+            getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.othertitle);
+            initView();
+        }catch (Exception e){
+            logger.error("界面初始化出错",e);
+        }
 
     }
 
@@ -159,6 +163,10 @@ public class AccessConActivity extends Activity {
                     if(bundle.getString("alert")!=null){
                         Toast toast=Toast.makeText(AccessConActivity.this,bundle.getString("alert").toString(),Toast.LENGTH_LONG);
                         showMyToast(toast,10*1000);
+                    }
+                    if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("close")){
+                        Cache.myHandleAccess=null;
+                        AccessConActivity.this.finish();
                     }
 
 
@@ -357,55 +365,70 @@ public class AccessConActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.btnzq:
-                    logger.info("耗材确认点击正确");
-                    btnZQ.setPressed(true);
-                    blThread=false;
-                    sendQR("0");
-                    CacheSick.sickChoose="";
-                    Message message = Message.obtain(Cache.myHandle);
-                    Bundle bund = new Bundle();
-                    bund.putString("sickgg","4");
-                    message.setData(bund);
-                    Cache.myHandle.sendMessage(message);
-                    btnZQ.setPressed(false);
-                    break;
-                case R.id.btnyw:
-                    logger.info("耗材确认点击取消");
-                    btnYW.setPressed(true);
-                    blThread=false;
-                    //关闭界面
-                    Cache.myHandleAccess=null;
-                    AccessConActivity.this.finish();
-                    if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                        message = Message.obtain(Cache.myHandle);
-                        bund = new Bundle();
-                        bund.putString("ui","lock");
-                        message.setData(bund);
-                        Cache.myHandle.sendMessage(message);
-                    }
-                    if(Cache.mztcgq==0){
-                        //门为关状态，清空患者信息
+                    try{
+                        logger.info("耗材确认点击正确");
+                        btnZQ.setPressed(true);
+                        blThread=false;
+                        sendQR("0");
                         CacheSick.sickChoose="";
-                        message = Message.obtain(Cache.myHandle);
-                        bund = new Bundle();
+                        Message message = Message.obtain(Cache.myHandle);
+                        Bundle bund = new Bundle();
                         bund.putString("sickgg","4");
                         message.setData(bund);
                         Cache.myHandle.sendMessage(message);
-
+                        btnZQ.setPressed(false);
+                    }catch (Exception e){
+                        logger.error("耗材点击确认出错",e);
                     }
-                    btnYW.setPressed(false);
+
+                    break;
+                case R.id.btnyw:
+                    try{
+                        logger.info("耗材确认点击取消");
+                        btnYW.setPressed(true);
+                        blThread=false;
+                        //关闭界面
+                        Cache.myHandleAccess=null;
+                        AccessConActivity.this.finish();
+                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                            Message message = Message.obtain(Cache.myHandle);
+                            Bundle bund = new Bundle();
+                            bund.putString("ui","lock");
+                            message.setData(bund);
+                            Cache.myHandle.sendMessage(message);
+                        }
+                        if(Cache.mztcgq==0){
+                            //门为关状态，清空患者信息
+                            CacheSick.sickChoose="";
+                            Message message = Message.obtain(Cache.myHandle);
+                            Bundle bund = new Bundle();
+                            bund.putString("sickgg","4");
+                            message.setData(bund);
+                            Cache.myHandle.sendMessage(message);
+
+                        }
+                        btnYW.setPressed(false);
+                    }catch (Exception e){
+                        logger.error("耗材点击取消出错",e);
+                    }
+
                     break;
                 case R.id.fh:
-                    blThread=false;
-                    Cache.myHandleAccess=null;
-                    AccessConActivity.this.finish();
-                    if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                        message = Message.obtain(Cache.myHandle);
-                        bund = new Bundle();
-                        bund.putString("ui","lock");
-                        message.setData(bund);
-                        Cache.myHandle.sendMessage(message);
+                    try{
+                        blThread=false;
+                        Cache.myHandleAccess=null;
+                        AccessConActivity.this.finish();
+                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                            Message message = Message.obtain(Cache.myHandle);
+                            Bundle bund = new Bundle();
+                            bund.putString("ui","lock");
+                            message.setData(bund);
+                            Cache.myHandle.sendMessage(message);
+                        }
+                    }catch (Exception e){
+                        logger.error("点击返回出错",e);
                     }
+
                     break;
                 case R.id.btnsaveSC:
                     for(Product product : listSelectSave){

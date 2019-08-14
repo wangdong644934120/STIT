@@ -16,6 +16,9 @@ import com.st.p2018.device.HCProtocol;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.MyTextToSpeech;
 
+import org.apache.log4j.Logger;
+
+
 public class KZActivity extends Activity {
 
     private Button btnKM;
@@ -24,6 +27,7 @@ public class KZActivity extends Activity {
     private Button btnSCSYZW;
     private TextView tvfh;
     private TextView tvtitle;
+    private Logger logger= Logger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ public class KZActivity extends Activity {
                 return;
             switch (v.getId()) {
                 case R.id.km:
+                    logger.info("点击开门按钮");
                     btnKM.setPressed(true);
                     boolean bl=HCProtocol.ST_OpenDoor();
                     btnKM.setPressed(false);
@@ -74,6 +79,7 @@ public class KZActivity extends Activity {
                     break;
 
                 case R.id.kd:
+                    logger.info("点击开灯按钮");
                     btnKD.setPressed(true);
                     bl=HCProtocol.ST_OpenLight();
                     btnKD.setPressed(false);
@@ -84,6 +90,7 @@ public class KZActivity extends Activity {
                     }
                     break;
                 case R.id.gd:
+                    logger.info("点击关灯按钮");
                     btnGD.setPressed(true);
                     bl=HCProtocol.ST_CloseLight();
                     btnGD.setPressed(false);
@@ -94,16 +101,14 @@ public class KZActivity extends Activity {
                     }
                     break;
                 case R.id.scsyzw:
-
                     btnSCSYZW.setPressed(true);
-
-
                     final AlertDialog alertDialog = new AlertDialog.Builder(KZActivity.this)
                             .setTitle("确认提示框")
                             .setMessage("确认删除所有指纹？")
                             .setPositiveButton("确认", new DialogInterface.OnClickListener() {//添加"Yes"按钮
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                    logger.info("点击并确认删除所有指纹按钮");
                                     boolean bl=HCProtocol.ST_DeleteZW(1,0);
                                     if(bl){
                                         //将人员表数据库中的所有指纹清空

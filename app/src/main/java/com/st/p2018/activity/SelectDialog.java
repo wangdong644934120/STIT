@@ -88,7 +88,6 @@ public class SelectDialog extends AlertDialog {
                     openui("hc");
                     break;
                 case R.id.btnKZ:
-
                     openui("kz");
                     break;
                 case R.id.btnPZ:
