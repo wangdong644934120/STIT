@@ -165,6 +165,8 @@ public class AccessConActivity extends Activity {
                         showMyToast(toast,10*1000);
                     }
                     if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("close")){
+                        Cache.operatorCode="";
+                        CacheSick.sickChoose="";
                         Cache.myHandleAccess=null;
                         AccessConActivity.this.finish();
                     }
@@ -371,6 +373,7 @@ public class AccessConActivity extends Activity {
                         blThread=false;
                         sendQR("0");
                         CacheSick.sickChoose="";
+                        Cache.operatorCode="";
                         Message message = Message.obtain(Cache.myHandle);
                         Bundle bund = new Bundle();
                         bund.putString("sickgg","4");
@@ -390,7 +393,10 @@ public class AccessConActivity extends Activity {
                         //关闭界面
                         Cache.myHandleAccess=null;
                         AccessConActivity.this.finish();
-                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                        if(Cache.lockScreen.equals("1") && Cache.mztcgq==0){
+                            //锁屏，并关门状态
+                            CacheSick.sickChoose="";
+                            Cache.operatorCode="";
                             Message message = Message.obtain(Cache.myHandle);
                             Bundle bund = new Bundle();
                             bund.putString("ui","lock");
@@ -400,6 +406,7 @@ public class AccessConActivity extends Activity {
                         if(Cache.mztcgq==0){
                             //门为关状态，清空患者信息
                             CacheSick.sickChoose="";
+                            Cache.operatorCode="";
                             Message message = Message.obtain(Cache.myHandle);
                             Bundle bund = new Bundle();
                             bund.putString("sickgg","4");
