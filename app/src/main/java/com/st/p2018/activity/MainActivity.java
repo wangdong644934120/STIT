@@ -183,8 +183,9 @@ public class MainActivity extends Activity {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
-                    Bundle bundle = msg.getData(); // 用来获取消息里面的bundle数据
+                    Bundle bundle = null;
                     try{
+                        bundle = msg.getData(); // 用来获取消息里面的bundle数据
                         //菜单栏
                         if(bundle.getString("ui")!=null){
 
@@ -432,6 +433,7 @@ public class MainActivity extends Activity {
                             //barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
                         if(bundle.getString("initJXQExternal")!=null){
+                            logger.info("主界面收到消息初始化效期");
                             setDataBarChart();
                             barChart.animateY(500, Easing.EasingOption.EaseInCirc);
                         }
@@ -470,6 +472,7 @@ public class MainActivity extends Activity {
                             initJXQData();*/
                         }
                         if(bundle.getString("sickgg")!=null){
+                            logger.info("主界面设置患者信息");
                             tvSickMessage.setText(CacheSick.sickChoose);
                         }
                         if(bundle.getString("alert")!=null){

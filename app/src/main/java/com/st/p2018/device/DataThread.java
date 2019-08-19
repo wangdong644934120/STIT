@@ -259,6 +259,15 @@ public class DataThread extends Thread {
             //门关
             if(Cache.mztcgq==1){
                 logger.info("设置门关");
+                if(Cache.myHandleAccess!=null){
+                    logger.info("关闭存取确认界面");
+                    //存取确认界面为打开状态,将其关闭
+                    Message message = Message.obtain(Cache.myHandleAccess);
+                    Bundle bund = new Bundle();
+                    bund.putString("ui","close");
+                    message.setData(bund);
+                    Cache.myHandleAccess.sendMessage(message);
+                }
                 //设置门关
                 updateUI("men","","0");
                 Cache.mztcgq=0;

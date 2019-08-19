@@ -24,6 +24,7 @@ import com.st.p2018.device.HCProtocol;
 import com.st.p2018.external.SocketClient;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
+import com.st.p2018.util.CrashHandler;
 import com.st.p2018.util.LogUtil;
 import com.st.p2018.util.MySpeechUtil;
 import com.st.p2018.util.MyTextToSpeech;
@@ -51,6 +52,9 @@ public class LoadActivity extends Activity {
         LogUtil.initLog();// 初始log
         logger = Logger.getLogger(this.getClass());
         logger.info("程序开始启动");
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(getApplicationContext());
+        logger.info("加载未捕获异常完成");
         initView();
         closeBar();
         new MainThread().start();

@@ -1,13 +1,7 @@
 package com.st.p2018.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,7 +12,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,8 +19,6 @@ import com.bin.david.form.core.TableConfig;
 import com.bin.david.form.data.CellInfo;
 import com.bin.david.form.data.Column;
 import com.bin.david.form.data.format.bg.BaseCellBackgroundFormat;
-import com.bin.david.form.data.format.bg.ICellBackgroundFormat;
-import com.bin.david.form.data.format.selected.BaseSelectFormat;
 import com.bin.david.form.data.style.FontStyle;
 import com.bin.david.form.data.table.TableData;
 import com.bin.david.form.listener.OnColumnItemClickListener;
@@ -36,7 +27,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.st.p2018.entity.Product;
 import com.st.p2018.external.SocketClient;
-import com.st.p2018.externalentity.ExternalPower;
 import com.st.p2018.stit.R;
 import com.st.p2018.util.Cache;
 import com.bin.david.form.core.SmartTable;
@@ -63,8 +53,8 @@ public class AccessConActivity extends Activity {
     private ImageView ivGif;
     private LinearLayout linearLayout;
     private LinearLayout layoutLoad;
-    private Button btnZQ;
-    private Button btnYW;
+    private Button btnOK;
+    private Button btnCancle;
     private Handler myHandler;
     private boolean isSend=false;//是否已经发送（正确倒计时最后一秒点击有误时，可能会发送一次有误和一次成功消息）
     private Logger logger = Logger.getLogger(this.getClass());
@@ -78,6 +68,7 @@ public class AccessConActivity extends Activity {
     private Button btnOutHF;
     private boolean blThread=true;
     private boolean autoClose=true; //自动关闭
+    private int pressFlag=0;//按钮按下标志，0-未点击，1-点击确认，2-点击取消
 
 
     @Override
@@ -111,12 +102,12 @@ public class AccessConActivity extends Activity {
             tvSick=(TextView)findViewById(R.id.sickname);
             tvSaveCount=(TextView)findViewById(R.id.savecount);
             tvOutCount=(TextView)findViewById(R.id.outcount);
-            btnZQ=(Button)findViewById(R.id.btnzq);
-            btnZQ.setEnabled(false);
-            btnZQ.setOnClickListener(new onClickListener());
-            btnYW=(Button)findViewById(R.id.btnyw);
-            btnYW.setEnabled(false);
-            btnYW.setOnClickListener(new onClickListener());
+            btnOK =(Button)findViewById(R.id.btnzq);
+            btnOK.setEnabled(false);
+            btnOK.setOnClickListener(new onClickListener());
+            btnCancle =(Button)findViewById(R.id.btnyw);
+            btnCancle.setEnabled(false);
+            btnCancle.setOnClickListener(new onClickListener());
             btnSaveSC=(Button)findViewById(R.id.btnsaveSC);
             btnSaveSC.setOnClickListener(new onClickListener());
             btnSaveHF=(Button)findViewById(R.id.btnsaveHF);
@@ -131,7 +122,7 @@ public class AccessConActivity extends Activity {
             RequestOptions options = new RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
             Glide.with(this).load(R.drawable.loadtongyong).apply(options).into(ivGif);
-            new CloseActivityThread().start();
+
             tvSick.setText(CacheSick.sickChoose);
             Cache.myHandleAccess= new Handler() {
                 @Override
@@ -146,8 +137,8 @@ public class AccessConActivity extends Activity {
                     if(bundle.getString("show")!=null){
                         logger.info("开始更新界面显示信息");
                         autoClose=false;
-                        btnZQ.setEnabled(true);
-                        btnYW.setEnabled(true);
+                        btnOK.setEnabled(true);
+                        btnCancle.setEnabled(true);
                         tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
                         tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
                         initSave();
@@ -165,10 +156,11 @@ public class AccessConActivity extends Activity {
                         showMyToast(toast,10*1000);
                     }
                     if(bundle.getString("ui")!=null && bundle.getString("ui").toString().equals("close")){
-                        Cache.operatorCode="";
+                        pressOK();
+                        /*Cache.operatorCode="";
                         CacheSick.sickChoose="";
                         Cache.myHandleAccess=null;
-                        AccessConActivity.this.finish();
+                        AccessConActivity.this.finish();*/
                     }
 
 
@@ -192,7 +184,12 @@ public class AccessConActivity extends Activity {
                             Cache.myHandle.sendMessage(message);
                         }
                     }
+                    if(bundle.getString("uitime")!=null){
+                        btnOK.setText("确认("+bundle.getString("uitime")+"秒)");
+
+                    }
                 }};
+            new CloseActivityThread().start();
             logger.info("耗材确认界面初始化完成");
         }catch (Exception e){
             logger.error("初始化view出错",e);
@@ -249,11 +246,16 @@ public class AccessConActivity extends Activity {
             tableSave.getConfig().setContentBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {     //设置隔行变色
                 @Override
                 public int getBackGroundColor(CellInfo cellInfo) {
-                    if (listSelectSave.contains(Cache.listOperaSave.get(cellInfo.position))) {
-                        return ContextCompat.getColor(AccessConActivity.this, R.color.jxqyellow);
-                    } else {
-                        return TableConfig.INVALID_COLOR;
+                    try{
+                        if (listSelectSave.contains(Cache.listOperaSave.get(cellInfo.position))) {
+                            return ContextCompat.getColor(AccessConActivity.this, R.color.jxqyellow);
+                        } else {
+                            return TableConfig.INVALID_COLOR;
+                        }
+                    }catch (Exception e){
+                        logger.error("耗材存取表格出错",e);
                     }
+                    return TableConfig.INVALID_COLOR;
                 }
             });
 
@@ -340,11 +342,16 @@ public class AccessConActivity extends Activity {
             tableOut.getConfig().setContentBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {     //设置隔行变色
                 @Override
                 public int getBackGroundColor(CellInfo cellInfo) {
-                    if (listSelectOut.contains(Cache.listOperaOut.get(cellInfo.position))) {
-                        return ContextCompat.getColor(AccessConActivity.this, R.color.jxqyellow);
-                    } else {
-                        return TableConfig.INVALID_COLOR;
+                    try{
+                        if (listSelectOut.contains(Cache.listOperaOut.get(cellInfo.position))) {
+                            return ContextCompat.getColor(AccessConActivity.this, R.color.jxqyellow);
+                        } else {
+                            return TableConfig.INVALID_COLOR;
+                        }
+                    }catch (Exception e){
+                        logger.error("耗材存取表格出错",e);
                     }
+                    return TableConfig.INVALID_COLOR;
                 }
             });
         }catch (Exception e){
@@ -368,18 +375,11 @@ public class AccessConActivity extends Activity {
             switch (v.getId()) {
                 case R.id.btnzq:
                     try{
+                        pressFlag=1;
                         logger.info("耗材确认点击正确");
-                        btnZQ.setPressed(true);
+                        btnOK.setPressed(true);
                         blThread=false;
-                        sendQR("0");
-                        CacheSick.sickChoose="";
-                        Cache.operatorCode="";
-                        Message message = Message.obtain(Cache.myHandle);
-                        Bundle bund = new Bundle();
-                        bund.putString("sickgg","4");
-                        message.setData(bund);
-                        Cache.myHandle.sendMessage(message);
-                        btnZQ.setPressed(false);
+                        btnOK.setPressed(false);
                     }catch (Exception e){
                         logger.error("耗材点击确认出错",e);
                     }
@@ -387,34 +387,11 @@ public class AccessConActivity extends Activity {
                     break;
                 case R.id.btnyw:
                     try{
+                        pressFlag=2;
                         logger.info("耗材确认点击取消");
-                        btnYW.setPressed(true);
+                        btnCancle.setPressed(true);
                         blThread=false;
-                        //关闭界面
-                        Cache.myHandleAccess=null;
-                        AccessConActivity.this.finish();
-                        if(Cache.lockScreen.equals("1") && Cache.mztcgq==0){
-                            //锁屏，并关门状态
-                            CacheSick.sickChoose="";
-                            Cache.operatorCode="";
-                            Message message = Message.obtain(Cache.myHandle);
-                            Bundle bund = new Bundle();
-                            bund.putString("ui","lock");
-                            message.setData(bund);
-                            Cache.myHandle.sendMessage(message);
-                        }
-                        if(Cache.mztcgq==0){
-                            //门为关状态，清空患者信息
-                            CacheSick.sickChoose="";
-                            Cache.operatorCode="";
-                            Message message = Message.obtain(Cache.myHandle);
-                            Bundle bund = new Bundle();
-                            bund.putString("sickgg","4");
-                            message.setData(bund);
-                            Cache.myHandle.sendMessage(message);
-
-                        }
-                        btnYW.setPressed(false);
+                        btnCancle.setPressed(false);
                     }catch (Exception e){
                         logger.error("耗材点击取消出错",e);
                     }
@@ -486,16 +463,15 @@ public class AccessConActivity extends Activity {
     }
 
     /**
-     * 发送正确或有误数据
+     * 发送确认数据
      * @param zqoryw
      */
-    private void sendQR(String zqoryw){
+    private void sendData(String zqoryw){
         if(isSend){
             return;
         }else{
             isSend=true;
         }
-
         try{
             String allproduct="";
             String patient=CacheSick.getSickMessAndID().get(CacheSick.sickChoose)==null?"":CacheSick.getSickMessAndID().get(CacheSick.sickChoose);
@@ -519,16 +495,7 @@ public class AccessConActivity extends Activity {
             if(SocketClient.socket!=null){
                 SocketClient.send(sendValue);
             }
-            //关闭界面
-            Cache.myHandleAccess=null;
-            AccessConActivity.this.finish();
-            if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                Message message = Message.obtain(Cache.myHandle);
-                Bundle bund = new Bundle();
-                bund.putString("ui","lock");
-                message.setData(bund);
-                Cache.myHandle.sendMessage(message);
-            }
+
 
         }catch (Exception e){
             logger.error("发送耗材数据出错",e);
@@ -537,10 +504,11 @@ public class AccessConActivity extends Activity {
 
     class CloseActivityThread extends Thread{
         public void run(){
-            int i=0;
-            while(blThread){
+            int i=300;
+            while(blThread && i>0){
                 try{
-                    if(i>60 && autoClose){
+                    if(i<270 && autoClose){
+                        pressFlag=-1;
                         Message message = Message.obtain(myHandler);
                         Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                         bund.putString("close","ok");
@@ -548,18 +516,63 @@ public class AccessConActivity extends Activity {
                         myHandler.sendMessage(message);
                         logger.info("耗材确认自动退出线程退出了");
                         break;
-                    }else{
-                        i=i+1;
                     }
+
+                    Message message = Message.obtain(myHandler);
+                    Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
+                    bund.putString("uitime",String.valueOf(i));
+                    message.setData(bund);
+                    myHandler.sendMessage(message);
+                    i=i-1;
                 }catch (Exception e){
+                    logger.error("耗材确认界面关闭线程出错",e);
                 }
                 try{
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                 }catch (Exception e){
-
                 }
             }
+            logger.info("倒计时线程退出");
+            if(pressFlag==0 || pressFlag==1){
+                //点击确认按钮，或未点击按钮，默认确认
+                pressOK();
+            }else if(pressFlag==2){
+                //点击取消按钮
+                //关闭界面
+                pressCancle();
+            }
+
         }
+    }
+    //点击确认按钮处理
+    private void pressOK(){
+        sendData("0");
+        pressCancle();
+    }
+    //点击取消按钮处理
+    private void pressCancle(){
+        if(Cache.lockScreen.equals("1") && Cache.mztcgq==0){
+            //锁屏并关门状态
+            CacheSick.sickChoose="";
+            Cache.operatorCode="";
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();
+            bund.putString("ui","lock");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+        }
+        if(Cache.mztcgq==0){
+            //门为关状态，清空患者信息
+            CacheSick.sickChoose="";
+            Cache.operatorCode="";
+            Message message = Message.obtain(Cache.myHandle);
+            Bundle bund = new Bundle();
+            bund.putString("sickgg","4");
+            message.setData(bund);
+            Cache.myHandle.sendMessage(message);
+        }
+        Cache.myHandleAccess=null;
+        AccessConActivity.this.finish();
     }
 
     public void showMyToast(final Toast toast, final int cnt) {
@@ -578,4 +591,5 @@ public class AccessConActivity extends Activity {
             }
         }, cnt );
     }
+
 }
