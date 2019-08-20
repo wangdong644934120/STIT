@@ -10,6 +10,7 @@ import android.text.InputFilter;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -47,6 +48,7 @@ public class PZActivity extends Activity {
     private Button btnSave;
     private int dl;
     private Spinner spPD;
+    private Spinner spGX;
     private EditText edpdcs;
     private TextView tvfh;
     private TextView tvtitle;
@@ -114,6 +116,7 @@ public class PZActivity extends Activity {
         }
 
     }
+
     private void JXDevice(byte[] data){
         if (data!=null && data.length>=5 && data[0] == (byte) 0x3A && data[1] == (byte) 0x11
                 && data[3] == (byte) 0x05  ) {
@@ -204,11 +207,37 @@ public class PZActivity extends Activity {
         }else{
             gc6.setVisibility(View.VISIBLE);
         }
+        spGX=(Spinner)findViewById(R.id.spgx);
+        spGX.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
+                    gc6.setVisibility(View.INVISIBLE);
+                    gc6.setChecked(false);
+                }else{
+                    gc6.setVisibility(View.VISIBLE);
+                    gc6.setChecked(true);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
+    /**
+     * 初始化界面显示
+     */
     private void initData(){
         spDK.setSelection(Cache.zmd);
         spPD.setSelection(Cache.pc);
+        if(Cache.gx.equals("Ⅰ型")){
+            spGX.setSelection(0);
+        }else{
+            spGX.setSelection(1);
+        }
         edpdcs.setText(String.valueOf(Cache.pccs));
         tvpdjg.setText(String.valueOf(Cache.pcjg));
         gc1.setChecked(Cache.gcqy1);
@@ -265,6 +294,7 @@ public class PZActivity extends Activity {
         saveBrightness(getContentResolver(),process);
 
     }
+
     public  void saveBrightness(ContentResolver resolver, int brightness) {
         //改变系统的亮度值
         //这里需要权限android.permission.WRITE_SETTINGS
@@ -306,6 +336,12 @@ public class PZActivity extends Activity {
                         }else if(spPD.getSelectedItem().toString().equals("触发盘存")){
                             pc=1;
                         }
+                        int gx=1;
+                        if(spGX.getSelectedItem().toString().equals("Ⅰ型")){
+                            gx=1;
+                        }else{
+                            gx=2;
+                        }
                         int pccs=1;
                         try{
                             pccs=Integer.valueOf(edpdcs.getText().toString());
@@ -329,7 +365,11 @@ public class PZActivity extends Activity {
                             logger.info("下发工作模式失败");
                         }
                         byte[] bydata=new byte[14];
-                        bydata[0]=bysblx[0];
+                        if(gx==1){
+                            bydata[0]=0x01;
+                        }else{
+                            bydata[0]=0x02;
+                        }
                         bydata[1]=bycpxlh[0];
                         bydata[2]=bycpxlh[1];
                         bydata[3]=bycpxlh[2];

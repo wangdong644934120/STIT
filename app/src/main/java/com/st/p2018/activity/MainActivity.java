@@ -953,57 +953,47 @@ public class MainActivity extends Activity {
             if(Cache.gcqy5){
                 yxcs=5;
             }
-            List<Integer> listYXCS=initXY(yxcs);
+            List<Integer> listYXCS=initGX1XY(yxcs);
             if(yxcs>=1){
                 ivh1=new ImageView(this);
                 ivh1.setImageResource(R.drawable.hongwaizhengchang1);
-//        ivh1.setImageResource(R.drawable.hongwaichufa);
                 params = new RelativeLayout.LayoutParams(100, 40);
                 params.setMargins(413, listYXCS.get(0), 0, 0);
                 ivh1.setLayoutParams(params);
                 rl.addView(ivh1);
-//        ivh1.setVisibility(View.INVISIBLE);
             }
             if(yxcs>=2){
 
                 ivh2=new ImageView(this);
-//        ivh2.setImageResource(R.drawable.hongwaichufa);
                 ivh2.setImageResource(R.drawable.hongwaizhengchang1);
                 params = new RelativeLayout.LayoutParams(100, 40);
                 params.setMargins(413, listYXCS.get(1), 0, 0);
                 ivh2.setLayoutParams(params);
                 rl.addView(ivh2);
-//        ivh2.setVisibility(View.INVISIBLE);
             }
             if(yxcs>=3){
                 ivh3=new ImageView(this);
-//        ivh3.setImageResource(R.drawable.hongwaichufa);
                 ivh3.setImageResource(R.drawable.hongwaizhengchang1);
                 params = new RelativeLayout.LayoutParams(100, 40);
                 params.setMargins(413, listYXCS.get(2), 0, 0);
                 ivh3.setLayoutParams(params);
                 rl.addView(ivh3);
-//        ivh3.setVisibility(View.INVISIBLE);
             }
             if(yxcs>=4){
                 ivh4=new ImageView(this);
-//        ivh4.setImageResource(R.drawable.hongwaichufa);
                 ivh4.setImageResource(R.drawable.hongwaizhengchang1);
                 params = new RelativeLayout.LayoutParams(100, 40);
                 params.setMargins(413, listYXCS.get(3), 0, 0);
                 ivh4.setLayoutParams(params);
                 rl.addView(ivh4);
-//        ivh4.setVisibility(View.INVISIBLE);
             }
             if(yxcs>=5){
                 ivh5=new ImageView(this);
-//        ivh5.setImageResource(R.drawable.hongwaichufa);
                 ivh5.setImageResource(R.drawable.hongwaizhengchang1);
                 params = new RelativeLayout.LayoutParams(100, 40);
                 params.setMargins(413, listYXCS.get(4), 0, 0);
                 ivh5.setLayoutParams(params);
                 rl.addView(ivh5);
-//        ivh5.setVisibility(View.INVISIBLE);
             }
         }catch (Exception e){
             logger.error("初始化1号柜子出错",e);
@@ -1011,8 +1001,8 @@ public class MainActivity extends Activity {
 
     }
 
-    //初始化柜型位置
-    private List<Integer> initXY(int yxcs){
+    //初始化柜型1位置
+    private List<Integer> initGX1XY(int yxcs){
         List<Integer> list = new ArrayList<Integer>();
         if(yxcs==1){
             list.add(150);
@@ -1038,6 +1028,7 @@ public class MainActivity extends Activity {
         return list;
     }
 
+
     private void initGX2(){
         try{
             RelativeLayout.LayoutParams params ;
@@ -1048,62 +1039,112 @@ public class MainActivity extends Activity {
             ivguizi.setLayoutParams(params);
             rl.addView(ivguizi);
 
-            ivh1=new ImageView(this);
-            ivh1.setImageResource(R.drawable.hongwaizhengchang2);
-//        ivh1.setImageResource(R.drawable.hongwaichufa);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(410, 63, 0, 0);
-            ivh1.setLayoutParams(params);
-            rl.addView(ivh1);
-//        ivh1.setVisibility(View.INVISIBLE);
+            int yxcs=0;//有效层数
+            if(Cache.gcqy1){
+                yxcs=1;
+            }
+            if(Cache.gcqy2){
+                yxcs=2;
+            }
+            if(Cache.gcqy3){
+                yxcs=3;
+            }
+            if(Cache.gcqy4){
+                yxcs=4;
+            }
+            if(Cache.gcqy5){
+                yxcs=5;
+            }
+            if(Cache.gcqy6){
+                yxcs=6;
+            }
+            List<Integer> listYXCS=initGX2XY(yxcs);
+            if(yxcs>=1){
+                ivh1=new ImageView(this);
+                ivh1.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(0), 63, 0, 0);
+                ivh1.setLayoutParams(params);
+                rl.addView(ivh1);
+            }
+            if(yxcs>=2){
+                ivh2=new ImageView(this);
+                ivh2.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(1), 63, 0, 0);
+                ivh2.setLayoutParams(params);
+                rl.addView(ivh2);
+            }
+            if(yxcs>=3){
+                ivh3=new ImageView(this);
+                ivh3.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(2), 63, 0, 0);
+                ivh3.setLayoutParams(params);
+                rl.addView(ivh3);
+            }
+            if(yxcs>=4){
+                ivh4=new ImageView(this);
+                ivh4.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(3), 63, 0, 0);
+                ivh4.setLayoutParams(params);
+                rl.addView(ivh4);
+            }
+            if(yxcs>=5){
+                ivh5=new ImageView(this);
+                ivh5.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(4), 63, 0, 0);
+                ivh5.setLayoutParams(params);
+                rl.addView(ivh5);
+            }
+            if(yxcs>=6){
+                ivh6=new ImageView(this);
+                ivh6.setImageResource(R.drawable.hongwaizhengchang2);
+                params = new RelativeLayout.LayoutParams(16, 214);
+                params.setMargins(listYXCS.get(5), 63, 0, 0);
+                ivh6.setLayoutParams(params);
+                rl.addView(ivh6);
+            }
 
-            ivh2=new ImageView(this);
-//        ivh2.setImageResource(R.drawable.hongwaichufa);
-            ivh2.setImageResource(R.drawable.hongwaizhengchang2);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(428, 63, 0, 0);
-            ivh2.setLayoutParams(params);
-            rl.addView(ivh2);
-//        ivh2.setVisibility(View.INVISIBLE);
-
-            ivh3=new ImageView(this);
-//        ivh3.setImageResource(R.drawable.hongwaichufa);
-            ivh3.setImageResource(R.drawable.hongwaizhengchang2);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(446, 63, 0, 0);
-            ivh3.setLayoutParams(params);
-            rl.addView(ivh3);
-//        ivh3.setVisibility(View.INVISIBLE);
-
-
-            ivh4=new ImageView(this);
-//        ivh4.setImageResource(R.drawable.hongwaichufa);
-            ivh4.setImageResource(R.drawable.hongwaizhengchang2);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(464, 63, 0, 0);
-            ivh4.setLayoutParams(params);
-            rl.addView(ivh4);
-//        ivh4.setVisibility(View.INVISIBLE);
-
-            ivh5=new ImageView(this);
-//        ivh5.setImageResource(R.drawable.hongwaichufa);
-            ivh5.setImageResource(R.drawable.hongwaizhengchang2);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(482, 63, 0, 0);
-            ivh5.setLayoutParams(params);
-            rl.addView(ivh5);
-//        ivh5.setVisibility(View.INVISIBLE);
-
-            ivh6=new ImageView(this);
-//        ivh5.setImageResource(R.drawable.hongwaichufa);
-            ivh6.setImageResource(R.drawable.hongwaizhengchang2);
-            params = new RelativeLayout.LayoutParams(16, 214);
-            params.setMargins(500, 63, 0, 0);
-            ivh6.setLayoutParams(params);
-            rl.addView(ivh6);
         }catch (Exception e){
             logger.error("初始化2号柜子出错",e);
         }
+    }
+
+    //初始化柜型1位置
+    private List<Integer> initGX2XY(int yxcs){
+        List<Integer> list = new ArrayList<Integer>();
+        if(yxcs==1){
+            list.add(455);
+        }else if(yxcs==2){
+            list.add(440);
+            list.add(470);
+        }else if(yxcs==3){
+            list.add(432);
+            list.add(454);
+            list.add(476);
+        }else if(yxcs==4){
+            list.add(428);
+            list.add(446);
+            list.add(464);
+            list.add(482);
+        }else if(yxcs==5){
+            list.add(425);
+            list.add(440);
+            list.add(455);
+            list.add(470);
+            list.add(485);
+        }else if(yxcs==6){
+            list.add(410);
+            list.add(428);
+            list.add(446);
+            list.add(464);
+            list.add(482);
+            list.add(500);
+        }
+        return list;
     }
 
     private void initNO(){
