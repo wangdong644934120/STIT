@@ -543,6 +543,11 @@ public class DealReceive extends Thread{
 
             if(actionProduct.getData()!=null){
                 for(Product product :actionProduct.getData()){
+                    if(product.getGg()!=null && !product.getGg().equals("")){
+                        if(product.getGg().length()>15){
+                            product.setGg(product.getGg().substring(0,15));
+                        }
+                    }
                     if(product.getOperation().equals("存")){
                         Cache.listOperaSave.add(product);
                     }else if(product.getOperation().equals("取")){
@@ -583,6 +588,16 @@ public class DealReceive extends Thread{
      */
     private void dealProductSearch(String number,String value){
         ProductSearch productSearch=JSON.parseObject(value,new TypeReference<ProductSearch>(){});
+        if(productSearch.getData()!=null){
+            for(Product product : productSearch.getData()){
+                if(product.getGg()!=null && !product.getGg().equals("")){
+                    if(product.getGg().length()>15){
+                        product.setGg(product.getGg().substring(0,15));
+                    }
+                }
+            }
+        }
+
         CacheSick.listEP.clear();
         CacheSick.listEP.addAll(productSearch.getData());
         Message message = Message.obtain(Cache.myHandle);
@@ -599,6 +614,15 @@ public class DealReceive extends Thread{
      */
     private void dealProductExpire(String number,String value){
         ProductExpire productExpire =JSON.parseObject(value,new TypeReference<ProductExpire>(){});
+        if(productExpire.getData()!=null){
+            for(Product product : productExpire.getData()){
+                if(product.getGg()!=null && !product.getGg().equals("")){
+                    if(product.getGg().length()>15){
+                        product.setGg(product.getGg().substring(0,15));
+                    }
+                }
+            }
+        }
         CacheSick.listExpire.clear();
         CacheSick.listExpire.addAll(productExpire.getData());
         Message message = Message.obtain(Cache.myHandle);
@@ -634,6 +658,23 @@ public class DealReceive extends Thread{
 
             if(totalProduct.getData()!=null){
                 for(TotalMessage totalMessage :totalProduct.getData()){
+
+                    for(Product product : totalMessage.getJxq()){
+                        if(product.getGg()!=null && !product.getGg().equals("")){
+                            if(product.getGg().length()>15){
+                                product.setGg(product.getGg().substring(0,15));
+                            }
+                        }
+                    }
+
+                    for(Product product : totalMessage.getQt()){
+                        if(product.getGg()!=null && !product.getGg().equals("")){
+                            if(product.getGg().length()>15){
+                                product.setGg(product.getGg().substring(0,15));
+                            }
+                        }
+                    }
+
                     if(totalMessage.getLocation().equals("1")){
                         Cache.mapTotal.put("1",totalMessage);
                     }

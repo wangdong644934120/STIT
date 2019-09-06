@@ -42,11 +42,12 @@ public class ProductSearchActivity extends Activity {
             tvtitle.setText("患者关联耗材");
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
-            Column<String> column3 = new Column<>("效期批次", "xqpc");
-            Column<String> column4 = new Column<>("耗材EPC", "epc");
+           Column<String> column3 = new Column<>("规格", "gg");
+            Column<String> column4 = new Column<>("效期批次", "xqpc");
+            Column<String> column5 = new Column<>("耗材EPC", "epc");
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("", CacheSick.listEP, column1, column2, column3,column4);
+            TableData<Product> tableData = new TableData<Product>("", CacheSick.listEP, column1, column2, column3,column4,column5);
             //设置数据
             table = findViewById(R.id.table);
             table.setTableData(tableData);

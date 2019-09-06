@@ -58,10 +58,9 @@ public class OperationActivity extends Activity {
             tvtitle.setText(ceng+"层");
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
-            Column<String> column3 = new Column<>("效期批次", "xqpc");
-            //Column<String> column4 = new Column<>("剩余天数", "yxrq");
+            Column<String> column3 = new Column<>("规格", "gg");
+            Column<String> column4 = new Column<>("效期批次", "xqpc");
             Column<String> column5 = new Column<>("位置(层)", "location");
-            //Column<String> column6=new Column<String>("近效期","")
 
             List<Product> list=new ArrayList<>();
             if(Cache.mapTotal.get(ceng)!=null && Cache.mapTotal.get(ceng).getJxq()!=null){
@@ -72,11 +71,10 @@ public class OperationActivity extends Activity {
             }
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,  column5);
+            TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,column4,  column5);
             //设置数据
             table = findViewById(R.id.table);
             table.setTableData(tableData);
-
             table.getConfig().setShowXSequence(false);
             table.getConfig().setShowYSequence(false);
             table.getConfig().setShowTableTitle(false);

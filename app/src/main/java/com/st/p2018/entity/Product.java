@@ -13,6 +13,7 @@ public class Product implements Serializable {
 
     private String pp; //品牌
     private String mc; //名称
+    private String gg;//规格
     private String xqpc; //效期批次
     private String yxrq; //有效日期
     private String syts; //剩余天数
@@ -34,6 +35,14 @@ public class Product implements Serializable {
 
     public void setMc(String mc) {
         this.mc = mc;
+    }
+
+    public String getGg() {
+        return gg;
+    }
+
+    public void setGg(String gg) {
+        this.gg = gg;
     }
 
     public String getXqpc() {
