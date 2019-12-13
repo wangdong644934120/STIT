@@ -67,7 +67,7 @@ public class AccessConActivity extends Activity {
     private Button btnOutSC;
     private Button btnOutHF;
     private boolean blThread=true;
-    private boolean autoClose=true; //自动关闭
+    private boolean isFHSJ=false; //是否返回数据
     private int pressFlag=0;//按钮按下标志，0-未点击，1-点击确认，2-点击取消
 
 
@@ -107,6 +107,7 @@ public class AccessConActivity extends Activity {
             btnOK.setOnClickListener(new onClickListener());
             btnCancle =(Button)findViewById(R.id.btnyw);
             btnCancle.setEnabled(false);
+            btnCancle.setVisibility(View.INVISIBLE);
             btnCancle.setOnClickListener(new onClickListener());
             btnSaveSC=(Button)findViewById(R.id.btnsaveSC);
             btnSaveSC.setOnClickListener(new onClickListener());
@@ -136,7 +137,7 @@ public class AccessConActivity extends Activity {
                     //显示耗材存取情况信息
                     if(bundle.getString("show")!=null){
                         logger.info("开始更新界面显示信息");
-                        autoClose=false;
+                        isFHSJ=true;
                         btnOK.setEnabled(true);
                         btnCancle.setEnabled(true);
                         tvSaveCount.setText("共存放"+Cache.listOperaSave.size()+"个");
@@ -174,15 +175,15 @@ public class AccessConActivity extends Activity {
                     //提示信息
                     if (bundle.getString("close") != null) {
                         logger.info("超时30秒未返回数据，自动关闭耗材确认界面");
-                        Cache.myHandleAccess=null;
-                        AccessConActivity.this.finish();
-                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
+                        /*Cache.myHandleAccess=null;
+                        AccessConActivity.this.finish();*/
+                        /*if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
                             Message message = Message.obtain(Cache.myHandle);
                             Bundle bund = new Bundle();
                             bund.putString("ui","lock");
                             message.setData(bund);
                             Cache.myHandle.sendMessage(message);
-                        }
+                        }*/
                     }
                     if(bundle.getString("uitime")!=null){
                         btnOK.setText("确认("+bundle.getString("uitime")+"秒)");
@@ -413,15 +414,8 @@ public class AccessConActivity extends Activity {
                 case R.id.fh:
                     try{
                         blThread=false;
-                        Cache.myHandleAccess=null;
-                        AccessConActivity.this.finish();
-                        if(Cache.lockScreen.equals("1") && Cache.mztcgq!=1){
-                            Message message = Message.obtain(Cache.myHandle);
-                            Bundle bund = new Bundle();
-                            bund.putString("ui","lock");
-                            message.setData(bund);
-                            Cache.myHandle.sendMessage(message);
-                        }
+                        pressFlag=2;//相当于单击取消按钮
+
                     }catch (Exception e){
                         logger.error("点击返回出错",e);
                     }
@@ -517,11 +511,11 @@ public class AccessConActivity extends Activity {
 
     class CloseActivityThread extends Thread{
         public void run(){
-            int i=300;
-            while(blThread && i>0){
+            int i=30;
+            while(blThread){
                 try{
-                    if(i<270 && autoClose){
-                        pressFlag=-1;
+                    if(i<=0){
+                        pressFlag=0;
                         Message message = Message.obtain(myHandler);
                         Bundle bund = new Bundle();  //message也可以携带复杂一点的数据比如：bundle对象。
                         bund.putString("close","ok");
@@ -545,6 +539,12 @@ public class AccessConActivity extends Activity {
                 }catch (Exception e){
                 }
             }
+            if(!isFHSJ){
+                //如果没有返回数据,相当于点击取消按钮
+                pressCancle();
+                return;
+            }
+
             logger.info("倒计时线程退出");
             if(pressFlag==0 || pressFlag==1){
                 //点击确认按钮，或未点击按钮，默认确认
