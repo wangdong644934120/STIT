@@ -628,7 +628,11 @@ public class DataThread extends Thread {
         //有标签数据
         while(true){
             HashMap<String,String> mapSingle=HCProtocol.ST_GetCard();
-            //logger.info("标签个数:"+mapSingle.size());
+            logger.info("本次从底层获取标签个数:"+mapSingle.size());
+            Set<String> keysCard=mapSingle.keySet();
+            for(String card : keysCard){
+                logger.info("EPC："+card+" 位置："+mapSingle.get(card));
+            }
             //todo解析标签ID及位置，添加到map中
             map.putAll(mapSingle);
             if(mapSingle.isEmpty()){
