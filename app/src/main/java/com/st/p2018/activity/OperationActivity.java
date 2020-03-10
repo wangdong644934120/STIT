@@ -59,7 +59,8 @@ public class OperationActivity extends Activity {
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
             Column<String> column3 = new Column<>("规格", "gg");
-            Column<String> column4 = new Column<>("效期批次", "xqpc");
+            Column<String> column4 = new Column<>("批次", "xqpc");
+            Column<String> column6 = new Column<>("效期", "yxrq");
             Column<String> column5 = new Column<>("位置(层)", "location");
 
             List<Product> list=new ArrayList<>();
@@ -71,7 +72,7 @@ public class OperationActivity extends Activity {
             }
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,column4,  column5);
+            TableData<Product> tableData = new TableData<Product>("",list, column1, column2, column3,column4,column6,  column5);
             //设置数据
             table = findViewById(R.id.table);
             table.setTableData(tableData);

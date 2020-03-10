@@ -89,11 +89,12 @@ public class AccessConLocalActivity extends Activity {
             tableSave = findViewById(R.id.tablesave);
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
-            Column<String> column3 = new Column<>("效期批次", "xqpc");
+            Column<String> column3 = new Column<>("批次", "xqpc");
+            Column<String> column4 = new Column<>("效期", "yxrq");
             Column<String> column5 = new Column<>("所在位置", "location");
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column5);
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column4, column5);
             //设置数据
 
             tableSave.setTableData(tableData);
@@ -117,11 +118,12 @@ public class AccessConLocalActivity extends Activity {
             tvOutCount.setText("共取出"+Cache.listOperaOut.size()+"个");
             Column<String> column1 = new Column<>("品牌", "pp");
             Column<String> column2 = new Column<>("名称", "mc");
-            Column<String> column3 = new Column<>("效期批次", "xqpc");
+            Column<String> column3 = new Column<>("批次", "xqpc");
+            Column<String> column4 = new Column<>("效期", "yxrq");
             Column<String> column5 = new Column<>("所在位置", "location");
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3,  column5);
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3, column4, column5);
             //设置数据
             tableOut = findViewById(R.id.tableout);
             tableOut.setTableData(tableData);

@@ -34,19 +34,32 @@ public class ReadThread extends  Thread {
                     String str=new String(bydata,"UTF-8").trim();
                     if(str.startsWith("%start%") && str.endsWith("%end%")){
                         //接收了一条完整数据
-                        String jg=str.replaceAll("%start%", "").replaceAll("%end%", "");
+                        //System.out.println("接收了一条完整数据");
+                        //判断是否存在两条指令在一起的情况
+                        try{
+                            String[] fg=str.split("%end%");
+                            for(int i=0;i<fg.length;i++){
+                                String jg=fg[i].replaceAll("%start%", "").replaceAll("%end%", "");
+                                //处理结果数据
+                                new DealReceive(jg).start();
+                            }
+                        }catch (Exception ex){
+                            logger.error("收到一条完整数据，解析时出错");
+                        }
                         listBY.clear();
-                        //处理结果数据
-                        new DealReceive(jg).start();
+
                     }else if(str.startsWith("%start%") && !str.endsWith("%end%")) {
+                        //System.out.println("接收数据不完整，只接收第一个包");
                         //接收数据不完整，只接收第一个包
                         listBY.add(bydata);
                     }else if (!str.startsWith("%start%") && !str.endsWith("%end%")){
                         //接收数据不完整，接收到第二个包,后面还有包
+                        //System.out.println("接收数据不完整，接收到第二个包,后面还有包");
                         listBY.add(bydata);
                         //处理数据
                     }else if(!str.startsWith("%start%") && str.endsWith("%end%")){
                         //接收数据完成，接收到最后一个包
+                        //System.out.println("接收数据完成，接收到最后一个包");
                         listBY.add(bydata);
                         //处理结果数据
                         int size=0;
@@ -62,8 +75,20 @@ public class ReadThread extends  Thread {
                             }
                         }
                         String jg=new String(bytes,"UTF-8").trim();
-                        jg=jg.replaceAll("%start%", "").replaceAll("%end%", "");
-                        new DealReceive(jg).start();
+                       //判断是否存在两条指令在一起的情况
+                        try{
+                            String[] fg=jg.split("%end%");
+                            for(int i=0;i<fg.length;i++){
+                                String mess=fg[i].replaceAll("%start%", "").replaceAll("%end%", "");
+                                //处理结果数据
+                                new DealReceive(mess).start();
+                            }
+                        }catch (Exception ex){
+                            logger.error("收到多包拼接的完整数据，解析时出错");
+                        }
+
+                        /*jg=jg.replaceAll("%start%", "").replaceAll("%end%", "");
+                        new DealReceive(jg).start();*/
                         listBY.clear();
                     }
                 }

@@ -107,7 +107,7 @@ public class AccessConActivity extends Activity {
             btnOK.setOnClickListener(new onClickListener());
             btnCancle =(Button)findViewById(R.id.btnyw);
             btnCancle.setEnabled(false);
-            btnCancle.setVisibility(View.INVISIBLE);
+            /*btnCancle.setVisibility(View.INVISIBLE);*/
             btnCancle.setOnClickListener(new onClickListener());
             btnSaveSC=(Button)findViewById(R.id.btnsaveSC);
             btnSaveSC.setOnClickListener(new onClickListener());
@@ -205,6 +205,7 @@ public class AccessConActivity extends Activity {
 
             tableSave = findViewById(R.id.tablesave);
             Column<String> column1 = new Column<>("品牌", "pp");
+
             column1.setOnColumnItemClickListener(new OnColumnItemClickListener<String>() {
                 @Override
                 public void onClick(Column<String> column, String s, String s2, int i) {
@@ -225,8 +226,15 @@ public class AccessConActivity extends Activity {
                     updateSaveUI(i);
                 }
             });
-            Column<String> column4 = new Column<>("效期批次", "xqpc");
+            Column<String> column4 = new Column<>("批次", "xqpc");
             column4.setOnColumnItemClickListener(new OnColumnItemClickListener<String>() {
+                @Override
+                public void onClick(Column<String> column, String s, String s2, int i) {
+                    updateSaveUI(i);
+                }
+            });
+            Column<String> column6 = new Column<>("效期", "yxrq");
+            column6.setOnColumnItemClickListener(new OnColumnItemClickListener<String>() {
                 @Override
                 public void onClick(Column<String> column, String s, String s2, int i) {
                     updateSaveUI(i);
@@ -241,7 +249,7 @@ public class AccessConActivity extends Activity {
             });
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column4,column5);
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaSave, column1, column2, column3, column4,column6,column5);
             //设置数据
 
             tableSave.setTableData(tableData);
@@ -251,6 +259,7 @@ public class AccessConActivity extends Activity {
             tableSave.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
             tableSave.getConfig().setColumnTitleStyle(new FontStyle(20, Color.WHITE));
             tableSave.getConfig().setContentStyle(new FontStyle(18, Color.BLACK));
+            tableSave.getConfig().setMinTableWidth(0);
             tableSave.getConfig().setContentBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {     //设置隔行变色
                 @Override
                 public int getBackGroundColor(CellInfo cellInfo) {
@@ -327,8 +336,15 @@ public class AccessConActivity extends Activity {
                     updateOutUI(i);
                 }
             });
-            Column<String> column4 = new Column<>("效期批次", "xqpc");
+            Column<String> column4 = new Column<>("批次", "xqpc");
             column4.setOnColumnItemClickListener(new OnColumnItemClickListener<String>() {
+                @Override
+                public void onClick(Column<String> column, String s, String s2, int i) {
+                    updateOutUI(i);
+                }
+            });
+            Column<String> column6 = new Column<>("效期", "yxrq");
+            column6.setOnColumnItemClickListener(new OnColumnItemClickListener<String>() {
                 @Override
                 public void onClick(Column<String> column, String s, String s2, int i) {
                     updateOutUI(i);
@@ -343,7 +359,7 @@ public class AccessConActivity extends Activity {
             });
 
             //表格数据 datas是需要填充的数据
-            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3,column4,  column5);
+            TableData<Product> tableData = new TableData<Product>("", Cache.listOperaOut, column1, column2, column3,column4, column6,  column5);
             //设置数据
             tableOut = findViewById(R.id.tableout);
             tableOut.setTableData(tableData);
@@ -353,6 +369,7 @@ public class AccessConActivity extends Activity {
             tableOut.getConfig().setColumnTitleBackgroundColor(Color.BLUE);
             tableOut.getConfig().setColumnTitleStyle(new FontStyle(20,Color.WHITE));
             tableOut.getConfig().setContentStyle(new FontStyle(18,Color.BLACK));
+            tableOut.getConfig().setMinTableWidth(100);
             tableOut.getConfig().setContentBackgroundFormat(new BaseCellBackgroundFormat<CellInfo>() {     //设置隔行变色
                 @Override
                 public int getBackGroundColor(CellInfo cellInfo) {
