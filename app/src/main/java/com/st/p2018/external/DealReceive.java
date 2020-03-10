@@ -659,7 +659,7 @@ public class DealReceive extends Thread{
             if(totalProduct.getData()!=null){
                 for(TotalMessage totalMessage :totalProduct.getData()){
 
-                    for(Product product : totalMessage.getJxq()){
+               /*     for(Product product : totalMessage.getJxq()){
                         if(product.getGg()!=null && !product.getGg().equals("")){
                             if(product.getGg().length()>15){
                                 product.setGg(product.getGg().substring(0,15));
@@ -673,7 +673,7 @@ public class DealReceive extends Thread{
                                 product.setGg(product.getGg().substring(0,15));
                             }
                         }
-                    }
+                    }*/
 
                     if(totalMessage.getLocation().equals("1")){
                         Cache.mapTotal.put("1",totalMessage);
