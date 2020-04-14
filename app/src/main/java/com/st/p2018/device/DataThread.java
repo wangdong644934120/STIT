@@ -206,6 +206,7 @@ public class DataThread extends Thread {
             if(Cache.isPCNow==1){
                 return;
             }
+            logger.info("单机使用");
             List<HashMap<String,String>> list=personDao.getPersonByCardOrZW(card);
             if(list !=null && list.size()>0){
                 //下发开门指令
@@ -218,6 +219,7 @@ public class DataThread extends Thread {
                 }
 
             }else{
+                logger.info("未从数据库查到人员信息");
 //                sendCZY("");
 //                MyTextToSpeech.getInstance().speak("此指纹无开门权限");
             }

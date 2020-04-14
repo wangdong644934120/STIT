@@ -310,7 +310,9 @@ public class PersonActivity extends Activity {
             String tzzp=tzz.getText().toString();
             String cardp=kh.getText().toString();
             //根据工号判断是否能够添加
-
+            //若编号前有0，则将0删除
+            int codei=Integer.valueOf(codep);
+            codep=String.valueOf(codei);
             if(check(codep,namep)){
                 Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
@@ -361,6 +363,10 @@ public class PersonActivity extends Activity {
             }
             String id=mQueryData.get(selecItem).get("id").toString();
             String codep = code.getText().toString();
+            //若编号前有0，则将0删除
+            int codei=Integer.valueOf(codep);
+            codep=String.valueOf(codei);
+            System.out.println(codep);
             String namep=name.getText().toString();
             String cardp=kh.getText().toString();
             String tzzp=tzz.getText().toString();
@@ -440,6 +446,11 @@ public class PersonActivity extends Activity {
             name.setText(map.get("name").toString());
             tzz.setText(map.get("tzz")==null?"":map.get("tzz").toString());
             kh.setText(map.get("card")==null?"":map.get("card").toString());
+            if(map.get("tzz")!=null && !map.get("tzz").equals("")){
+                btntzz.setEnabled(false);
+            }else{
+                btntzz.setEnabled(true);
+            }
         }catch (Exception e){
             logger.error("人员管理显示信息出错",e);
         }
@@ -553,6 +564,7 @@ public class PersonActivity extends Activity {
 
 
     }
+
     private boolean check(String code,String name){
         boolean bl=false;
         try{
