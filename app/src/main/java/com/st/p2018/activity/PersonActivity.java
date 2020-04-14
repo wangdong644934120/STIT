@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -230,6 +231,9 @@ public class PersonActivity extends Activity {
             v.setBackgroundColor(Color.parseColor("#FEE7B3"));
             lastView = v;
             selecItem=position;
+            add.setEnabled(false);
+            add.setBackgroundColor(Color.GRAY);
+            code.setEnabled(false);
             showMessage();
         }
 
@@ -310,14 +314,16 @@ public class PersonActivity extends Activity {
             String tzzp=tzz.getText().toString();
             String cardp=kh.getText().toString();
             //根据工号判断是否能够添加
-            //若编号前有0，则将0删除
-            int codei=Integer.valueOf(codep);
-            codep=String.valueOf(codei);
+
             if(check(codep,namep)){
                 Toast.makeText(this, "工号或姓名不能为空", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("工号或姓名不能为空");
                 return;
             }
+            //若编号前有0，则将0删除
+            int codei=Integer.valueOf(codep);
+            codep=String.valueOf(codei);
+            System.out.println(codep);
             List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(codep);
             if(!listCF.isEmpty()){
                 Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
@@ -359,6 +365,11 @@ public class PersonActivity extends Activity {
             if(selecItem<0){
                 Toast.makeText(this, "请选择一条记录", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("请选择一条记录");
+                return;
+            }
+            if(Integer.valueOf(code.getText().toString())>710){
+                MyTextToSpeech.getInstance().speak("工号不能超过710");
+                Toast.makeText(this, "工号不能超过710", Toast.LENGTH_SHORT).show();
                 return;
             }
             String id=mQueryData.get(selecItem).get("id").toString();
@@ -429,6 +440,10 @@ public class PersonActivity extends Activity {
                 tzz.setText("");
                 kh.setText("");
                 selecItem=-1;
+                add.setEnabled(true);
+                add.setBackgroundColor(Color.parseColor("#0011ff"));
+                btntzz.setEnabled(true);
+                code.setEnabled(true);
 //            if(mQueryData.isEmpty()){
 //                HCProtocol.ST_DeleteZW(1,0);
 //            }
@@ -476,7 +491,7 @@ public class PersonActivity extends Activity {
             }
             if(Integer.valueOf(code.getText().toString())>710){
                 MyTextToSpeech.getInstance().speak("工号不能超过710");
-                Toast.makeText(this, "工号不能超过700", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "工号不能超过710", Toast.LENGTH_SHORT).show();
                 return;
             }
             if(Integer.valueOf(code.getText().toString())<=0){
@@ -536,7 +551,11 @@ public class PersonActivity extends Activity {
     private boolean addZW(){
         boolean bl=false;
         try{
-            List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(code.getText().toString().trim());
+            //若编号前有0，则将0删除
+            int codei=Integer.valueOf(code.getText().toString().trim());
+            String codep=String.valueOf(codei);
+            System.out.println(codep);
+            List<HashMap<String,String>> listCF = pd.getSameCodeForAdd(codep);
             if(!listCF.isEmpty()){
                 Toast.makeText(this, "工号重复", Toast.LENGTH_SHORT).show();
                 MyTextToSpeech.getInstance().speak("工号重复");
